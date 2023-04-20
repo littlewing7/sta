@@ -16,10 +16,15 @@
 import pandas as pd
 import numpy as np
 
-def ROC(df, n):
-    M = df['Close'].diff(n - 1)
-    N = df['Close'].shift(n - 1)
-    ROC = pd.Series(M / N, name = 'ROC_' + str(n))
-    df = df.join(ROC)
+#def ROC(df, n):
+#    M = df['Close'].diff(n - 1)
+#    N = df['Close'].shift(n - 1)
+#    ROC = pd.Series(M / N, name = 'ROC_' + str(n))
+#    df = df.join(ROC)
+#    return df
+
+def __ROC (df, n=12, m=6):
+    df['ROC']   = ( df["Close"] - df["Close"].shift(n))/df["Close"].shift(n) * 100
+    df['ROCMA'] = df["ROC"].rolling(m).mean()
     return df
 

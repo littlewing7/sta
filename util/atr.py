@@ -44,3 +44,17 @@ def __ATR3 (df, n):
     df = df.join(ATR)
     return df
 
+
+def calculate_ATR(df_func):
+    # Calculating ATR - Average True Range
+    high_low = df_func['High'] - df_func['Low']
+    high_close = np.abs(df_func['High'] - df_func['Close'].shift())
+    low_close = np.abs(df_func['Low'] - df_func['Close'].shift())
+
+    ranges = pd.concat([high_low, high_close, low_close], axis=1)
+    true_range = np.max(ranges, axis=1)
+
+    df_func['ATR_14'] = true_range.rolling(14).sum()/14
+
+    return df_func
+

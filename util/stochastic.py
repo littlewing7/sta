@@ -24,6 +24,24 @@
 #    df = df.join(SOd)
 #    return df
 
+## Stochastic Oscillator, EMA smoothing, nS = slowing (1 if no slowing)
+#def STO(df,  nK, nD, nS=1):
+#    SOk = pd.Series((df['Close'] - df['Low'].rolling(nK).min()) / (df['High'].rolling(nK).max() - df['Low'].rolling(nK).min()), name = 'SO%k'+str(nK))
+#    SOd = pd.Series(SOk.ewm(ignore_na=False, span=nD, min_periods=nD-1, adjust=True).mean(), name = 'SO%d'+str(nD))
+#    SOk = SOk.ewm(ignore_na=False, span=nS, min_periods=nS-1, adjust=True).mean()
+#    SOd = SOd.ewm(ignore_na=False, span=nS, min_periods=nS-1, adjust=True).mean()
+#    df = df.join(SOk)
+#    df = df.join(SOd)
+#    return df
+## Stochastic Oscillator, SMA smoothing, nS = slowing (1 if no slowing)
+#def STO(df, nK, nD,  nS=1):
+#    SOk = pd.Series((df['Close'] - df['Low'].rolling(nK).min()) / (df['High'].rolling(nK).max() - df['Low'].rolling(nK).min()), name = 'SO%k'+str(nK))
+#    SOd = pd.Series(SOk.rolling(window=nD, center=False).mean(), name = 'SO%d'+str(nD))
+#    SOk = SOk.rolling(window=nS, center=False).mean()
+#    SOd = SOd.rolling(window=nS, center=False).mean()
+#    df = df.join(SOk)
+#    df = df.join(SOd)
+#    return df
 
 def __STOCHASTIC (df, k, d):
 
@@ -63,4 +81,6 @@ def __STOCHASTIC (df, k, d):
      #   [2, -2])
 
      return temp_df
+
+
 
