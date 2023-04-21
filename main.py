@@ -133,6 +133,14 @@ TIMEFRAMES = {
 
 }
 
+def print_log ( strategy_name, long_short='LONG', *ind):
+    message = f"{ticker} {interval} ---> {long_short} ::: {strategy_name} ::: {ind}"
+    logging.warning(message)
+    strategies[ticker].append(strategy_name)
+    indicators[ticker].extend ( ind )
+    print ( f"{message}\n")
+
+
 # Create an ArgumentParser object
 parser = argparse.ArgumentParser(description='Script that monitors a number of tickers')
 
@@ -150,6 +158,7 @@ parser.add_argument('-s', '--strategy', type=str, required=False, help='load a s
 args = parser.parse_args()
 
 strategies = {}
+indicators = {}
 
 while True:
 
@@ -158,6 +167,7 @@ while True:
     for ticker in args.tickers:
         
         strategies[ticker] = []
+        indicators[ticker] = []
         
         now = datetime.datetime.now()
 
@@ -560,9 +570,10 @@ while True:
         #####  S70: 70_3EMA_RSI_ATR                         # https://github.com/WaveyTechLtd/Stock_market_trader_EMA_RSI_ATR/blob/443b2e74d203f12c61f4e174789518c9ca8a5736/3EMA_RSI_ATR_youtube_v3.py
         with open('strategies/70_3EMA_RSI_ATR.py') as f: exec(f.read())
 
-        print ( strategies )
         print ("\n")
-        
+
+    print ( strategies )
+    print ( indicators )        
     time.sleep ( int ( refresh ) )
 
         ##### S20 

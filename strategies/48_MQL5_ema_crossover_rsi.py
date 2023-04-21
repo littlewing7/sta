@@ -39,12 +39,11 @@ rsi = data['RSI_14']
 if ((ema9.iloc[-2] > ema21.iloc[-2]) and (
     (histogram.iloc[-1] > 0 and histogram.iloc[-2] < 0) or (histogram.iloc[-1] < 0 and histogram.iloc[-2] > 0))) \
     or ((ema6.iloc[-1] > ema12.iloc[-1]) and (rsi.iloc[-1] > 50)):
-    print ( f"{ticker} {interval} ---> LONG ::: 48_MQL5_ema_crossover_rsi 2\n")
+    print_log ( '20_AO_SAUCER', 'LONG', [ 'EMA_6', 'EMA_9', 'EMA_21', 'MACD', 'RSI' ] )
 
 # SELL CRITERIA: 9EMA crosses below 21EMA followed by a MACD histogram crossover into negatives
 if ((ema9.iloc[-2] < ema21.iloc[-2]) and (
     (histogram.iloc[-1] < 0 and histogram.iloc[-2] > 0) or (histogram.iloc[-1] > 0 and histogram.iloc[-2] < 0))) \
     or ((ema6.iloc[-1] < ema12.iloc[-1]) and (rsi.iloc[-1] < 50)):
-    print ( f"{ticker} {interval} ---> SHORT ::: 48_MQL5_ema_crossover_rsi 2\n")
-
+    print_log ( '20_AO_SAUCER', 'SHORT', [ 'EMA_6', 'EMA_9', 'EMA_21', 'MACD', 'RSI' ] )
 

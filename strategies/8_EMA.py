@@ -7,14 +7,15 @@ data = __EMA ( data, 20 )
 data = __EMA ( data, 50 )
 
 
+
 # EMA_8 crossover EMA_21
 if ( ( ( data["EMA_8"][-1] > data["EMA_21"][-1] ) & ( data["EMA_8"][-2] < data["EMA_21"][-2] ) ) & 
     #( r_data['Close'][0] > dataframe[f'resample_{self.resample_interval}_sma']) &
     ( data['Volume'][0] > 0 ) ):
-    print ( f"{ticker} {interval} ---> LONG ::: 8_EMA 8, 21 crossover\n" )
+    print_log ( '8_EMA', 'LONG', [ 'EMA_8', 'EMA_21' ] )
 
 if ( ( ( data["EMA_8"][-1] < data["EMA_21"][-1] ) & ( data["EMA_8"][-2] > data["EMA_21"][-2] ) ) & ( data['Volume'][-1] > 0 ) ):
-    print ("SHORT ::: 8_EMA 8, 21 crossunder\n")
+    print_log ( '8_EMA', 'SHORT', [ 'EMA_8', 'EMA_21' ] )
 
 
 
@@ -22,22 +23,23 @@ if ( ( ( data["EMA_8"][-1] < data["EMA_21"][-1] ) & ( data["EMA_8"][-2] > data["
 if ( ( ( data["EMA_20"][-1] > data["EMA_50"][-1] ) & ( data["EMA_20"][-2] < data["EMA_50"][-2] ) ) & 
     #( r_data['Close'][0] > dataframe[f'resample_{self.resample_interval}_sma']) &
     ( data['Volume'][0] > 0 ) ):
-    print ( f"{ticker} {interval} ---> LONG ::: 8_EMA 20, 50 crossover\n" )
+    print_log ( '8_EMA', 'LONG', [ 'EMA_20', 'EMA_50', 'EMA_20_50_crossover' ] )
 
 if ( ( ( data["EMA_20"][-1] < data["EMA_50"][-1] ) & ( data["EMA_20"][-2] > data["EMA_50"][-2] ) ) & ( data['Volume'][-1] > 0 ) ):
-    print ("SHORT ::: 8_EMA 20, 50 crossunder\n")
+    print_log ( '8_EMA', 'SHORT', [ 'EMA_20', 'EMA_50', 'EMA_20_50_crossunder' ] )
 
 
 
 if data['EMA_9_21_Signal'][-1] == 2:
-    print ( f"{ticker} {interval} ---> LONG  8_EMA.py 9, 21 cross_over\n" )
+    print_log ( '8_EMA', 'LONG', [ 'EMA_9', 'EMA_21', 'EMA_9_21_crossover' ] )
 
 if data['EMA_9_21_Signal'][-1] == -2:
     print ( f"{ticker} {interval} ---> SHORT  8_EMA 9, 21 cross_under\n" )
+    print_log ( '8_EMA', 'SHORT', [ 'EMA_8', 'EMA_21', 'EMA_9_21_cross_under' ] )
 
 
 if data['EMA_20_50_Signal'][-1] == 2:
-    print ( f"{ticker} {interval} ---> LONG  8_EMA.py 20, 50 cross_over\n" )
+    print_log ( '8_EMA', 'LONG', [ 'EMA_20', 'EMA_50', 'EMA_20_50_crossover' ] )
 
 if data['EMA_20_50_Signal'][-1] == -2:
-    print ( f"{ticker} {interval} ---> SHORT  8_EMA 20, 50 cross_under\n" )
+    print_log ( '8_EMA', 'SHORT', [ 'EMA_20', 'EMA_50', 'EMA_20_50_cross_under' ] )

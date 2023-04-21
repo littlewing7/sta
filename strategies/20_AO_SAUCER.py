@@ -15,12 +15,13 @@ bar_3 = data['AO'].iloc[-1]
 curr_close = data['Close'].iloc[-1]
 curr_200ema = data['EMA_200'].iloc[-1]
 
+
 # BUY CRITERIA: CONSECUTIVELY: all 3 bars positive, 2 decreasing awesome oscillator values followed by an increase, and close is above the 200EMA
 if bar_1 > 0 and bar_2 > 0 and bar_3 > 0 and \
     bar_1 > bar_2 and bar_2 < bar_3 and curr_close > curr_200ema:
-    print ( f"{ticker} {interval} ---> LONG ::: 20_AO_SAUCER\n")
+    print_log ( '20_AO_SAUCER', 'LONG', [ 'EMA_200', 'AO' ] )
 
 # SELL CRITERIA: CONSECUTIVELY: all 3 bars negative, 2 increasing awesome oscillator values followed by a decrease, and close is below the 200EMA
 if bar_1 < 0 and bar_2 < 0 and bar_3 < 0 and\
     bar_1 < bar_2 and bar_2 > bar_3 and curr_close < curr_200ema:
-    print ( f"{ticker} {interval} ---> SHORT :::  20_AO_SAUCER\n")
+    print_log ( '20_AO_SAUCER', 'SHORT', [ 'EMA_200', 'AO' ] )

@@ -43,10 +43,10 @@ data = __STOCHASTIC (data, 14, 3)
 if ( ( ( data["EMA_8"][-1]   > data["EMA_14"][-1] ) & ( data["EMA_8"][-1] > data["EMA_50"][-1] ) & ( data["EMA_14"][-1] > data["EMA_50"][-1] ) )
     &  ( data['Close'][-1]   > data['EMA_8'][-1] )
     &  ( data['STO_Signal'].iloc[-1] == 2 ) ):
-    print ( f"{ticker} {interval} ---> LONG ::: 70_3EMA_RSI_ATR\n")
+    print_log ( '70_3EMA_RSI_ATR', 'LONG', [ 'EMA_8', 'EMA_14', 'EMA_50', 'STOCH' ] )
 
 if ( ( ( data['EMA_8'][-1]     < data['EMA_14'][-1] ) and ( data['EMA_8'][-1] < data['EMA_50'][-1] ) and ( data['EMA_14'][-1] < data['EMA_50'][-1] ) )
     & (  data['Adj Close'][-1] < data['EMA_8'][-1] )
     &  ( data['STO_Signal'].iloc[-1] == -2 ) ):
-    print ( f"{ticker} {interval} ---> SHORT ::: 70_3EMA_RSI_ATR\n")
+    print_log ( '70_3EMA_RSI_ATR', 'LONG', [ 'EMA_8', 'EMA_14', 'EMA_50', 'STOCH' ] )
 

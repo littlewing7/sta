@@ -14,7 +14,9 @@ if ( ( data['MACD'][-1]    >  data['MACD_SIGNAL'][-1] ) &
 if ( ( data['MACD'][-1]    <  data['MACD_SIGNAL'][-1] ) &
     (  data['CCI_20'][-1]  >= sell_cci ) &
     (  data['Volume'][-1]  > 0) ):
-    print ( f"{ticker} {interval} ---> SHORT ::: S27_MACDStrategy\n")
+    message = f"{ticker} {interval} ---> SHORT ::: S27_MACDStrategy"
+    print ( f"{message}\n")
+    logging.warning(message)
 
 strategies[ticker].append('LONG_S27_MACDStrategy')
 

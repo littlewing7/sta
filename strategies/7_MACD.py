@@ -15,7 +15,7 @@ data = __MACD  ( data )
 
 
 if data['MACD_Signal'][-1] == 2:
-    print ( f"{ticker} {interval} ---> LONG [e] 8_MACD cross_over from below\n" )
+    print_log ( '7_MACD', 'LONG', [ 'MACD' ] )
 
 if data['MACD_Signal'][-1] == -2:
-    print ( f"{ticker} {interval} ---> SHORT [e] 8_MACD cross_under from above\n" )
+    print_log ( '7_MACD', 'SHORT', [ 'MACD' ] )

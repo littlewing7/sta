@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # coding: utf-8
 
 #details of awesome oscillator can be found here

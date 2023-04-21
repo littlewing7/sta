@@ -29,9 +29,9 @@ wr_1      = data["WR_20"].iloc[-2]
 #####  (4) ATR_14  & W%R  #####
 # To reduce the false signal, check the William %R value and should be on the oversold area and previously reach < -95
 if ( ema_9 - ( 2 * atr_14) > _open ) and ( wr < -80) and ( wr_1 < -95 ) and ( _close > _open ):
-    print ( f"{ticker} {interval} ---> LONG :::  5_ATR_WR\n")
+    print_log ( '5_ATR_WR', 'LONG', [ 'EMA_9', 'EMA_20', 'ATR_14', 'WR_20', 'Close' ] )
 
 # To reduce the false signal, check the William %R value and should be on the overbought area and previously reach > -5
 if ( ema_9 + ( 2 * atr_14) < _close ) and ( wr > -20 ) and ( wr_1 > -5 ):
-    print ( f"{ticker} {interval} ---> SHORT :::  5_ATR_WR\n")
+    print_log ( '5_ATR_WR', 'SHORT', [ 'EMA_9', 'EMA_20', 'ATR_14', 'WR_20', 'Close' ] )
 

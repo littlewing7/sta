@@ -9,10 +9,10 @@ data = __KDJ ( data )
 
 
 if ( 20 > data['KDJ_D'][-1] > data['KDJ_D'][-2] > data['KDJ_K'][-2] )  &  ( data['KDJ_K'][-1] > data['KDJ_K'][-2] )  &  ( data['KDJ_K'][-1] > data['KDJ_D'][-1] ):
-    print ( f"{ticker} {interval} ---> LONG ::: KDJ CROSSOVER")
+    print_log ( '6_KDJ', 'LONG', [ 'KDJ', 'KDJ_CROSSOVER' ] )
 
 #A sell signal is received when the lines converge in a way that the blue line K crosses the line D from top to bottom. The blue line continues below the yellow and the purple one runs above the others.
 #The signal is stronger when the dead fork of the KDJ oscillator occurs in the overbought zone that is above the line of 80 value.
 if ( 80 < data['KDJ_D'][-1] < data['KDJ_D'][-2] < data['KDJ_K'][-2] ) and ( data['KDJ_K'][-1] < data['KDJ_K'][-2] ) and ( data['KDJ_K'][-1] < data['KDJ_D'][-1] ):
-    print ( f"{ticker} {interval} ---> SHORT :::  6_KDJ CROSSUNDER")
+    print_log ( '6_KDJ', 'SHORT', [ 'KDJ', 'KDJ_CROSSOVER' ] )
 
