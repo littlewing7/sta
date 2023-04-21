@@ -14,10 +14,10 @@ data = __ADX ( data, 14 )
 if ( ( data['High'][-1] <= data['KC_lower'][-1] )
     & (data['High'][-2] <= data['KC_lower'][-2] )
     & (data['High'][-3] <= data['KC_lower'][-3] ) & ( data['ADX_14'][-1] >= 20) ):
-    print ("LONG ::: 50_MQL5_keltner_adx\n")
+    print ( f"{ticker} {interval} ---> LONG ::: 50_MQL5_keltner_adx\n")
 
 # SELL SIGNAL: adx is >=25 and at least 3 candles are greater than or touch the upper keltner band
 if ( ( data['Low'][-1] >= data['KC_upper'][-1] )
     & (data['Low'][-2] >= data['KC_upper'][-2] )
     & (data['Low'][-3] >= data['KC_upper'][-3] ) & ( data['ADX_14'][-1] >= 20) ):
-    print ("SHORT ::: 50_MQL5_keltner_adx\n")
+    print ( f"{ticker} {interval} ---> SHORT ::: 50_MQL5_keltner_adx\n")

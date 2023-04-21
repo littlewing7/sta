@@ -10,11 +10,11 @@ close = data['Close']
 
 # SELL CRITERIA: when 6EMA crosses above 12EMA and RSI value has crossed below 50
 if (ema6.iloc[-1] < ema12.iloc[-1] and ema6.iloc[-2] > ema12.iloc[-2]) and ( rsi.iloc[-1] < 50 and rsi.iloc[-2] > 50):
-    print ("LONG ::: 48_MQL5_ema_crossover_rsi\n")
+    print ( f"{ticker} {interval} ---> LONG ::: 48_MQL5_ema_crossover_rsi\n")
 
 # BUY CRITERIA: when 6EMA crosses below 12EMA and RSI value has crossed above 50
 if (ema6.iloc[-1] > ema12.iloc[-1] and ema6.iloc[-2] < ema12.iloc[-2]) and ( rsi.iloc[-1] > 50 and rsi.iloc[-2] < 50):
-    print ("SHORT ::: 48_MQL5_ema_crossover_rsi\n")
+    print ( f"{ticker} {interval} ---> SHORT ::: 48_MQL5_ema_crossover_rsi\n")
 
 
 '''
@@ -39,12 +39,12 @@ rsi = data['RSI_14']
 if ((ema9.iloc[-2] > ema21.iloc[-2]) and (
     (histogram.iloc[-1] > 0 and histogram.iloc[-2] < 0) or (histogram.iloc[-1] < 0 and histogram.iloc[-2] > 0))) \
     or ((ema6.iloc[-1] > ema12.iloc[-1]) and (rsi.iloc[-1] > 50)):
-    print ("LONG ::: 48_MQL5_ema_crossover_rsi 2\n")
+    print ( f"{ticker} {interval} ---> LONG ::: 48_MQL5_ema_crossover_rsi 2\n")
 
 # SELL CRITERIA: 9EMA crosses below 21EMA followed by a MACD histogram crossover into negatives
 if ((ema9.iloc[-2] < ema21.iloc[-2]) and (
     (histogram.iloc[-1] < 0 and histogram.iloc[-2] > 0) or (histogram.iloc[-1] > 0 and histogram.iloc[-2] < 0))) \
     or ((ema6.iloc[-1] < ema12.iloc[-1]) and (rsi.iloc[-1] < 50)):
-    print ("SHORT ::: 48_MQL5_ema_crossover_rsi 2\n")
+    print ( f"{ticker} {interval} ---> SHORT ::: 48_MQL5_ema_crossover_rsi 2\n")
 
 

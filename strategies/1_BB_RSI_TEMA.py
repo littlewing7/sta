@@ -22,7 +22,7 @@ if (  ( data["RSI_14"][-1]  >= 30 )
     & ( data['TEMA_9'][-1]  <= data['BB_middle'][-1] )
     & ( data['TEMA_9'][-1]  > data['TEMA_9'][-2] )
     & ( data["Volume"][-1]  > 0) ):
-    print ( "LONG ::: 1_BB_RSI_TEMA\n")
+    print ( f"{ticker} {interval} ---> LONG ::: 1_BB_RSI_TEMA\n")
 
 
 if (  ( data["RSI_14"][-1] >=70 )
@@ -30,5 +30,5 @@ if (  ( data["RSI_14"][-1] >=70 )
     & ( data['TEMA_9'][-1] > data['BB_middle'][-1] )
     & ( data['TEMA_9'][-1] < data['TEMA_9'][-2] )
     & ( data["Volume"][-1]  > 0) ):
-    print ( "SHORT ::: 1_BB_RSI_TEMA\n")
+    print ( f"{ticker} {interval} ---> SHORT ::: 1_BB_RSI_TEMA\n")
 

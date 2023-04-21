@@ -149,11 +149,16 @@ parser.add_argument('-s', '--strategy', type=str, required=False, help='load a s
 # Parse the command-line arguments
 args = parser.parse_args()
 
+strategies = {}
+
 while True:
 
 
     # Use the list of stocks and integer value in the script
     for ticker in args.tickers:
+        
+        strategies[ticker] = []
+        
         now = datetime.datetime.now()
 
         print("=====  " + ticker + "  =====  " + now.strftime("%Y-%m-%d %H:%M:%S") + "  =====" )
@@ -165,6 +170,8 @@ while True:
         # Get stock data from Yahoo Finance
         #data = yf.download(ticker, period="5y")
         data = yf.download(ticker, period=period, interval = interval, progress=False )
+
+        
 
         data['Fibonacci_0.236'] = data['Close'].shift(0) * 0.236
         data['Fibonacci_0.382'] = data['Close'].shift(0) * 0.382
@@ -553,6 +560,7 @@ while True:
         #####  S70: 70_3EMA_RSI_ATR                         # https://github.com/WaveyTechLtd/Stock_market_trader_EMA_RSI_ATR/blob/443b2e74d203f12c61f4e174789518c9ca8a5736/3EMA_RSI_ATR_youtube_v3.py
         with open('strategies/70_3EMA_RSI_ATR.py') as f: exec(f.read())
 
+        print ( strategies )
         print ("\n")
         
     time.sleep ( int ( refresh ) )

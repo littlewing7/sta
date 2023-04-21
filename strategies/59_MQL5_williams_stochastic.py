@@ -14,9 +14,9 @@ data = __WR ( data, 14 )
 # BUY SIGNAL: signal line is less than or equal to 35 and williams indicator is less than -65 within the last 5 candles
 if ( ( ( data['STO_D'][-1] <= 35) | (data['STO_D'][-2] <= 35) | ( data['STO_D'][-3] <= 35) | (data['STO_D'][-4] <= 35) | (data['STO_D'][-5] <= 35) | ( data['STO_D'][-6] <= 35))
     & (( data['WR_14'][-1] < -65) | (data['WR_14'][-2] < -65) | ( data['WR_14'][-3] < -65) | (data['WR_14'][-4] < -65) | (data['WR_14'][-5] < -65) | ( data['WR_14'][-6] < -65))):
-    print ("LONG ::: 59_MQL5_williams_stochastic")
+    print ( f"{ticker} {interval} ---> LONG ::: 59_MQL5_williams_stochastic")
 
 # SELL SIGNAL: signal line is greater than or equal to 65 and williams indicator is greater than -35 within the last 5 candles
 if ( ( ( data['STO_D'][-1] >= 65) | (data['STO_D'][-2] >= 65) | ( data['STO_D'][-3] >= 65) | (data['STO_D'][-4] >= 65) | (data['STO_D'][-5] >= 65) | ( data['STO_D'][-6] >= 65))
     & (( data['WR_14'][-1] > -35) | (data['WR_14'][-2] > -35) | ( data['WR_14'][-3] > -35) | (data['WR_14'][-4] > -35) | (data['WR_14'][-5] > -35) | ( data['WR_14'][-6] > -35))):
-    print ("SHORT ::: 59_MQL5_williams_stochastic")
+    print ( f"{ticker} {interval} ---> SHORT ::: 59_MQL5_williams_stochastic")

@@ -8,9 +8,9 @@ data = __SMA ( data, 6 )
 
 if ( (    data['ADX_14'][-1] > 25)
     & ( ( data["SMA_3"][-1]  > data["SMA_6"][-1] ) & ( data["SMA_3"][-2] < data["SMA_6"][-2] ) ) ):
-    print ("LONG ::: S51_AdxSmas\n")
+    print ( f"{ticker} {interval} ---> LONG ::: S51_AdxSmas\n")
 
 if ( (    data['ADX_14'][-1] < 25 )
     & ( ( data["SMA_6"][-1]  > data["SMA_3"][-1] ) & ( data["SMA_6"][-2] < data["SMA_3"][-2] ) ) ):
-    print ("SHORT ::: S51_AdxSmas\n\n")
+    print ( f"{ticker} {interval} ---> SHORT ::: S51_AdxSmas\n\n")
 

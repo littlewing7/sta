@@ -22,16 +22,16 @@ _rsi_1 = data["RSI_14"].iloc[-2]
 
 
 if data['SMA_5_8_Signal'][-1] == 2:
-    print ( "LONG ::: 3_SMA.py 5, 8 cross_over\n" )
+    print ( f"{ticker} {interval} ---> LONG ::: 3_SMA.py 5, 8 cross_over\n" )
 
 if data['SMA_5_8_Signal'][-1] == -2:
-    print ( "SHORT ::: 3_SMA 5, 8 cross_under\n" )
+    print ( f"{ticker} {interval} ---> SHORT ::: 3_SMA 5, 8 cross_under\n" )
 
 if ( _rsi >= 30 ) and ( _rsi_1 < 30 ) and ( data['TEMA_9'][-1] <= data['BB_middle'][-1] ) and ( data['TEMA_9'][-1] > data['TEMA_9'][-2] ) and ( _vol > 0):
-    print ("LONG  3_SMA  SMA 5 > 8\n")
+    print ( f"{ticker} {interval} ---> LONG  3_SMA  SMA 5 > 8\n")
 
 if ( _rsi >=70 ) and ( _rsi_1 < 70 ) and ( data['TEMA_9'][-1]  > data['BB_middle'][-1] )  and ( data['TEMA_9'][-1] < data['TEMA_9'][-2] ) and ( _vol > 0):
-    print ("SHORT  3_SMA  SMA 5 < 8\n")
+    print ( f"{ticker} {interval} ---> SHORT  3_SMA  SMA 5 < 8\n")
 
 #print ( data.tail(2) )
 

@@ -17,10 +17,10 @@ ema_dist = data['Close'].iloc[-1] - data['EMA_21'].iloc[-1]
 # BUY CRITERIA: Bear power’s value is negative but increasing, Bull power’s value is increasing and 21 EMA is increasing.
 if data['bear_power'].iloc[-1] < 0 and data['bear_power'].iloc[-1] > data['bear_power'].iloc[-2] \
     and data['bull_power'].iloc[-1] > data['bull_power'].iloc[-2] and data['EMA_21'].iloc[-1] > data['EMA_21'].iloc[-2] :
-    print ( "LONG ::: 46_MQL5_elder_ray\n")
+    print ( f"{ticker} {interval} ---> LONG ::: 46_MQL5_elder_ray\n")
 
 # SELL CRITERIA: Bull power’s value is positive but decreasing,  Bear power’s value is decreasing and 21 EMA is decreasing.
 if data['bull_power'].iloc[-1] > 0 and data['bull_power'].iloc[-1] < data['bull_power'].iloc[-2] \
    and data['bear_power'].iloc[-1] < data['bear_power'].iloc[-2] and data['EMA_21'].iloc[-1] < data['EMA_21'].iloc[-2] :
-    print ( "SHORT ::: 46_MQL5_elder_ray\n")
+    print ( f"{ticker} {interval} ---> SHORT ::: 46_MQL5_elder_ray\n")
 

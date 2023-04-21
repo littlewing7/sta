@@ -7,10 +7,10 @@ data = __BB ( data )
 
 if ( (  data["RSI_14"][-1] < 30 )
     & ( data["Close"][-1]  < data["BB_lower"][-1] ) ):
-    print ("LONG BBANDRSI\n")
+    print ( f"{ticker} {interval} ---> LONG BBANDRSI\n")
 
 if ( data["RSI_14"][-1] > 70 ):
-    print ("SHORT BBANDRSI\n")
+    print ( f"{ticker} {interval} ---> SHORT BBANDRSI\n")
 
 
 '''
@@ -26,8 +26,8 @@ to ensure robustness of signals.
 
 #BUY if price is below low bollinger band and rsi is less than 30
 if(( data['Close'].iloc[-1] <= data['BB_lower'].iloc[-1]) & (data['RSI_14'].iloc[-1] <= 30)):
-    print ("LONG BBANDRSI_2\n")
+    print ( f"{ticker} {interval} ---> LONG BBANDRSI_2\n")
 
 #SELL if price is above high bollinger band as rsi is greater than 70
 if((data['Close'].iloc[-1] >= data['BB_upper'].iloc[-1]) & (data['RSI_14'].iloc[-1] >= 70)):
-    print ("SHORT BBANDRSI_2\n")
+    print ( f"{ticker} {interval} ---> SHORT BBANDRSI_2\n")

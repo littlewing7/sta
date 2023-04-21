@@ -11,9 +11,9 @@ data = __EMA ( data, 20 )
 
 # BUY if first candle stick touches ema and then next candle stick rebounds off it
 if ( ( data['Low'].iloc[-2] <= data['EMA_20'].iloc[-2] and data['EMA_20'].iloc[-2] <= data['High'].iloc[-2]) & (data['Close'].iloc[-1] > data['Close'].iloc[-2])):
-    print (" BladeRunner enter long\n")
+    print ( f"{ticker} {interval} ---> LONG  BladeRunner\n")
 
 # SELL if first candle stick touches ema and then next candle stick rebounds off it
 if ( ( data['Low'].iloc[-2] <= data['EMA_20'].iloc[-2] and data['EMA_20'].iloc[-2] <= data['High'].iloc[-2]) & (data['Close'].iloc[-1] < data['Close'].iloc[-2])):
-    print (" BladeRunner exit long\n")
+    print ( f"{ticker} {interval} --->  SHORT BladeRunner\n")
 

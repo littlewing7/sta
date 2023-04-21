@@ -22,12 +22,12 @@ if (k_line.iloc[-3] < 20 and d_signal.iloc[-3] < 20 and k_line.iloc[-2] < 20 and
     ((k_line.iloc[-3] > d_signal.iloc[-3] and k_line.iloc[-2] < d_signal.iloc[-2])) and \
     (m_line.iloc[-2] < 0 and m_signal.iloc[-2] < 0 and m_line.iloc[-1] < 0 and m_signal.iloc[-1] < 0) and \
     (m_line.iloc[-2] < m_signal.iloc[-2] and m_line.iloc[-1] > m_signal.iloc[-1]):
-    print ("LONG ::: 54_MQL5_macd_stochastic_crossover\n")
+    print ( f"{ticker} {interval} ---> LONG ::: 54_MQL5_macd_stochastic_crossover\n")
 
 # SELL CRITERIA: stoch %k and %d lines crossover that are >80 shortly before MACD signal and line crossover that are >0
 if (k_line.iloc[-3] > 80 and d_signal.iloc[-3] > 80 and k_line.iloc[-2] > 80 and d_signal.iloc[-2] > 80) and \
     ((k_line.iloc[-3] < d_signal.iloc[-3] and k_line.iloc[-2] > d_signal.iloc[-2])) and \
     (m_line.iloc[-2] > 0 and m_signal.iloc[-2] > 0 and m_line.iloc[-1] > 0 and m_signal.iloc[-1] > 0) and \
     (m_line.iloc[-2] > m_signal.iloc[-2] and m_line.iloc[-1] < m_signal.iloc[-1]):
-    print ("SHORT ::: 54_MQL5_macd_stochastic_crossover\n")
+    print ( f"{ticker} {interval} ---> SHORT ::: 54_MQL5_macd_stochastic_crossover\n")
 

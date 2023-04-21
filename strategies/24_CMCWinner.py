@@ -9,10 +9,10 @@ data = __CMO ( data )
 if ( ( data['CCI_20'][-1] < -100) &
     (  data['MFI_14'][-1] < 20) &
     (  data['CMO'][-1]    < -50)):
-    print ("LONG ::: 24_CMCWinner\n\n" )
+    print ( f"{ticker} {interval} ---> LONG ::: 24_CMCWinner\n\n" )
 
 if ( ( data['CCI_20'][-1] > 100 ) &
     ( data['MFI_14'][-1]  > 80 ) &
     ( data['CMO'][-1]     > 50 )):
-    print ( "SHORT ::: 24_CMCWinner\n" )
+    print ( f"{ticker} {interval} ---> SHORT ::: 24_CMCWinner\n" )
 

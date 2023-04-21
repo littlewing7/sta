@@ -10,12 +10,12 @@ if (  ( data['CCI_170'][-1] < -100)
     ## insurance
     #& (dataframe['resample_medium'] > dataframe['resample_short'])
     #& (dataframe['resample_long'] < dataframe['close'])
-    print ( "LONG ::: 23_CCI_MFI_RSI\n" )
+    print ( f"{ticker} {interval} ---> LONG ::: 23_CCI_MFI_RSI\n" )
 
 if  ( ( data['CCI_170'][-1] > 100 )
     & ( data['CCI_34'][-1]  > 100 )
     & ( data['CMF'][-1]     > 0.3 ) ):
     #& ( data['resample_sma'] < data['resample_medium'])
     #& ( data['resample_medium'] < data['resample_short'])
-    print ( "SHORT ::: 23_CCI_MFI_RSI\n" )
+    print ( f"{ticker} {interval} ---> SHORT ::: 23_CCI_MFI_RSI\n" )
 

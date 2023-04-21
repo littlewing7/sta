@@ -18,11 +18,11 @@ if ( (  data['RSI_14'][-1]     < 28)
     & ( ( data['EMA_50'][-1]   > data['EMA_100'][-1] ) | ( ( data['EMA_5'][-1] > data['EMA_10'][-1] ) & ( data['EMA_5'][-2] < data['EMA_10'][-2]) ) )
     & ( data['STO_D'][-1]      > data['STO_K'][-1] )
     & ( data['STO_D'][-1]      > 0) ):
-    print ("LONG ::: EMA_MFI_RSI_STO\n")
+    print ( f"{ticker} {interval} ---> LONG ::: EMA_MFI_RSI_STO\n")
 
 
 if ( ( data['PSAR'][-1] > data['Close'][-1] ) ):
     # &(  data['fisher_rsi'] > 0.3) ):
-    print ("SHORT ::: EMA_MFI_RSI_STO\n")
+    print ( f"{ticker} {interval} ---> SHORT ::: EMA_MFI_RSI_STO\n")
 
 
