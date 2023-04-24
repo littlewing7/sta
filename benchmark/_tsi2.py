@@ -46,13 +46,13 @@ def get_tsi(close, long, short, signal):
     
     tsi = (diff_double_smoothed / abs_diff_double_smoothed) * 100
     signal = tsi.ewm(span = signal, adjust = False).mean()
-    tsi = tsi[tsi.index >= '2020-01-01'].dropna()
-    signal = signal[signal.index >= '2020-01-01'].dropna()
+    #tsi = tsi[tsi.index >= '2020-01-01'].dropna()
+    #signal = signal[signal.index >= '2020-01-01'].dropna()
     
     return tsi, signal
 
 aapl['tsi'], aapl['signal_line'] = get_tsi(aapl['close'], 25, 13, 12)
-aapl = aapl[aapl.index >= '2020-01-01']
+#aapl = aapl[aapl.index >= '2020-01-01']
 aapl.tail()
 
 # TRUE STRENGTH INDEX PLOT

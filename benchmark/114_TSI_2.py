@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# RETURN 53%
+# RETURN 89%
 
 import yfinance as yf
 import pandas as pd
@@ -9,33 +9,23 @@ import numpy as np
 import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
+def __TSI ( data, long, short, signal):
+    close = data["Close"]
+    diff = close - close.shift(1)
+    abs_diff = abs(diff)
 
-def calculate_stochastic_rsi(data, n=14, k=3):
-    """
-    Function to calculate stochastic RSI
-    """
-    rsi = calculate_rsi(data, n)
-    rsi_range = rsi.max() - rsi.min()
-    data["stoch_rsi"] = (rsi - rsi.min()) / rsi_range
-    data["stoch_rsi_K"] = data["stoch_rsi"].rolling(k).mean() * 100
-    data["stoch_rsi_D"] = data["stoch_rsi_K"].rolling(k).mean()
+    diff_smoothed = diff.ewm(span = long, adjust = False).mean()
+    diff_double_smoothed = diff_smoothed.ewm(span = short, adjust = False).mean()
+    abs_diff_smoothed = abs_diff.ewm(span = long, adjust = False).mean()
+    abs_diff_double_smoothed = abs_diff_smoothed.ewm(span = short, adjust = False).mean()
 
+    tsi = (diff_double_smoothed / abs_diff_double_smoothed) * 100
+    signal = tsi.ewm(span = signal, adjust = False).mean()
+    #tsi = tsi[tsi.index >= '2020-01-01'].dropna()
+    #signal = signal[signal.index >= '2020-01-01'].dropna()
+    data['TSI'] = tsi
+    data['TSI_SIGNAL'] = signal
     return data
-
-
-def calculate_rsi(data, n=14):
-    """
-    Function to calculate RSI
-    """
-    delta = data["Adj Close"].diff()
-    gain = delta.where(delta > 0, 0)
-    loss = -delta.where(delta < 0, 0)
-    avg_gain = gain.rolling(n).mean()
-    avg_loss = loss.rolling(n).mean()
-    rs = avg_gain / avg_loss
-    rsi = 100 - (100 / (1 + rs))
-
-    return rsi
 
 
 def backtest_strategy(stock, start_date, end_date):
@@ -46,7 +36,7 @@ def backtest_strategy(stock, start_date, end_date):
     data = yf.download(stock, start=start_date, end=end_date)
 
     # Calculate Stochastic RSI
-    data = calculate_stochastic_rsi(data)
+    data = __TSI ( data, 25, 13, 12 )
 
     # Set initial conditions
     position = 0
@@ -56,14 +46,15 @@ def backtest_strategy(stock, start_date, end_date):
 
     # Loop through data
     for i in range(len(data)):
+
         # Buy signal
-        if data["stoch_rsi_K"][i] > 20 and data["stoch_rsi_D"][i] > 20 and position == 0:
+        if data["TSI"][i-1] < data["TSI_SIGNAL"][i-1] and data["TSI"][i] > data["TSI_SIGNAL"][i] and  position == 0:
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif data["stoch_rsi_K"][i] < 80 and data["stoch_rsi_D"][i] < 80 and position == 1:
+        elif data["TSI"][i-1] > data["TSI_SIGNAL"][i-1] and data["TSI"][i] < data["TSI_SIGNAL"][i] and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")

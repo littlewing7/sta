@@ -24,8 +24,8 @@ ema_9      = data["EMA_9"].iloc[-1]
 ema_9_1    = data["EMA_9"].iloc[-2]
 
 if ( _close > tema_30 ) and ( tema_30 > tema_30_1 ) and ( _close > _close_1 ) and ( _close > ema_9 ) and ( ema_9 > ema_9_1) and ( ema_9 > tema_30):
-    print_log ( '2_EMA_TEMA', 'LONG', [ 'EMA_9', 'TEMA_30' ] )
+    print_log ( '113_EMA_TEMA', 'LONG', [ 'EMA_9', 'TEMA_30' ] )
 
 if ( _close < tema_30 ) and ( tema_30 < tema_30_1 ) and ( _close < _close_1) and ( _close < ema_9 ) and ( ema_9 < ema_9_1):
-    print_log ( '2_EMA_TEMA', 'SHORT', [ 'EMA_9', 'TEMA_30' ] )
+    print_log ( '113_EMA_TEMA', 'SHORT', [ 'EMA_9', 'TEMA_30' ] )
 

@@ -1,7 +1,13 @@
+#!/usr/bin/env python3
+# RETURN 53%
+
 import yfinance as yf
 import pandas as pd
 
 import numpy as np
+
+import warnings
+warnings.simplefilter ( action='ignore', category=Warning )
 
 def __EMA ( data, n=9 ):
     #ema = data['Close'].ewm(span = period ,adjust = False).mean()
@@ -27,7 +33,7 @@ def backtest_strategy(stock, start_date, end_date):
     Function to backtest a strategy
     """
     # Download data
-    data = yf.download(stock, start=start_date, end=end_date)
+    data = yf.download(stock, start=start_date, end=end_date, progress=False)
 
     # EMA 9, TEMA 30
     data = __EMA  ( data, 9 )
@@ -47,13 +53,13 @@ def backtest_strategy(stock, start_date, end_date):
         if ( data["Close"][i] > data["TEMA_30"][i] ) and ( data["TEMA_30"][i] > data["TEMA_30"][i - 1] ) and ( data["Close"][i] > data["Close"][i - 1] ) and ( data["Close"][i] > data["EMA_9"][i] ) and ( data["EMA_9"][i] > data["EMA_9"][i -1] ) and ( data["EMA_9"][i] > data["TEMA_30"][i] ) and (position == 0):
             position = 1
             buy_price = data["Adj Close"][i]
-            print(f"Buying {stock} at {buy_price}")
+            #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
         elif ( data["Close"][i] < data["TEMA_30"][i] ) and ( data["TEMA_30"][i] < data["TEMA_30"][i - 1] ) and ( data["Close"][i] < data["Close"][i - 1]) and ( data["Close"][i] < data["EMA_9"][i] ) and ( data["EMA_9"][i] < data["EMA_9"][i - 1] ) and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
-            print(f"Selling {stock} at {sell_price}")
+            #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
             returns.append((sell_price - buy_price) / buy_price)
@@ -68,9 +74,13 @@ def backtest_strategy(stock, start_date, end_date):
     print(f"Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
 
 if __name__ == '__main__':
-    stock = "AAPL"
+
     start_date = "2020-01-01"
     end_date = "2023-04-19"
-    backtest_strategy(stock, start_date, end_date)
+
+    backtest_strategy("AAPL", start_date, end_date)
+
+    print ("\n\n")
+
     backtest_strategy("SPY", start_date, end_date)
 

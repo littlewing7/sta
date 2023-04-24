@@ -2,6 +2,9 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
+import warnings
+warnings.simplefilter ( action='ignore', category=Warning )
+
 def __SMA ( data, n ):
     data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
     return data
@@ -119,7 +122,7 @@ def backtest_strategy(stock, start_date, end_date):
     Function to backtest a strategy
     """
     # Download data
-    data = yf.download(stock, start=start_date, end=end_date)
+    data = yf.download(stock, start=start_date, end=end_date, progress=False)
 
     # Calculate Stochastic RSI
     data = __SMA (data, 20)
@@ -195,10 +198,10 @@ def backtest_strategy(stock, start_date, end_date):
 
 if __name__ == '__main__':
 
-    stock = "AAPL"
     start_date = "2020-01-01"
     end_date = "2023-04-19"
 
-    backtest_strategy(stock, start_date, end_date)
+    backtest_strategy("AAPL", start_date, end_date)
+    print ("\n\n")
     backtest_strategy("SPY", start_date, end_date)
 

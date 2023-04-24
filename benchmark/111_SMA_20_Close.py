@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# RETURN 102%
+
 import yfinance as yf
 import pandas as pd
 
@@ -11,11 +14,11 @@ def backtest_strategy(stock, start_date, end_date):
     Function to backtest a strategy
     """
     # Download data
-    data = yf.download(stock, start=start_date, end=end_date)
+    data = yf.download(stock, start=start_date, end=end_date, progress=False)
 
     # Calculate Stochastic RSI
     data = __SMA (data, 20)
-    print ( data.tail(2) )
+    #print ( data.tail(2) )
 
     # Set initial conditions
     position = 0
@@ -30,14 +33,14 @@ def backtest_strategy(stock, start_date, end_date):
             position = 1
             buy_price = data["Adj Close"][i]
             today = data.index[i]
-            print(f"Buying {stock} at {buy_price} @ {today}")
+            #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
         elif data["Close"][i] < data["SMA_20"][i] and data["Close"][i - 1]  > data["SMA_20"][i - 1] and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
             today = data.index[i]
-            print(f"Selling {stock} at {sell_price} @ {today}")
+            #print(f"Selling {stock} at {sell_price} @ {today}")
 
             # Calculate returns
             returns.append((sell_price - buy_price) / buy_price)
@@ -54,10 +57,9 @@ def backtest_strategy(stock, start_date, end_date):
 
 if __name__ == '__main__':
 
-    stock = "AAPL"
     start_date = "2020-01-01"
     end_date = "2023-04-19"
 
-    backtest_strategy(stock, start_date, end_date)
-    #backtest_strategy("SPY", start_date, end_date)
+    backtest_strategy("AAPL", start_date, end_date)
+    backtest_strategy("SPY", start_date, end_date)
 
