@@ -13,10 +13,9 @@ signal = data['MACD_SIGNAL']
 if (    macd.iloc[-1] < 0 and signal.iloc[-1] < 0 and macd.iloc[-2] < 0 and signal.iloc[-2] < 0 and
         macd.iloc[-3] < 0 and signal.iloc[-3] < 0) and \
     ( ( macd.iloc[-3] > signal.iloc[-3] and macd.iloc[-1] < signal.iloc[-1]) or ( macd.iloc[-3] < signal.iloc[-3] and macd.iloc[-1] > signal.iloc[-1])):
-    print ( f"{ticker} {interval} ---> LONG ::: 52_MQL5_macd_crossover\n")
+    print_log ( '52_MQL5_macd_crossover', 'LONG', [ 'MACD' ] )
 
 # SELL CRITERIA: if MACD line has crossed signal line and are > 0
 if (    macd.iloc[-1] > 0 and signal.iloc[-1] > 0 and macd.iloc[-2] > 0 and signal.iloc[-2] > 0 and macd.iloc[-3]>0 and signal.iloc[-3]>0) and \
     ( ( macd.iloc[-3] < signal.iloc[-3] and macd.iloc[-1] > signal.iloc[-1]) or (macd.iloc[-3] > signal.iloc[-3] and macd.iloc[-1] < signal.iloc[-1])):
-    print ( f"{ticker} {interval} ---> SHORT ::: 52_MQL5_macd_crossover\n")
-
+    print_log ( '52_MQL5_macd_crossover', 'SHORT', [ 'MACD' ] )

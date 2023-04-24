@@ -12,11 +12,10 @@ Author: Cheryl
 if  data['AO'].iloc[-4] <= 0 and data['AO'].iloc[-3] >= 0 and \
     data['AO'].iloc[-2] > data['AO'].iloc[-3] and \
     data['AO'].iloc[-1] > data['AO'].iloc[-2]:
-    print ( f"{ticker} {interval} ---> LONG ::: 41_MQL5_awesome_zero_crossover\n") 
+    print_log ( '41_MQL5_awesome_zero_crossover', 'LONG', [ 'AO' ] )
 
 # SELL CRITERIA: awesome oscillator crosses from above to below the zero line, followed by 3 decreasing values
 if data['AO'].iloc[-4]  >= 0 and data['AO'].iloc[-3] <= 0 and \
     data['AO'].iloc[-2] < data['AO'].iloc[-3] and \
     data['AO'].iloc[-1] < data['AO'].iloc[-2]:
-    print ( f"{ticker} {interval} ---> SHORT ::: 41_MQL5_awesome_zero_crossover\n")
-
+    print_log ( '41_MQL5_awesome_zero_crossover', 'SHORT', [ 'AO' ] )

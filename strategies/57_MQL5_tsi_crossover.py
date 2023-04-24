@@ -9,11 +9,9 @@ signal = data['TSI_SIGNAL']
 # BUY CRITERIA: if TSI line and signal line is below 0 and tsi crosses signal line
 if (line.iloc[-1] < 0 and signal.iloc[-1] < 0 and line.iloc[-2] < 0 and signal.iloc[-2] < 0) and \
     ((line.iloc[-1] > signal.iloc[-1] and line.iloc[-2] < signal.iloc[-2]) or (line.iloc[-1] < signal.iloc[-1] and line.iloc[-2] > signal.iloc[-2])):
-    print ( f"{ticker} {interval} ---> LONG ::: 57_MQL5_tsi_crossover\n")
+    print_log ( '57_MQL5_tsi_crossover', 'LONG', [ 'TSI', 'TSI_cross' ] )
 
 # SELL CRITERIA: if TSI line and signal line has crossed above 0 and TSI line crosses signal
 if (line.iloc[-1] > 0 and signal.iloc[-1] > 0 and line.iloc[-2] > 0 and signal.iloc[-2] > 0) and \
     ((line.iloc[-1] < signal.iloc[-1] and line.iloc[-2] > signal.iloc[-2]) or (line.iloc[-1] > signal.iloc[-1] and line.iloc[-2] < signal.iloc[-2])):
-    print ( f"{ticker} {interval} ---> SHORT ::: 57_MQL5_tsi_crossover\n")
-
-
+    print_log ( '57_MQL5_tsi_crossover', 'SHORT', [ 'TSI', 'TSI_cross' ] )

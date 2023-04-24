@@ -34,4 +34,3 @@ if ( ema_9 - ( 2 * atr_14) > _open ) and ( wr < -80) and ( wr_1 < -95 ) and ( _c
 # To reduce the false signal, check the William %R value and should be on the overbought area and previously reach > -5
 if ( ema_9 + ( 2 * atr_14) < _close ) and ( wr > -20 ) and ( wr_1 > -5 ):
     print_log ( '5_ATR_WR', 'SHORT', [ 'EMA_9', 'EMA_20', 'ATR_14', 'WR_20', 'Close' ] )
-

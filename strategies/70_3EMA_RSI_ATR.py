@@ -49,4 +49,3 @@ if ( ( ( data['EMA_8'][-1]     < data['EMA_14'][-1] ) and ( data['EMA_8'][-1] < 
     & (  data['Adj Close'][-1] < data['EMA_8'][-1] )
     &  ( data['STO_Signal'].iloc[-1] == -2 ) ):
     print_log ( '70_3EMA_RSI_ATR', 'LONG', [ 'EMA_8', 'EMA_14', 'EMA_50', 'STOCH' ] )
-

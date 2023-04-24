@@ -34,7 +34,6 @@ if data['EMA_9_21_Signal'][-1] == 2:
     print_log ( '8_EMA', 'LONG', [ 'EMA_9', 'EMA_21', 'EMA_9_21_crossover' ] )
 
 if data['EMA_9_21_Signal'][-1] == -2:
-    print ( f"{ticker} {interval} ---> SHORT  8_EMA 9, 21 cross_under\n" )
     print_log ( '8_EMA', 'SHORT', [ 'EMA_8', 'EMA_21', 'EMA_9_21_cross_under' ] )
 
 

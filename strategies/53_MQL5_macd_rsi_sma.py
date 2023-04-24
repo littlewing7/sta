@@ -22,10 +22,9 @@ close       = data['Close']
 # buy if close price is higher than the moving average, rsi reads less than 30 and the macd line crosses up through macd signal line
 if (  sma_5.iloc[-1] < close.iloc[-1]) and (macd_line.iloc[-2] < macd_signal.iloc[-2]) and \
     ( macd_line.iloc[-1] > macd_signal.iloc[-1]) and (macd_line.iloc[-1] < 0 and rsi.iloc[-1] < 30):
-    print ( f"{ticker} {interval} ---> LONG ::: 53_MQL5_macd_rsi_sma\n")
+    print_log ( '53_MQL5_macd_rsi_sma', 'LONG', [ 'MACD', 'RSI_14', 'SMA_5' ] )
 
 # sell if close price less than moving average, rsi reads over 70, and macd line crosses down through signal line
 if (  close.iloc[-1] < sma_5.iloc[-1]) and (macd_line.iloc[-1] > 0 and rsi.iloc[-1] > 70) and \
     ( macd_line.iloc[-2] > macd_signal.iloc[-2]) and (macd_line.iloc[-1] < macd_signal.iloc[-1]):
-    print ( f"{ticker} {interval} ---> SHORT ::: 53_MQL5_macd_rsi_sma\n")
-
+    print_log ( '53_MQL5_macd_rsi_sma', 'SHORT', [ 'MACD', 'RSI_14', 'SMA_5' ] )

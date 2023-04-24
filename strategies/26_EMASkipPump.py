@@ -14,11 +14,11 @@ if (( data['Volume'][-1]  < Vol_SMA_30[-1] ) &
     ( data['Close'][-1]   < data['EMA_12'][-1] ) &
     #( data['Close'][0]  == data['min'][0]) &
     ( data['Close'][-1]  <= data['BB_lower'][-1] ) ):
-    print ( f"{ticker} {interval} ---> LONG ::: EMASkipPump\n")
+    print_log ( '26_EMASkipPump', 'LONG', [ 'BB', 'EMA_5', 'EMA_12', 'EMA_21', 'Vol' ] )
 
 if (( data['Close'][0] > data['EMA_5'][-1] ) &
     ( data['Close'][0] > data['EMA_12'][-1] ) &
     #( data['Close'][0] >= data['max'][-1] ) &
     ( data['Close'][0] >= data['BB_upper'][-1] ) ):
-    print ( f"{ticker} {interval} ---> SHORT ::: EMASkipPump\n")
+    print_log ( '26_EMASkipPump', 'SHORT', [ 'BB', 'EMA_5', 'EMA_12', 'EMA_21', 'Vol' ] )
 

@@ -16,9 +16,7 @@ data = __SMA ( data, 8 )
 
 
 if data['CCI_Signal'][-1] == 2:
-    print ( f"{ticker} {interval} ---> LONG [e] 4_CCI cross_over from below\n" )
+    print_log ( '4_CCI', 'LONG', [ 'CCI_20' ] )
 
 if data['CCI_Signal'][-1] == -2:
-    print ( f"{ticker} {interval} ---> SHORT [e] 4_CCI cross_under from above\n" )
-
-
+    print_log ( '4_CCI', 'LONG', [ 'CCI_20' ] )

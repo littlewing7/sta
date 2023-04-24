@@ -14,10 +14,10 @@ if ( (data['ADX_14'][-1]  > 30) &
     ( data['TEMA_9'][-1]  < data['BB_middle'][-1] ) &
     ( data['TEMA_9'][-1]  > data['TEMA_9'][-2]) &
     ( data['SMA_200'][-1] > data['Close'][-1] ) ):
-    print ( f"{ticker} {interval} ---> LONG ::: S29_Quickie\n" )
+    print_log ( '29_Quickie', 'LONG', [ 'ADX', 'SMA_50', 'SMA_200', 'TEMA_9' ] )
 
 if (  (  data['ADX_14'][-1]  > 70 )
     & (  data['TEMA_9'][-1]  > data['BB_middle'][-1] )
     & (  data['TEMA_9'][-1]  < data['TEMA_9'][-2] ) ):
-    print ( f"{ticker} {interval} ---> SHORT ::: S29_Quickie\n")
+    print_log ( '29_Quickie', 'LONG', [ 'ADX', 'SMA_50', 'SMA_200', 'TEMA_9' ] )
 
