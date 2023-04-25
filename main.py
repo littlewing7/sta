@@ -3,17 +3,27 @@
 # pylint: disable=C0122
 # isort: skip_file
 
-import os,sys
-import argparse
-import time
-import datetime
 
-import yfinance as yf
-import numpy as np
+
+try:
+    import os,sys
+    import argparse
+    import time
+    import datetime
+    import json
+    import requests
+    import yfinance as yf
+    import numpy as np
+    import pandas as pd
+except ModuleNotFoundError or ImportError as ee:
+    print('Error importing python module: {0}'.format(ee.msg), file=sys.stderr)
+    sys.exit(1)
+except Exception as ee:
+    print(ee)
+
 import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
-import pandas as pd
 pd.set_option('display.precision', 2)
 
 pd.set_option('display.max_rows', 500)
@@ -26,6 +36,13 @@ pd.set_option('display.max_rows', None)
 pd.set_option('display.max_seq_items', None)
 pd.set_option('display.max_colwidth', 500)
 pd.set_option('expand_frame_repr', True)
+
+
+# disable SSL cert warn
+#from urllib3.exceptions import InsecureRequestWarning
+#requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+#urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 import logging
 #logging.basicConfig(level=logging.INFO)
@@ -108,6 +125,37 @@ from util.psar  import __PSAR
 
 from util.candles import hammer
 
+
+
+
+
+def send_discord_message(webhook_url, ticker, title, description):
+    # Construct the message payload with a title and a blue color
+    message = {
+        "username": "Stock Bot",
+        "embeds": [
+            {
+                "title": "```" + ticker + " ::: " + title + "```",
+                "description": f"{ticker}: {description}",
+                "color": 3447003,
+                "footer": {
+                    "text": "Powered by Stock Bot",
+                    "icon_url": "https://cdn.iconscout.com/icon/free/png-512/stock-market-282161.png"
+                }
+            }
+        ]
+    }
+
+    #message["embeds"][0]["description"] = message["embeds"][0]["description"].replace(f"{ticker}:", f"```fix\n{ticker}\n```")
+    
+    # Send the message to the webhook URL using the requests library
+    response = requests.post(webhook_url, json=message)
+
+    # Check if the request was successful
+    if response.status_code != 204:
+        print(f"Error sending message: {response.content}")
+
+
 #            Period           Interval              Sleep before refresh data
 TIMEFRAMES = {
     "1m":  { "Period": "7d",   "Interval": "1m",    "Refresh": "60"   },
@@ -123,6 +171,20 @@ TIMEFRAMES = {
     "3mo": { "Period": "5y",   "Interval": "3mo",   "Refresh": "86400"}
 
 }
+
+settings = {
+    "enable_debug": 0,
+    "enable_discord": 1,
+    "enable_slack": 0
+}
+
+#Discord Webhook URL
+discord_env = {
+    "PROD": 'https://discord.com/api/webhooks/1026327480900014162/YPhlm0QMkHoOZXmpL2IC1BPwIIWBBm3MEzW02RYHu4yNyYMVOfRXDI8sfkV5HXCjuITG',
+    "DEV": 'https://discord.com/api/webhooks/1026327480900014162/YPhlm0QMkHoOZXmpL2IC1BPwIIWBBm3MEzW02RYHu4yNyYMVOfRXDI8sfkV5HXCjuITG'
+}
+discord_url = discord_env['DEV']
+
 
 # Create an ArgumentParser object
 parser = argparse.ArgumentParser(description='Script that monitors a number of tickers')
@@ -178,6 +240,9 @@ while True:
             strategies[ticker].append(strategy_name)
             #indicators[ticker].extend ( ind )
             print ( f"{message}")
+            if ( settings['enable_discord'] ):
+                discord_message = '  {:8s}  {:10s}   {:8s}%  {:30s} '.format ( ticker, "NA" , "NA", message )
+                send_discord_message (discord_url, ticker, long_short, discord_message)
 
     counter += 1
     print ("-------------------------  %d  -------------------------" % counter) 
@@ -186,6 +251,7 @@ while True:
     for ticker in args.tickers:
         
         #my_list = list ( set ( strategies[ticker] ))
+        discord_message = ''
         
         now = datetime.datetime.now()
 
