@@ -110,14 +110,7 @@ from util.candles import hammer
 
 logging.basicConfig(filename='app.log', filemode='a', format='%(name)s - %(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 
-def print_log ( strategy_name, long_short='LONG', *ind):
-    my_list = sorted ( set ( strategies[ticker] ) )
-    if strategy_name not in my_list:
-        message = f"{ticker} {interval} ---> {long_short} ::: {strategy_name} ::: {ind}"
-        logging.warning(message)
-        strategies[ticker].append(strategy_name)
-        indicators[ticker].extend ( ind )
-        print ( f"{message}\n")
+
 
 
 #            Period           Interval              Sleep before refresh data
@@ -135,6 +128,7 @@ TIMEFRAMES = {
     "3mo": { "Period": "5y",   "Interval": "3mo",   "Refresh": "86400"}
 
 }
+
 
 
 
@@ -156,26 +150,41 @@ args = parser.parse_args()
 
 strategies = {}
 indicators = {}
+counter = 0
 
 period   = TIMEFRAMES[args.interval]['Period']
 interval = TIMEFRAMES[args.interval]['Interval']
 refresh  = TIMEFRAMES[args.interval]['Refresh']
 
+
+for ticker in args.tickers:
+    strategies[ticker] = []
+    indicators[ticker] = []
+
+
 while True:
 
+    def print_log ( strategy_name, long_short='LONG', *ind):
+        my_list = sorted ( set ( strategies[ticker] ) )
+        #print ( my_list )
+        if strategy_name not in my_list:
+            message = f"{ticker} {interval} ---> {long_short} ::: {strategy_name} ::: {ind}"
+            logging.warning(message)
+            strategies[ticker].append(strategy_name)
+            #indicators[ticker].extend ( ind )
+            print ( f"{message}\n")
+
+    counter += 1
+    print ("-------------------------  %d  -------------------------" % counter) 
 
     # Use the list of stocks and integer value in the script
     for ticker in args.tickers:
-
-        print ( "\n")
-        print('-' * 50)
         
-        strategies[ticker] = []
-        indicators[ticker] = []
+        #my_list = list ( set ( strategies[ticker] ))
         
         now = datetime.datetime.now()
 
-        print("\n=====  " + ticker + "  =====  " + now.strftime("%Y-%m-%d %H:%M:%S") + "  =====" )
+        print("=====  " + ticker + "  =====  " + now.strftime("%Y-%m-%d %H:%M:%S") + "  =====" )
     
         # Get stock data from Yahoo Finance
         #data = yf.download(ticker, period="5y")
@@ -390,6 +399,7 @@ while True:
         if args.strategies:
             for strategy_file in args.strategies:
                   with open ( 'strategies/' + strategy_file ) as f: exec(f.read())
+                  
 
         # Load all strategy files from strategies/ folder
         else:
@@ -402,7 +412,7 @@ while True:
                 #print ("Loading file: strategies/" + strategy_file)
                 with open ( 'strategies/' + strategy_file ) as f: exec(f.read())
    
-        print ("\n")
+        #print ("\n")
 
     #print ( strategies )
     #print ( indicators )        

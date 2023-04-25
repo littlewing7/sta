@@ -48,13 +48,13 @@ def backtest_strategy(stock, start_date, end_date):
     for i in range(len(data)):
 
         # Buy signal
-        if data["TSI"][i-1] < data["TSI_SIGNAL"][i-1] and data["TSI"][i] > data["TSI_SIGNAL"][i] and  position == 0:
+        if ( data["TSI"][i-1] < data["TSI_SIGNAL"][i-1] ) and ( data["TSI"][i] > data["TSI_SIGNAL"][i] ) and ( position == 0 ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif data["TSI"][i-1] > data["TSI_SIGNAL"][i-1] and data["TSI"][i] < data["TSI_SIGNAL"][i] and position == 1:
+        elif ( data["TSI"][i-1] > data["TSI_SIGNAL"][i-1] ) and ( data["TSI"][i] < data["TSI_SIGNAL"][i] ) and ( position == 1 ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
