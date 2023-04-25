@@ -423,6 +423,6 @@ while True:
     #print ( indicators )        
 
     if ( args.refresh ):
-        time.sleep ( args.refresh )
+        time.sleep ( int ( args.refresh ) )
     else:
         time.sleep ( int ( refresh ) )

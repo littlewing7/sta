@@ -1,7 +1,7 @@
 # sta
 
 ```
-python3 main.py -i 1h -t AAPL SPY
+$ python3 main.py -i 1h -t AAPL SPY
 
 -------------------------  1  -------------------------
 =====  AAPL  =====  2023-04-25 11:52:26  =====
