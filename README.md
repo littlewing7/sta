@@ -23,3 +23,20 @@ SPY 1h ---> SHORT ::: 113_EMA_TEMA ::: (['EMA_9', 'TEMA_30'],)
 =====  XLE  =====  2023-04-25 12:06:24  =====
 
 ```
+
+
+### Completed
+- [x] add indicators and oscillators
+- [x] continuously run the program 
+- [x] print initial matching strategies, after which print new strategies that match
+
+
+### TODO
+- [ ] Add/fix plotting  for all strategies
+- [ ] Add/fix benchmarks for add strategies
+
+- [ ] Add Discord/Slack text alerting
+- [ ] Add Discord/Slack indicator plotting for every matching strategy
+
+- [ ] Find more volunteers / contributors to this script
+- [ ] Retire wealthy in 5 years :-P
