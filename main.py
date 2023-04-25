@@ -108,11 +108,6 @@ from util.psar  import __PSAR
 
 from util.candles import hammer
 
-logging.basicConfig(filename='app.log', filemode='a', format='%(name)s - %(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
-
-
-
-
 #            Period           Interval              Sleep before refresh data
 TIMEFRAMES = {
     "1m":  { "Period": "7d",   "Interval": "1m",    "Refresh": "60"   },
@@ -129,20 +124,23 @@ TIMEFRAMES = {
 
 }
 
-
-
-
 # Create an ArgumentParser object
 parser = argparse.ArgumentParser(description='Script that monitors a number of tickers')
 
 # Add a positional argument for the time interval
 parser.add_argument('-i', '--interval', type=str, required=True, help='time interval i.e. one of 1m 5m 15m 30m 90m 1h 1d 5d 1wk 1mo 3mo')
 
+# log file
+parser.add_argument('-l', '--logfile', type=str, required=False, help='log file i.e. app.log')
+
 # Add a positional argument for a list of stocks
 parser.add_argument('-t', '--tickers', type=str, nargs='+', required=True, help='list of stock tickers')
 
 # Add a positional argument for a strategy
 parser.add_argument('-s', '--strategies', type=str, nargs='+', required=False, help='load named strategies from strategie/ folder')
+
+# Add a positional argument for a strategy
+parser.add_argument('-r', '--refresh', type=str, required=False, help='override default refresh settings, in seconds')
 
 
 # Parse the command-line arguments
@@ -155,6 +153,13 @@ counter = 0
 period   = TIMEFRAMES[args.interval]['Period']
 interval = TIMEFRAMES[args.interval]['Interval']
 refresh  = TIMEFRAMES[args.interval]['Refresh']
+
+if ( args.logfile ):
+    append_to = args.logfile
+else:
+    append_to = "app.log"
+logging.basicConfig(filename=append_to, filemode='a', format='%(name)s - %(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+
 
 
 for ticker in args.tickers:
@@ -172,7 +177,7 @@ while True:
             logging.warning(message)
             strategies[ticker].append(strategy_name)
             #indicators[ticker].extend ( ind )
-            print ( f"{message}\n")
+            print ( f"{message}")
 
     counter += 1
     print ("-------------------------  %d  -------------------------" % counter) 
@@ -417,4 +422,7 @@ while True:
     #print ( strategies )
     #print ( indicators )        
 
-    time.sleep ( int ( refresh ) )
+    if ( args.refresh ):
+        time.sleep ( args.refresh )
+    else:
+        time.sleep ( int ( refresh ) )

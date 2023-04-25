@@ -1,1 +1,4 @@
-app.log
+# ignore all logs
+*.log
+
+
