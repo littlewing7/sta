@@ -19,4 +19,4 @@ if data['CCI_Signal'][-1] == 2:
     print_log ( '4_CCI', 'LONG', [ 'CCI_20' ] )
 
 if data['CCI_Signal'][-1] == -2:
-    print_log ( '4_CCI', 'LONG', [ 'CCI_20' ] )
+    print_log ( '4_CCI', 'SHORT', [ 'CCI_20' ] )
