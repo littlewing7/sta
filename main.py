@@ -381,9 +381,6 @@ while True:
             (   data['MFI_{}'.format(mfi_window)] < mfi_overbought)  & ( data['MFI_{}'.format(mfi_window)].shift(1) > mfi_overbought)],
             [2, -2])
         
-        print ( "MFI_Signal:")
-        print ( data['MFI_Signal'].tail(2) )
-        print ( data['MFI_14'].tail(2) )
         #########  ADX  #####
         data       = __ADX ( data , 14 )
 
