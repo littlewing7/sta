@@ -28,7 +28,7 @@ SPY 1h ---> SHORT ::: 113_EMA_TEMA ::: (['EMA_9', 'TEMA_30'],)
 ### Completed
 - [x] add indicators and oscillators
 - [x] continuously run the program 
-- [x] print initial matching strategies, after which print new strategies that match
+- [x] print initial matching strategies, after which print new matching strategies only
 
 
 ### TODO
@@ -37,6 +37,9 @@ SPY 1h ---> SHORT ::: 113_EMA_TEMA ::: (['EMA_9', 'TEMA_30'],)
 
 - [ ] Add Discord/Slack text alerting
 - [ ] Add Discord/Slack indicator plotting for every matching strategy
+
+- [ ] Add support for other data pandas/ohlc sources ( Alpaca, Alpha Vantage, Quandl )
+- [ ] Add support for data sources ( TradingView, TD Ameritrade etc )
 
 - [ ] Find more volunteers / contributors to this script
 - [ ] Retire wealthy in 5 years :-P
