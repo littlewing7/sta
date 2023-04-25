@@ -20,14 +20,13 @@ if ( ( ( data["EMA_8"][-1] < data["EMA_21"][-1] ) & ( data["EMA_8"][-2] > data["
 
 
 # EMA_20 crossover EMA_50
-if ( ( ( data["EMA_20"][-1] > data["EMA_50"][-1] ) & ( data["EMA_20"][-2] < data["EMA_50"][-2] ) ) & 
-    #( r_data['Close'][0] > dataframe[f'resample_{self.resample_interval}_sma']) &
-    ( data['Volume'][0] > 0 ) ):
-    print_log ( '8_EMA', 'LONG', [ 'EMA_20', 'EMA_50', 'EMA_20_50_crossover' ] )
-
-if ( ( ( data["EMA_20"][-1] < data["EMA_50"][-1] ) & ( data["EMA_20"][-2] > data["EMA_50"][-2] ) ) & ( data['Volume'][-1] > 0 ) ):
-    print_log ( '8_EMA', 'SHORT', [ 'EMA_20', 'EMA_50', 'EMA_20_50_crossunder' ] )
-
+#if ( ( ( data["EMA_20"][-1] > data["EMA_50"][-1] ) & ( data["EMA_20"][-2] < data["EMA_50"][-2] ) ) & 
+#    #( r_data['Close'][0] > dataframe[f'resample_{self.resample_interval}_sma']) &
+#    ( data['Volume'][0] > 0 ) ):
+#    print_log ( '8_EMA', 'LONG', [ 'EMA_20', 'EMA_50', 'EMA_20_50_crossoverXX' ] )
+#
+#if ( ( ( data["EMA_20"][-1] < data["EMA_50"][-1] ) & ( data["EMA_20"][-2] > data["EMA_50"][-2] ) ) & ( data['Volume'][-1] > 0 ) ):
+#    print_log ( '8_EMA', 'SHORT', [ 'EMA_20', 'EMA_50', 'EMA_20_50_crossunder' ] )
 
 
 if data['EMA_9_21_Signal'][-1] == 2:

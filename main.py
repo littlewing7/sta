@@ -264,10 +264,10 @@ while True:
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['WR_Signal'] = np.select(
-            [ ( data['WR_{}'.format(wr_window)] > -80 ) & ( data['WR_{}'.format(wr_window)].shift(1) < -80),
-            (   data['WR_{}'.format(wr_window)] < -20 ) & ( data['WR_{}'.format(wr_window)].shift(1) > -20)],
-            [2, -2])
-
+            [ ( data['WR_{}'.format(wr_window)].shift(1) > wr_upper_level ) & ( data['WR_{}'.format(wr_window)] < wr_upper_level ),
+              ( data['WR_{}'.format(wr_window)].shift(1) < wr_lower_level ) & ( data['WR_{}'.format(wr_window)] > wr_lower_level )],
+            [-2, 2])
+        
         #########  TEMA 30 & 9  #####
         tema_window     = 30
         data            = __TEMA ( data, tema_window )
@@ -286,10 +286,10 @@ while True:
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['STO_Signal'] = np.select(
-            [ ( data['Trend_20'] > 1) & ( ( data['STO_D'] > sto_oversold )   & ( data['STO_D'].shift(1) < sto_oversold ) ),
-            (   data['Trend_20'] < 1) & ( ( data['STO_D'] < sto_overbought ) & ( data['STO_D'].shift(1) > sto_overbought ) )],
+            
+            [ ( data['STO_K'].shift(1) < sto_oversold )   & ( data['STO_K'] > sto_oversold ),
+              ( data['STO_K'].shift(1) > sto_overbought ) & ( data['STO_K'] < sto_overbought ) ],
             [2, -2])
-
 
         #########  STOCHASTIC RSI  #####
         srsi_overbought  = 80
@@ -297,13 +297,17 @@ while True:
 
         data             = __STOCHASTIC_RSI ( data, period=14, SmoothD=3, SmoothK=3 )
 
+        # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['SRSI_Signal'] = np.select(
-            [ ( ( data['STO_K'] > srsi_oversold )   & ( data['STO_K'].shift(1) < srsi_oversold ) ),
-              ( ( data['STO_K'] < srsi_overbought ) & ( data['STO_K'].shift(1) > srsi_overbought ) )],
+            [ ( data['SRSI_K'].shift(1) < srsi_oversold )    & ( data['SRSI_K'] > srsi_oversold ),
+              ( data['SRSI_K'].shift(1) > srsi_overbought )  & ( data['SRSI_K'] < srsi_overbought )],
             [2, -2])
 
         #########  CCI 20  #####
+        cci_overbought  = -100
+        cci_oversold    =  100
         cci_window = 20
+        
         data = __CCI (data, cci_window)
 
         data = __CCI ( data, 170 )
@@ -312,7 +316,7 @@ while True:
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['CCI_Signal'] = np.select(
            [ ( data['CCI_{}'.format(cci_window)] > -100) & ( data['CCI_{}'.format(cci_window)].shift(1) < -100),
-            (   data['CCI_{}'.format(cci_window)] <  100) & ( data['CCI_{}'.format(cci_window)].shift(1) >  100)],
+            (  data['CCI_{}'.format(cci_window)] <  100) & ( data['CCI_{}'.format(cci_window)].shift(1) >  100)],
             [2, -2])
 
         #####  Bolinger Bands  #####
@@ -367,7 +371,7 @@ while True:
 
         #########  MFI  #####
         mfi_window = 14
-        mfi_overbought = 80
+        mfi_overbought = 75
         mfi_oversold   = 20
         data       = __MFI ( data, mfi_window )
 
@@ -376,7 +380,10 @@ while True:
             [ ( data['MFI_{}'.format(mfi_window)] > mfi_oversold )   & ( data['MFI_{}'.format(mfi_window)].shift(1) < mfi_oversold ),
             (   data['MFI_{}'.format(mfi_window)] < mfi_overbought)  & ( data['MFI_{}'.format(mfi_window)].shift(1) > mfi_overbought)],
             [2, -2])
-
+        
+        print ( "MFI_Signal:")
+        print ( data['MFI_Signal'].tail(2) )
+        print ( data['MFI_14'].tail(2) )
         #########  ADX  #####
         data       = __ADX ( data , 14 )
 
