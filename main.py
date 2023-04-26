@@ -438,14 +438,14 @@ while True:
 
         #########  MFI  #####
         mfi_window = 14
-        mfi_overbought = 75
-        mfi_oversold   = 20
+        mfi_upper_level = 75
+        mfi_lower_level = 30
         data       = __MFI ( data, mfi_window )
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['MFI_Signal'] = np.select(
-            [ ( data['MFI_{}'.format(mfi_window)] > mfi_oversold )   & ( data['MFI_{}'.format(mfi_window)].shift(1) < mfi_oversold ),
-            (   data['MFI_{}'.format(mfi_window)] < mfi_overbought)  & ( data['MFI_{}'.format(mfi_window)].shift(1) > mfi_overbought)],
+            [ ( data['MFI_{}'.format(mfi_window)].shift(1) < mfi_lower_level ) & ( data['MFI_{}'.format(mfi_window)] > mfi_lower_level ) ,
+              ( data['MFI_{}'.format(mfi_window)].shift(1) > mfi_upper_level ) & ( data['MFI_{}'.format(mfi_window)] < mfi_upper_level ) ],
             [2, -2])
         
         #########  ADX  #####

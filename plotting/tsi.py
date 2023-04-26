@@ -25,7 +25,7 @@ def get_historical_data(symbol, start_date):
     df.index = pd.to_datetime(df.index)
     return df
 
-aapl = yf.download ('AAPL', period='5y')
+aapl = yf.download ('MSFT', period='3y')
 
 aapl['high'] = aapl["High"]
 aapl['low'] = aapl["Low"]
