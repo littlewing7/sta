@@ -370,8 +370,8 @@ while True:
             [2, -2])
 
         #########  CCI 20  #####
-        cci_overbought  = -100
-        cci_oversold    =  100
+        cci_upper_level  =  100
+        cci_lower_level  =  (-100)
         cci_window = 20
         
         data = __CCI (data, cci_window)
@@ -381,9 +381,14 @@ while True:
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['CCI_Signal'] = np.select(
-           [ ( data['CCI_{}'.format(cci_window)] > -100) & ( data['CCI_{}'.format(cci_window)].shift(1) < -100),
-            (  data['CCI_{}'.format(cci_window)] <  100) & ( data['CCI_{}'.format(cci_window)].shift(1) >  100)],
-            [-2, 2])
+           [ ( data['CCI_{}'.format(cci_window)].shift(1) < cci_lower_level ) & ( data['CCI_{}'.format(cci_window)] > cci_lower_level ) ,
+             ( data['CCI_{}'.format(cci_window)].shift(1) > cci_upper_level ) & ( data['CCI_{}'.format(cci_window)] < cci_upper_level ) ],
+            [2, -2])
+        
+        print ( data["CCI_20"].tail(3))
+        print ( data["CCI_Signal"].tail(3))
+        
+        
 
         #####  Bolinger Bands  #####
         bb_window = 20

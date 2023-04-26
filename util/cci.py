@@ -37,14 +37,11 @@ def __CCI(df, ndays = 20):
     df['CCI_CrossOverBought'] = np.where ( ( df['CCI_20'].shift(1) < 100)  & ( df['CCI_20'] >= 100),  1, 0 )
     df['CCI_CrossOverSold']   = np.where ( ( df['CCI_20'].shift(1) > -100) & ( df['CCI_20'] <= -100), 1, 0 )
 
-    # Wait for confirmation
-
-    df["CCI_Signal"] = 0
     # 2 = LONG, -2 = SHORT
-    df['CCI_Signal'] = np.select(
-        [ ( df['CCI_20'] > -100 ) & ( df['CCI_20'].shift(1) < -100 ),
-          ( df['CCI_20'] <  100)  & ( df['CCI_20'].shift(1) >  100 ) ],
-        [2, -2])
+    #df['CCI_Signal'] = np.select(
+    #    [ ( df['CCI_20'] > -100 ) & ( df['CCI_20'].shift(1) < -100 ),
+    #      ( df['CCI_20'] <  100)  & ( df['CCI_20'].shift(1) >  100 ) ],
+    #    [2, -2])
 
 
     df = df.drop('TP', axis=1)
