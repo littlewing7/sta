@@ -283,6 +283,11 @@ while True:
             (   data['SMA_5'] < data['SMA_8'] ) & ( data['SMA_5'].shift(1) > data['SMA_8'].shift(1) )],
             [2, -2])
 
+        data['SMA_20_50_Signal'] = np.select(
+            [ ( data['SMA_20'] > data['SMA_50'] ) & ( data['SMA_20'].shift(1) < data['SMA_20'].shift(1) ),
+            (   data['SMA_20'] < data['SMA_50'] ) & ( data['SMA_20'].shift(1) > data['SMA_50'].shift(1) )],
+            [2, -2])
+
 
         # Trend indicator
         #data['Trend_20'] = data['Close'] / data['Close'].rolling(20).mean()
