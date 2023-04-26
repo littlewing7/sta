@@ -385,10 +385,6 @@ while True:
              ( data['CCI_{}'.format(cci_window)].shift(1) > cci_upper_level ) & ( data['CCI_{}'.format(cci_window)] < cci_upper_level ) ],
             [2, -2])
         
-        print ( data["CCI_20"].tail(3))
-        print ( data["CCI_Signal"].tail(3))
-        
-        
 
         #####  Bolinger Bands  #####
         bb_window = 20
