@@ -14,6 +14,7 @@ timeframe = '15m'
 data = __SMA  ( data, 5 )
 data = __SMA ( data, 8 )
 
+data = __CCI ( data, 20 )
 
 if data['CCI_Signal'][-1] == 2:
     print_log ( '4_CCI', 'LONG', [ 'CCI_20' ] )

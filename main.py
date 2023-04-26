@@ -383,7 +383,7 @@ while True:
         data['CCI_Signal'] = np.select(
            [ ( data['CCI_{}'.format(cci_window)] > -100) & ( data['CCI_{}'.format(cci_window)].shift(1) < -100),
             (  data['CCI_{}'.format(cci_window)] <  100) & ( data['CCI_{}'.format(cci_window)].shift(1) >  100)],
-            [2, -2])
+            [-2, 2])
 
         #####  Bolinger Bands  #####
         bb_window = 20
