@@ -12,17 +12,17 @@ def __MFI ( data, window=14):
     data['MFI_{}'.format(window)] = mfi
 
     # Define the overbought and oversold levels
-    mfi_overbought = 80
-    mfi_oversold   = 20
+    mfi_overbought = 75
+    mfi_oversold   = 30
 
     data['MFI_Crossover']  = np.where ( ( ( data['MFI_{}'.format(window)].shift(1)  < mfi_oversold )   & ( data['MFI_{}'.format(window)] > mfi_oversold ) ),   1, 0 )
     data['MFI_Crossunder'] = np.where ( ( ( data['MFI_{}'.format(window)].shift(1)  > mfi_overbought ) & ( data['MFI_{}'.format(window)] < mfi_overbought ) ), 1, 0 )
 
     # 2 = LONG, -2 = SHORT
-    data['MFI_Signal'] = np.select(
-        [ ( data['MFI_{}'.format(window)].shift(1)  < mfi_oversold )   & ( data['MFI_{}'.format(window)] > mfi_oversold ) ,
-          ( data['MFI_{}'.format(window)].shift(1)  > mfi_overbought ) & ( data['MFI_{}'.format(window)] < mfi_overbought ) ],
-        [2, -2])
+    #data['MFI_Signal'] = np.select(
+    #    [ ( data['MFI_{}'.format(window)].shift(1)  < mfi_oversold )   & ( data['MFI_{}'.format(window)] > mfi_oversold ) ,
+    #      ( data['MFI_{}'.format(window)].shift(1)  > mfi_overbought ) & ( data['MFI_{}'.format(window)] < mfi_overbought ) ],
+    #    [2, -2])
 
 
     return data
