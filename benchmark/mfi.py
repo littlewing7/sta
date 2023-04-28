@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# RETURN 30%
 
 import yfinance as yf
 import pandas as pd
@@ -22,12 +21,12 @@ def __MFI ( data, window=14):
 
     return data
 
-def backtest_strategy(stock, start_date, end_date):
+def backtest_strategy(stock, start_date):
     """
     Function to backtest a strategy
     """
     # Download data
-    data = yf.download(stock, start=start_date, end=end_date)
+    data = yf.download(stock, start=start_date, progress=False)
 
     # Calculate Stochastic RSI
     data = __MFI ( data, 14 )
@@ -45,7 +44,7 @@ def backtest_strategy(stock, start_date, end_date):
     for i in range(len(data)):
 
         # Buy signal
-        if (position == 0) and ( data["MFI_14"].iloc[i-1] < 25 and data["MFI_14"][i] > 25 ):
+        if (position == 0) and ( data["MFI_14"].iloc[i-1] < 20 and data["MFI_14"][i] > 20 ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
@@ -62,16 +61,18 @@ def backtest_strategy(stock, start_date, end_date):
     # Calculate total returns
     total_returns = (1 + sum(returns)) * 100000
 
+    import sys
+    name = sys.argv[0]
+
     # Print results
-    print(f"\n{stock} Backtest Results ({start_date} - {end_date})")
+    print(f"\n{name} ::: {stock} Backtest Results ({start_date} - today)")
     print(f"---------------------------------------------")
-    print(f"Total Returns: ${total_returns:,.2f}")
-    print(f"Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
+    print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.2f}")
+    print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
 
 if __name__ == '__main__':
 
     start_date = "2020-01-01"
-    end_date   = "2023-04-19"
 
-    backtest_strategy("AAPL", start_date, end_date)
-    backtest_strategy("SPY", start_date, end_date)
+    backtest_strategy("AAPL", start_date)
+    backtest_strategy("SPY", start_date)

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -20,9 +22,18 @@ def __CCI(df, ndays = 20):
     df = df.drop('sma', axis=1)
     df = df.drop('mad', axis=1)
 
+
+    cci_upper_level  =  100
+    cci_lower_level  =  (-100)
+    cci_window = 20
+    #df['CCI_Signal'] = np.select(
+    #       [ ( df['CCI_{}'.format(ndays)] > -100) & ( df['CCI_{}'.format(ndays)].shift(1) < -100),
+    #        (  df['CCI_{}'.format(ndays)] <  100) & ( df['CCI_{}'.format(ndays)].shift(1) >  100)],
+    #    [2, -2])
+
     df['CCI_Signal'] = np.select(
-           [ ( df['CCI_{}'.format(ndays)] > -100) & ( df['CCI_{}'.format(ndays)].shift(1) < -100),
-            (  df['CCI_{}'.format(ndays)] <  100) & ( df['CCI_{}'.format(ndays)].shift(1) >  100)],
+        [ ( df['CCI_{}'.format(cci_window)].shift(1) < cci_lower_level ) & ( df['CCI_{}'.format(cci_window)] > cci_lower_level ) ,
+          ( df['CCI_{}'.format(cci_window)].shift(1) > cci_upper_level ) & ( df['CCI_{}'.format(cci_window)] < cci_upper_level ) ],
         [2, -2])
 
     return df
@@ -34,10 +45,20 @@ def __WR (data, t):
 
     data['WR_{}'.format(t)] = -100 * ((highh - close) / (highh - lowl))
 
+    #data['WR_Signal'] = np.select(
+    #        [ ( data['WR_{}'.format(t)] > -80 ) & ( data['WR_{}'.format(t)].shift(1) < -80),
+    #        (   data['WR_{}'.format(t)] < -20 ) & ( data['WR_{}'.format(t)].shift(1) > -20)],
+    #        [2, -2])
+
+    wr_window      = 20
+    wr_upper_level = -20
+    wr_lower_level = -80
+
+    # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
     data['WR_Signal'] = np.select(
-            [ ( data['WR_{}'.format(t)] > -80 ) & ( data['WR_{}'.format(t)].shift(1) < -80),
-            (   data['WR_{}'.format(t)] < -20 ) & ( data['WR_{}'.format(t)].shift(1) > -20)],
-            [2, -2])
+         [ ( data['WR_{}'.format(wr_window)].shift(1) > wr_upper_level ) & ( data['WR_{}'.format(wr_window)] < wr_upper_level ),
+           ( data['WR_{}'.format(wr_window)].shift(1) < wr_lower_level ) & ( data['WR_{}'.format(wr_window)] > wr_lower_level )],
+         [-2, 2])
 
     return data
 
@@ -117,12 +138,12 @@ def __MFI ( data, window=14):
 
 
 
-def backtest_strategy(stock, start_date, end_date):
+def backtest_strategy(stock, start_date ):
     """
     Function to backtest a strategy
     """
     # Download data
-    data = yf.download(stock, start=start_date, end=end_date, progress=False)
+    data = yf.download(stock, start=start_date, progress=False)
 
     # Calculate Stochastic RSI
     data = __SMA (data, 20)
@@ -189,11 +210,14 @@ def backtest_strategy(stock, start_date, end_date):
     # Calculate total returns
     total_returns = (1 + sum(returns)) * 100000
 
+    import sys
+    name = sys.argv[0]
+
     # Print results
-    print(f"\n{stock} Backtest Results ({start_date} - {end_date})")
+    print(f"\n{name} ::: {stock} Backtest Results ({start_date} - today)")
     print(f"---------------------------------------------")
-    print(f"Total Returns: ${total_returns:,.2f}")
-    print(f"Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
+    print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.2f}")
+    print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
 
 
 if __name__ == '__main__':
@@ -201,7 +225,7 @@ if __name__ == '__main__':
     start_date = "2020-01-01"
     end_date = "2023-04-19"
 
-    backtest_strategy("AAPL", start_date, end_date)
+    backtest_strategy("AAPL", start_date)
     print ("\n\n")
-    backtest_strategy("SPY", start_date, end_date)
+    backtest_strategy("SPY", start_date)
 

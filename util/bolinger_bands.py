@@ -34,11 +34,11 @@ def __BB (data, window=20):
     data['BB_Cross_Over']  = np.where ( data['Close'] > data['BB_upper'], 1, 0 )
     data['BB_Cross_Under'] = np.where ( data['Close'] < data['BB_lower'], 1, 0 )
 
-    # 2 = LONG, -2 = SHORT
-    data['BB_Signal'] = np.select(
-        [ ( data['Close'] < data['BB_lower'] ) & ( data['Close'].shift(1) > data['BB_lower'].shift(1)),
-          ( data['Close'] > data['BB_upper'])  & ( data['Close'].shift(1) < data['BB_upper'].shift(1))],
-        [2, -2])
+    ## 2 = LONG, -2 = SHORT
+    #data['BB_Signal'] = np.select(
+    #    [ ( data['Close'] < data['BB_lower'] ) & ( data['Close'].shift(1) > data['BB_lower'].shift(1)),
+    #      ( data['Close'] > data['BB_upper'])  & ( data['Close'].shift(1) < data['BB_upper'].shift(1))],
+    #    [2, -2])
 
 
     return data

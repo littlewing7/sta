@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# RETURN 86%
 
 import yfinance as yf
 import pandas as pd
@@ -9,22 +8,31 @@ import numpy as np
 import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
-
 def __SMA ( data, n ):
     data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
     return data
 
+def __BB (data, window=20):
+    std = data['Close'].rolling(window).std()
+    data = __SMA ( data, window )
+    data['BB_upper']   = data["SMA_20"] + std * 2
+    data['BB_lower']   = data["SMA_20"] - std * 2
+    data['BB_middle']  = data["SMA_20"]
 
-def backtest_strategy(stock, start_date, end_date):
+    return data
+
+def backtest_strategy(stock, start_date):
     """
     Function to backtest a strategy
     """
     # Download data
-    data = yf.download(stock, start=start_date, end=end_date)
+    data = yf.download(stock, start=start_date, progress=False)
 
     # Calculate Stochastic RSI
-    data = __SMA (data, 9)
-    data = __SMA (data, 21)
+    data = __BB ( data, 20 )
+
+
+# BUY CRITERIA: if TSI line and signal line is below 0 and tsi crosses signal line
 
     # Set initial conditions
     position = 0
@@ -34,14 +42,15 @@ def backtest_strategy(stock, start_date, end_date):
 
     # Loop through data
     for i in range(len(data)):
+
         # Buy signal
-        if data["SMA_9"][i] > data["SMA_21"][i] and data["SMA_9"][i - 1] < data["SMA_21"][i - 1] and position == 0:
+        if (position == 0) and ( data["Close"][i-1] > data['BB_lower'][i-1] and data["Close"][i] < data['BB_lower'][i] ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif data["SMA_9"][i] < data["SMA_21"][i] and data["SMA_9"][i - 1]  > data["SMA_21"][i - 1] and position == 1:
+        elif ( position == 1 ) and ( data["Close"][i-1] < data['BB_upper'][i-1] and data["Close"][i] > data['BB_upper'][i] ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
@@ -52,18 +61,19 @@ def backtest_strategy(stock, start_date, end_date):
     # Calculate total returns
     total_returns = (1 + sum(returns)) * 100000
 
-    # Print results
-    print(f"\n{stock} Backtest Results ({start_date} - {end_date})")
-    print(f"---------------------------------------------")
-    print(f"Total Returns: ${total_returns:,.2f}")
-    print(f"Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
+    import sys
+    name = sys.argv[0]
 
+    # Print results
+    print(f"\n{name} ::: {stock} Backtest Results ({start_date} - today)")
+    print(f"---------------------------------------------")
+    print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.2f}")
+    print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
 
 if __name__ == '__main__':
 
     start_date = "2020-01-01"
-    end_date = "2023-04-19"
 
-    backtest_strategy("AAPL", start_date, end_date)
-    backtest_strategy("SPY", start_date, end_date)
+    backtest_strategy("AAPL", start_date)
+    backtest_strategy("SPY", start_date)
 

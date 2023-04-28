@@ -348,8 +348,8 @@ while True:
         sto_k                = 14
         sto_d                = 3
         sto_slow             = 3
-        sto_overbought       = 80
-        sto_oversold         = 20
+        sto_upper_level      = 80
+        sto_lower_level      = 20
 
         data                 = __STOCHASTIC (data, sto_k, 3)
 
@@ -358,20 +358,20 @@ while True:
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['STO_Signal'] = np.select(
             
-            [ ( data['STO_K'].shift(1) < sto_oversold )   & ( data['STO_K'] > sto_oversold ),
-              ( data['STO_K'].shift(1) > sto_overbought ) & ( data['STO_K'] < sto_overbought ) ],
+            [ ( data['STO_K'].shift(1) < sto_lower_level ) & ( data['STO_K'] > sto_lower_level ),
+              ( data['STO_K'].shift(1) > sto_upper_level ) & ( data['STO_K'] < sto_upper_level ) ],
             [2, -2])
 
         #########  STOCHASTIC RSI  #####
-        srsi_overbought  = 80
-        srsi_oversold    = 20
+        srsi_upper_level  = 80
+        srsi_lower_level  = 20
 
         data             = __STOCHASTIC_RSI ( data, period=14, SmoothD=3, SmoothK=3 )
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['SRSI_Signal'] = np.select(
-            [ ( data['SRSI_K'].shift(1) < srsi_oversold )    & ( data['SRSI_K'] > srsi_oversold ),
-              ( data['SRSI_K'].shift(1) > srsi_overbought )  & ( data['SRSI_K'] < srsi_overbought )],
+            [ ( data['SRSI_K'].shift(1) < srsi_lower_level )    & ( data['SRSI_K'] > srsi_lower_level ),
+              ( data['SRSI_K'].shift(1) > srsi_upper_level )  & ( data['SRSI_K'] < srsi_upper_level )],
             [2, -2])
 
         #########  CCI 20  #####

@@ -14,14 +14,14 @@ sys.path.append("..")
 # def __MFI ( data, window=14 )
 from util.mfi   import __MFI
 
-ticker = 'AAPL'
+ticker = 'TSLA'
 data = yf.download(ticker, period='5y')
 data = data.drop(['Adj Close'], axis=1).dropna()
 
 data = __MFI ( data, window=14)
 
 # Define the overbought and oversold levels
-mfi_overbought = 80
+mfi_overbought = 75
 mfi_oversold   = 20
 
 data['MFI_Crossover']  = np.where ( ( ( data['MFI_14'].shift(1)  < mfi_oversold )   & ( data['MFI_14'] > mfi_oversold ) ),   1, 0 )

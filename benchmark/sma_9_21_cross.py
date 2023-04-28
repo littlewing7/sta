@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# RETURN 53%
 
 import yfinance as yf
 import pandas as pd
@@ -10,6 +9,9 @@ import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
 
+def __SMA ( data, n ):
+    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
+    return data
 
 
 def backtest_strategy(stock, start_date):
@@ -17,10 +19,11 @@ def backtest_strategy(stock, start_date):
     Function to backtest a strategy
     """
     # Download data
-    data = yf.download ( stock, start=start_date )
+    data = yf.download(stock, start=start_date)
 
-    # Calculate indicators
-    data = calculate_stochastic_rsi(data)
+    # Calculate Stochastic RSI
+    data = __SMA (data, 9)
+    data = __SMA (data, 21)
 
     # Set initial conditions
     position = 0
@@ -30,17 +33,16 @@ def backtest_strategy(stock, start_date):
 
     # Loop through data
     for i in range(len(data)):
-
         # Buy signal
-        if data["stoch_rsi_K"][i] > 20 and data["stoch_rsi_D"][i] > 20 and position == 0:
+        if data["SMA_9"][i] > data["SMA_21"][i] and data["SMA_9"][i - 1] < data["SMA_21"][i - 1] and position == 0:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif data["stoch_rsi_K"][i] < 80 and data["stoch_rsi_D"][i] < 80 and position == 1:
+        elif data["SMA_9"][i] < data["SMA_21"][i] and data["SMA_9"][i - 1]  > data["SMA_21"][i - 1] and position == 1:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
@@ -58,12 +60,11 @@ def backtest_strategy(stock, start_date):
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.2f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
 
+
 if __name__ == '__main__':
 
     start_date = "2020-01-01"
 
     backtest_strategy("AAPL", start_date)
-    print("\n")
     backtest_strategy("SPY", start_date)
-
 

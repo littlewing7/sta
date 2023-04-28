@@ -72,11 +72,11 @@ def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
 
 
     # 2 = LONG, -2 = SHORT
-    data['RSI_Signal'] = 0
-    data['RSI_Signal'] = np.select(
-        [  ( data['RSI_14'].shift(1) < rsi_oversold )   & ( data['RSI_14'] > rsi_oversold ),
-           ( data['RSI_14'].shift(1) > rsi_overbought ) & ( data['RSI_14'] < rsi_overbought )],
-        [2, -2])
+    #data['RSI_Signal'] = 0
+    #data['RSI_Signal'] = np.select(
+    #    [  ( data['RSI_14'].shift(1) < rsi_oversold )   & ( data['RSI_14'] > rsi_oversold ),
+    #       ( data['RSI_14'].shift(1) > rsi_overbought ) & ( data['RSI_14'] < rsi_overbought )],
+    #    [2, -2])
 
     # Fisher RSI
     data['FRSI_{}'.format ( window )] = (np.exp(2 * rsi) - 1) / (np.exp(2 * rsi) + 1)

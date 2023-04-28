@@ -36,14 +36,5 @@ def __AO ( data, window1=5, window2=34 ):
     # Add the AO to the DataFrame
     data["AO"] = ao
 
-    #data['AO_Signal']  = np.where ( ( ( data['AO'].shift(1) < 0 ) & ( data['AO'] > 0 ) ),   2, -2 )
-
-    data["AO_Signal"] = 0
-    # 2 = LONG, -2 = SHORT
-    data['AO_Signal'] = np.select(
-        [ ( data['AO'] > 0 ) & ( data['AO'].shift(1) < 0 ),
-          ( data['AO'] < 0 ) & ( data['AO'].shift(1) > 0 ) ],
-        [2, -2])
-
     return data
 
