@@ -218,7 +218,7 @@ def get_benchmark(start_date, investment_value):
     benchmark_investment_ret_df = pd.DataFrame(benchmark_investment_ret).rename(columns = {0:'investment_returns'})
     return benchmark_investment_ret_df
 
-benchmark = get_benchmark('2010-01-01', 100000)
+benchmark = get_benchmark('2020-01-01', 100000)
 
 investment_value = 100000
 total_benchmark_investment_ret = round(sum(benchmark['investment_returns']), 2)

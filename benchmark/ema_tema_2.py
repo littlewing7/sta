@@ -8,18 +8,18 @@ import numpy as np
 import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
-def __MFI ( data, window=14):
-    # Calculate the Money Flow Index (MFI)
-    typical_price = ( data['High'] + data['Low'] + data['Close']) / 3
-    money_flow = typical_price * data['Volume']
-    positive_money_flow = money_flow.where(typical_price > typical_price.shift(1), 0)
-    negative_money_flow = money_flow.where(typical_price < typical_price.shift(1), 0)
-    money_ratio = positive_money_flow.rolling(window=window).sum() / negative_money_flow.rolling(window=window).sum()
-    mfi = 100 - (100 / (1 + money_ratio))
 
-    data['MFI_{}'.format(window)] = mfi
-
+def __TEMA(data, n=30):
+    """
+    Triple Exponential Moving Average (TEMA)
+    """
+    ema1 = data['Close'].ewm(span=n, adjust=False).mean()
+    ema2 = ema1.ewm(span=n, adjust=False).mean()
+    ema3 = ema2.ewm(span=n, adjust=False).mean()
+    tema = 3 * (ema1 - ema2) + ema3
+    data['TEMA_{}'.format(n)] = tema
     return data
+
 
 def backtest_strategy(stock, start_date):
     """
@@ -28,11 +28,10 @@ def backtest_strategy(stock, start_date):
     # Download data
     data = yf.download(stock, start=start_date, progress=False)
 
-    # Calculate Stochastic RSI
-    data = __MFI ( data, 14 )
+    # EMA 9, TEMA 30
+    data = __TEMA ( data, 30 )
 
-
-# BUY CRITERIA: if TSI line and signal line is below 0 and tsi crosses signal line
+    #print ( data.tail(2))
 
     # Set initial conditions
     position = 0
@@ -42,15 +41,14 @@ def backtest_strategy(stock, start_date):
 
     # Loop through data
     for i in range(len(data)):
-
         # Buy signal
-        if (position == 0) and ( data["MFI_14"].iloc[i-1] < 20 and data["MFI_14"][i] > 20 ):
+        if (   data["Close"][i] > data["TEMA_30"][i] ) and ( data["Close"][i - 1] < data["TEMA_30"][i - 1] ) and ( data["TEMA_30"][i] > data["TEMA_30"][i - 1] ) and ( data["Close"][i] > data["Close"][i - 1] ) and (position == 0):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( data["MFI_14"].iloc[i-1] > 75 and data["MFI_14"][i] < 75 ):
+        elif ( data["Close"][i] < data["TEMA_30"][i] ) and ( data["Close"][i - 1] > data["TEMA_30"][i - 1] ) and ( data["TEMA_30"][i] < data["TEMA_30"][i - 1] ) and ( data["Close"][i] < data["Close"][i - 1])  and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
@@ -70,10 +68,12 @@ def backtest_strategy(stock, start_date):
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.2f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
 
+
 if __name__ == '__main__':
 
     start_date = "2020-01-01"
 
     backtest_strategy("AAPL", start_date)
-    print ("\n")
+    print ("\n\n")
     backtest_strategy("SPY", start_date)
+

@@ -73,6 +73,9 @@ from util.sma   import __SMA
 # def __EMA (df, window=9):
 from util.ema   import __EMA
 
+# def __WSMA ( data, window=20 )
+from util.wsma   import __WSMA
+
 # def __CCI (df, window=20):
 from util.cci   import __CCI
 
@@ -120,6 +123,9 @@ from util.roc  import __ROC
 
 # def __PSAR (data, iaf = 0.02, maxaf = 0.2)
 from util.psar  import __PSAR
+
+# def WMA ( data, window)
+from util.wma   import WMA
 
 
 
@@ -311,6 +317,21 @@ while True:
               ( data['EMA_9'] < data['EMA_21'] ) & ( data['EMA_9'].shift(1) > data['EMA_21'].shift(1) ) ],
             [2, -2])
 
+
+        #########  Weighted SMA 20, 50  #####
+        for i in [ 20, 50 ]:
+            data = __WSMA ( data, i )
+
+        data['WSMA_20_50_Signal'] = np.select(
+            [ ( data['WSMA_20'] > data['WSMA_50'] ) & ( data['WSMA_20'].shift(1) < data['WSMA_50'].shift(1) ) ,
+              ( data['WSMA_20'] < data['WSMA_50'] ) & ( data['WSMA_20'].shift(1) > data['WSMA_50'].shift(1) ) ],
+            [2, -2])
+
+        #########  WMA & Double WMA  ##### 
+        for i in [ 9, 14, 20 ]:
+            data = WMA ( data, i )
+
+
         #########  RSI 14 #####
         rsi_window      = 14
         rsi_overbought  = 70
@@ -370,7 +391,7 @@ while True:
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['SRSI_Signal'] = np.select(
-            [ ( data['SRSI_K'].shift(1) < srsi_lower_level )    & ( data['SRSI_K'] > srsi_lower_level ),
+            [ ( data['SRSI_K'].shift(1) < srsi_lower_level )  & ( data['SRSI_K'] > srsi_lower_level ),
               ( data['SRSI_K'].shift(1) > srsi_upper_level )  & ( data['SRSI_K'] < srsi_upper_level )],
             [2, -2])
 

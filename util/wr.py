@@ -24,7 +24,7 @@ def __WR (data, t):
 #    cols[b], cols[a] = cols[a], cols[b]
 #    data = data[cols]
 
-    data['Trend_20'] = data['Close'] / data['Close'].rolling(20).mean()
+#    data['Trend_20'] = data['Close'] / data['Close'].rolling(20).mean()
 
     #data["WR_Signal"] = 0
     # 2 = LONG, -2 = SHORT

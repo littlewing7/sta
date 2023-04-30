@@ -17,7 +17,7 @@ def get_historical_data(symbol, start_date, end_date):
     return yf.download(symbol, start=start_date, end=end_date).drop('Adj Close', axis=1)
 
 
-aapl = get_historical_data('AAPL', '2020-01-01', '2023-04-19')
+aapl = get_historical_data('AAPL', '2020-01-01', '2023-04-28')
 # print(aapl)
 
 
@@ -182,7 +182,7 @@ def get_benchmark(investment_value, start_date, end_date):
     return benchmark_investment_ret_df
 
 
-benchmark = get_benchmark(100000, '2020-10-31', '2021-10-31')
+benchmark = get_benchmark(100000, '2020-01-01', '2023-04-28')
 
 investment_value = 100000
 total_benchmark_investment_ret = round(sum(benchmark['investment_returns']), 2)

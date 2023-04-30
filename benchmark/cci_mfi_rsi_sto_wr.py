@@ -26,10 +26,6 @@ def __CCI(df, ndays = 20):
     cci_upper_level  =  100
     cci_lower_level  =  (-100)
     cci_window = 20
-    #df['CCI_Signal'] = np.select(
-    #       [ ( df['CCI_{}'.format(ndays)] > -100) & ( df['CCI_{}'.format(ndays)].shift(1) < -100),
-    #        (  df['CCI_{}'.format(ndays)] <  100) & ( df['CCI_{}'.format(ndays)].shift(1) >  100)],
-    #    [2, -2])
 
     df['CCI_Signal'] = np.select(
         [ ( df['CCI_{}'.format(cci_window)].shift(1) < cci_lower_level ) & ( df['CCI_{}'.format(cci_window)] > cci_lower_level ) ,
@@ -45,10 +41,6 @@ def __WR (data, t):
 
     data['WR_{}'.format(t)] = -100 * ((highh - close) / (highh - lowl))
 
-    #data['WR_Signal'] = np.select(
-    #        [ ( data['WR_{}'.format(t)] > -80 ) & ( data['WR_{}'.format(t)].shift(1) < -80),
-    #        (   data['WR_{}'.format(t)] < -20 ) & ( data['WR_{}'.format(t)].shift(1) > -20)],
-    #        [2, -2])
 
     wr_window      = 20
     wr_upper_level = -20

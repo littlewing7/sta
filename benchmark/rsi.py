@@ -1,165 +1,108 @@
 #!/usr/bin/env python3
-# RETURN 26%
 
-# https://github.com/carlpaulus/Memoire
-# https://medium.com/codex/algorithmic-trading-with-relative-strength-index-in-python-d969cf22dd85
-
-import pandas as pd
-import matplotlib.pyplot as plt
 import yfinance as yf
+import pandas as pd
+
 import numpy as np
-from math import floor
-from termcolor import colored as cl
 
-plt.style.use('fivethirtyeight')
-plt.rcParams['figure.figsize'] = (20, 10)
+import warnings
+warnings.simplefilter ( action='ignore', category=Warning )
 
 
-def get_historical_data(symbol, start_date, end_date):
-    return yf.download(symbol, start=start_date, end=end_date)
+# https://github.com/lukaszbinden/rsi_tradingview/blob/main/rsi.py
+def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
+    """ Implements the RSI indicator as defined by TradingView on March 15, 2021.
+        The TradingView code is as follows:
+        //@version=4
+        study(title="Relative Strength Index", shorttitle="RSI", format=format.price, precision=2, resolution="")
+        len = input(14, minval=1, title="Length")
+        src = input(close, "Source", type = input.source)
+        up = rma(max(change(src), 0), len)
+        down = rma(-min(change(src), 0), len)
+        rsi = down == 0 ? 100 : up == 0 ? 0 : 100 - (100 / (1 + up / down))
+        plot(rsi, "RSI", color=#8E1599)
+        band1 = hline(70, "Upper Band", color=#C0C0C0)
+        band0 = hline(30, "Lower Band", color=#C0C0C0)
+        fill(band1, band0, color=#9915FF, transp=90, title="Background")
+    :param data:
+    :param window:
+    :param round_rsi:
+    :return: an array with the RSI indicator values
+    """
 
-ticker = 'AAPL'
+    delta = data["Close"].diff()
 
-ibm = get_historical_data( ticker, '2020-01-01', '2023-04-19')
-# print(ibm)
+    up = delta.copy()
+    up[up < 0] = 0
+    up = pd.Series.ewm ( up, alpha =1 / window ).mean()
 
-# RSI calculation
-def get_rsi(close, lookback):
-    ret = close.diff()
-    up = []
-    down = []
-    for i in range(len(ret)):
-        if ret[i] < 0:
-            up.append(0)
-            down.append(ret[i])
-        else:
-            up.append(ret[i])
-            down.append(0)
-    up_series = pd.Series(up)
-    down_series = pd.Series(down).abs()
-    up_ewm = up_series.ewm(com=lookback - 1, adjust=False).mean()
-    down_ewm = down_series.ewm(com=lookback - 1, adjust=False).mean()
-    rs = up_ewm / down_ewm
-    rsi = 100 - (100 / (1 + rs))
-    rsi_df = pd.DataFrame(rsi).rename(columns={0: 'rsi'}).set_index(close.index)
-    rsi_df = rsi_df.dropna()
-    return rsi_df[3:]
+    down = delta.copy()
+    down[down > 0] = 0
+    down *= -1
+    down = pd.Series.ewm(down, alpha = 1 / window ).mean()
 
+    rsi = np.where(up == 0, 0, np.where(down == 0, 100, 100 - (100 / (1 + up / down))))
 
-ibm['rsi_14'] = get_rsi(ibm['Close'], 14)
-ibm = ibm.dropna()
-# print(ibm)
-
-# RSI plot
-ax1 = plt.subplot2grid((10, 1), (0, 0), rowspan=4, colspan=1)
-ax2 = plt.subplot2grid((10, 1), (5, 0), rowspan=4, colspan=1)
-ax1.plot(ibm['Close'], linewidth=2.5)
-ax1.set_title('CLOSE PRICE')
-ax2.plot(ibm['rsi_14'], color='orange', linewidth=2.5)
-ax2.axhline(30, linestyle='--', linewidth=1.5, color='grey')
-ax2.axhline(70, linestyle='--', linewidth=1.5, color='grey')
-ax2.set_title('RELATIVE STRENGTH INDEX')
-# plt.show()
-
-
-# Creating the trading strategy
-def implement_rsi_strategy(prices, rsi):
-    buy_price = []
-    sell_price = []
-    rsi_signal = []
-    signal = 0
-
-    for i in range(len(rsi)):
-        if rsi[i - 1] > 30 and rsi[i] < 30:
-            if signal != 1:
-                buy_price.append(prices[i])
-                sell_price.append(np.nan)
-                signal = 1
-                rsi_signal.append(signal)
-            else:
-                buy_price.append(np.nan)
-                sell_price.append(np.nan)
-                rsi_signal.append(0)
-        elif rsi[i - 1] < 70 and rsi[i] > 70:
-            if signal != -1:
-                buy_price.append(np.nan)
-                sell_price.append(prices[i])
-                signal = -1
-                rsi_signal.append(signal)
-            else:
-                buy_price.append(np.nan)
-                sell_price.append(np.nan)
-                rsi_signal.append(0)
-        else:
-            buy_price.append(np.nan)
-            sell_price.append(np.nan)
-            rsi_signal.append(0)
-
-    return buy_price, sell_price, rsi_signal
-
-
-buy_price, sell_price, rsi_signal = implement_rsi_strategy(ibm['Close'], ibm['rsi_14'])
-
-#Plotting the trading signals
-ax1 = plt.subplot2grid((10, 1), (0, 0), rowspan=4, colspan=1)
-ax2 = plt.subplot2grid((10, 1), (5, 0), rowspan=4, colspan=1)
-ax1.plot(ibm['Close'], linewidth=2.5, color='skyblue', label=ticker)
-ax1.plot(ibm.index, buy_price, marker='^', markersize=12, linewidth=0, color='green', label='BUY SIGNAL')
-ax1.plot(ibm.index, sell_price, marker='v', markersize=12, linewidth=0, color='r', label='SELL SIGNAL')
-ax1.set_title('TRADE SIGNALS')
-ax1.legend(loc='lower left', fontsize=12)
-ax2.plot(ibm['rsi_14'], color='orange', linewidth=2.5, label='RSI')
-ax2.axhline(30, linestyle='--', linewidth=1.5, color='grey')
-ax2.axhline(70, linestyle='--', linewidth=1.5, color='grey')
-ax2.legend(loc='lower right', fontsize=12)
-ax2.set_title('RSI')
-plt.show()
-
-# Creating our position
-position = []
-for i in range(len(rsi_signal)):
-    if rsi_signal[i] > 1:
-        position.append(0)
+    if ( round_rsi ):
+        data['RSI_{}'.format ( window )] = np.round (rsi, 2)
     else:
-        position.append(1)
+        data['RSI_{}'.format( window )] = rsi
 
-for i in range(len(ibm['Close'])):
-    if rsi_signal[i] == 1:
-        position[i] = 1
-    elif rsi_signal[i] == -1:
-        position[i] = 0
-    else:
-        position[i] = position[i - 1]
+    return data
 
-rsi = ibm['rsi_14']
-close_price = ibm['Close']
-rsi_signal = pd.DataFrame(rsi_signal).rename(columns={0: 'rsi_signal'}).set_index(ibm.index)
-position = pd.DataFrame(position).rename(columns={0: 'rsi_position'}).set_index(ibm.index)
 
-frames = [close_price, rsi, rsi_signal, position]
-strategy = pd.concat(frames, join='inner', axis=1)
-# print(strategy.head())
+def backtest_strategy(stock, start_date):
+    """
+    Function to backtest a strategy
+    """
+    # Download data
+    data = yf.download ( stock, start=start_date )
 
-# Backtesting
-ibm_ret = pd.DataFrame(np.diff(ibm['Close'])).rename(columns={0: 'returns'})
-rsi_strategy_ret = []
+    # Calculate indicators
+    data = __RSI ( data, 14 )
 
-for i in range(len(ibm_ret)):
-    returns = ibm_ret['returns'][i] * strategy['rsi_position'][i]
-    rsi_strategy_ret.append(returns)
+    # Set initial conditions
+    position = 0
+    buy_price = 0
+    sell_price = 0
+    returns = []
 
-rsi_strategy_ret_df = pd.DataFrame(rsi_strategy_ret).rename(columns={0: 'rsi_returns'})
-investment_value = 100000
-number_of_stocks = floor(investment_value / ibm['Close'][-1])
-rsi_investment_ret = []
+    # Loop through data
+    for i in range(len(data)):
 
-for i in range(len(rsi_strategy_ret_df['rsi_returns'])):
-    returns = number_of_stocks * rsi_strategy_ret_df['rsi_returns'][i]
-    rsi_investment_ret.append(returns)
+        # Buy signal
+        if data["RSI_14"][i - 1] < 30 and data["RSI_14"][i] > 30 and position == 0:
+            position = 1
+            buy_price = data["Close"][i]
+            #print(f"Buying {stock} at {buy_price}")
 
-rsi_investment_ret_df = pd.DataFrame(rsi_investment_ret).rename(columns={0: 'investment_returns'})
-total_investment_ret = round(sum(rsi_investment_ret_df['investment_returns']), 2)
-profit_percentage = floor((total_investment_ret / investment_value) * 100)
-print(cl('Profit gained from the RSI strategy by investing $100k : {}'.format(total_investment_ret),
-         attrs=['bold']))
-print(cl('Percentage of the RSI strategy : {}%'.format(profit_percentage), attrs=['bold']))
+        # Sell signal
+        elif data["RSI_14"][i - 1] > 70 and data["RSI_14"][i] < 70 and position == 1:
+            position = 0
+            sell_price = data["Close"][i]
+            #print(f"Selling {stock} at {sell_price}")
+
+            # Calculate returns
+            returns.append((sell_price - buy_price) / buy_price)
+
+    # Calculate total returns
+    total_returns = (1 + sum(returns)) * 100000
+
+    import sys
+    name = sys.argv[0]
+
+    # Print results
+    print(f"\n{name} ::: {stock} Backtest Results ({start_date} - today)")
+    print(f"---------------------------------------------")
+    print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.2f}")
+    print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
+
+if __name__ == '__main__':
+
+    start_date = "2020-01-01"
+
+    backtest_strategy("AAPL", start_date)
+    print("\n")
+    backtest_strategy("SPY", start_date)
+
+

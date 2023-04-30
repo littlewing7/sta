@@ -15,9 +15,8 @@ def backtest_strategy(stock, start_date ):
     # Download data
     data = yf.download(stock, start=start_date, progress=False)
 
-    # Calculate Stochastic RSI
+    # Calculate indicator
     data = __SMA (data, 20)
-    #print ( data.tail(2) )
 
     # Set initial conditions
     position = 0
@@ -62,5 +61,6 @@ if __name__ == '__main__':
     start_date = "2020-01-01"
 
     backtest_strategy("AAPL", start_date )
+    print ("\n")
     backtest_strategy("SPY", start_date )
 
