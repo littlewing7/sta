@@ -1,0 +1,65 @@
+adx.py ::: AAPL - Profit/Loss: 57.44%
+adx.py ::: SPY - Profit/Loss: 4.61%
+
+ao.py ::: AAPL - Profit/Loss: 90.83%
+ao.py ::: SPY - Profit/Loss: 17.25%
+
+bolinger_bands.py ::: AAPL - Profit/Loss: 20.65%
+bolinger_bands.py ::: SPY - Profit/Loss: 26.99%
+
+cci.py ::: AAPL - Profit/Loss: -9.68%
+cci.py ::: SPY - Profit/Loss: 15.75%
+
+cci_mfi_rsi_sto_wr.py ::: AAPL - Profit/Loss: 48.64%
+cci_mfi_rsi_sto_wr.py ::: SPY - Profit/Loss: -17.88%
+
+dwma.py ::: AAPL - Profit/Loss: 100.06%
+dwma.py ::: SPY - Profit/Loss: 10.75%
+
+ema_tema.py ::: AAPL - Profit/Loss: 97.83%
+ema_tema.py ::: SPY - Profit/Loss: 13.14%
+
+ema_tema_2.py ::: AAPL - Profit/Loss: 74.16%
+ema_tema_2.py ::: SPY - Profit/Loss: 17.44%
+
+macd.py ::: AAPL - Profit/Loss: 95.62%
+macd.py ::: SPY - Profit/Loss: 27.66%
+
+mfi.py ::: AAPL - Profit/Loss: 41.13%
+mfi.py ::: SPY - Profit/Loss: 28.24%
+
+rsi.py ::: AAPL - Profit/Loss: 34.25%
+rsi.py ::: SPY - Profit/Loss: 1.33%
+
+rsi2_sma200.py ::: AAPL - Profit/Loss: 9.46%
+rsi2_sma200.py ::: SPY - Profit/Loss: 34.54%
+
+rsi_5_20_cross.py ::: AAPL - Profit/Loss: 24.52%
+rsi_5_20_cross.py ::: SPY - Profit/Loss: -9.28%
+
+sma_20_50_cross.py ::: AAPL - Profit/Loss: 50.15%
+sma_20_50_cross.py ::: SPY - Profit/Loss: 17.57%
+
+sma_20_50_cross_wma.py ::: AAPL - Profit/Loss: 63.36%
+sma_20_50_cross_wma.py ::: SPY - Profit/Loss: 29.42%
+
+sma_20_Close.py ::: AAPL - Profit/Loss: 101.60%
+sma_20_Close.py ::: SPY - Profit/Loss: 26.87%
+
+sma_9_21_cross.py ::: AAPL - Profit/Loss: 86.48%
+sma_9_21_cross.py ::: SPY - Profit/Loss: 26.35%
+
+stochastic_rsi_1.py ::: AAPL - Profit/Loss: -16.56%
+stochastic_rsi_1.py ::: SPY - Profit/Loss: -21.08%
+
+stochastic_rsi_2.py ::: AAPL - Profit/Loss: 67.45%
+stochastic_rsi_2.py ::: SPY - Profit/Loss: 12.50%
+
+tsi.py ::: AAPL - Profit/Loss: 63.92%
+tsi.py ::: SPY - Profit/Loss: 16.08%
+
+tsi_2.py ::: AAPL - Profit/Loss: 88.34%
+tsi_2.py ::: SPY - Profit/Loss: 34.87%
+
+Profit gained from the W%R MACD strategy by investing $100k in AAPL : 87289.78
+Profit percentage of the W%R MACD strategy : 87%
