@@ -15,7 +15,7 @@ plt.style.use('fivethirtyeight')
 
 
 def get_historical_data(symbol, start_date, end_date):
-    return yf.download(symbol, start=start_date, end=end_date).drop('Adj Close', axis=1)
+    return yf.download(symbol, start=start_date, end=end_date, progress=False ).drop('Adj Close', axis=1)
 
 
 nflx = get_historical_data('AAPL', '2020-01-01', '2023-04-19')

@@ -10,7 +10,16 @@ import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
 
-
+#  WMA and Double WMA
+def WMA(df, window):
+    weights = pd.Series(range(1,window+1))
+    wma = df['Close'].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
+    #df_wma = pd.concat([df['Close'], wma], axis=1)
+    #df_wma.columns = ['Close', 'WMA']
+    #return df_wma
+    df['WMA_{}'.format(window)] = wma
+    df['DWMA_{}'.format(window)] = df['WMA_{}'.format(window)].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
+    return df
 
 def backtest_strategy(stock, start_date):
     """
@@ -20,7 +29,7 @@ def backtest_strategy(stock, start_date):
     data = yf.download ( stock, start=start_date, progress=False )
 
     # Calculate indicators
-    data = calculate_stochastic_rsi(data)
+    data = WMA ( data, 14 )
 
     # Set initial conditions
     position = 0
@@ -32,13 +41,13 @@ def backtest_strategy(stock, start_date):
     for i in range(len(data)):
 
         # Buy signal
-        if data["stoch_rsi_K"][i] > 20 and data["stoch_rsi_D"][i] > 20 and position == 0:
+        if position == 0 and ( ( data["Close"][i] > data["DWMA_14"][i] ) and ( data["Close"][i - 1] < data["DWMA_14"][i - 1] ) ):
             position = 1
             buy_price = data["Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif data["stoch_rsi_K"][i] < 80 and data["stoch_rsi_D"][i] < 80 and position == 1:
+        elif position == 1 and ( ( data["Close"][i] < data["DWMA_14"][i] ) and ( data["Close"][i - 1] > data["DWMA_14"][i - 1] ) ):
             position = 0
             sell_price = data["Close"][i]
             #print(f"Selling {stock} at {sell_price}")

@@ -38,7 +38,7 @@ def backtest_strategy(stock, start_date):
     Function to backtest a strategy
     """
     # Download data
-    data = yf.download ( stock, start=start_date )
+    data = yf.download ( stock, start=start_date, progress=False )
 
     # Calculate indicators
     data = __CCI ( data, 20 )

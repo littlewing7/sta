@@ -26,7 +26,7 @@ def get_historical_data(symbol, start_date):
     df.index = pd.to_datetime(df.index)
     return df
 
-aapl = yf.download ('AAPL', start="2020-01-01", end="2023-04-19")
+aapl = yf.download ('AAPL', start="2020-01-01", progress=False)
 
 aapl['high'] = aapl["High"]
 aapl['low'] = aapl["Low"]
