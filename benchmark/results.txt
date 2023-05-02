@@ -1,3 +1,5 @@
+Mon  1 May 2023 21:15:41 EDT
+
 adx.py ::: AAPL - Profit/Loss: 57.44%
 adx.py ::: SPY - Profit/Loss: 4.61%
 
@@ -24,6 +26,12 @@ ema_tema_2.py ::: SPY - Profit/Loss: 17.44%
 
 macd.py ::: AAPL - Profit/Loss: 95.62%
 macd.py ::: SPY - Profit/Loss: 27.66%
+
+macd_wr14.py ::: AAPL - Profit/Loss: 92.26%
+macd_wr14.py ::: SPY - Profit/Loss: 25.86%
+
+macd_wr20.py ::: AAPL - Profit/Loss: 85.09%
+macd_wr20.py ::: SPY - Profit/Loss: 18.23%
 
 mfi.py ::: AAPL - Profit/Loss: 41.13%
 mfi.py ::: SPY - Profit/Loss: 28.24%
@@ -53,7 +61,7 @@ stochastic_rsi_1.py ::: AAPL - Profit/Loss: -16.56%
 stochastic_rsi_1.py ::: SPY - Profit/Loss: -21.08%
 
 stochastic_rsi_2.py ::: AAPL - Profit/Loss: 67.45%
-stochastic_rsi_2.py ::: SPY - Profit/Loss: 12.50%
+stochastic_rsi_2.py ::: SPY - Profit/Loss: 12.40%
 
 tsi.py ::: AAPL - Profit/Loss: 63.92%
 tsi.py ::: SPY - Profit/Loss: 16.08%
@@ -61,5 +69,3 @@ tsi.py ::: SPY - Profit/Loss: 16.08%
 tsi_2.py ::: AAPL - Profit/Loss: 88.34%
 tsi_2.py ::: SPY - Profit/Loss: 34.87%
 
-Profit gained from the W%R MACD strategy by investing $100k in AAPL : 87289.78
-Profit percentage of the W%R MACD strategy : 87%
