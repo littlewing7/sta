@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # IMPORTING PACKAGES
 
 import numpy as np

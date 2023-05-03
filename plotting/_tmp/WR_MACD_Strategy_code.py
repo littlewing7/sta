@@ -14,16 +14,8 @@ plt.rcParams['figure.figsize'] = (20,10)
 
 # EXTRACTING STOCK DATA
 
-def get_historical_data(symbol, start_date):
-    api_key = 'YOUR API KEY'
-    api_url = f'https://api.twelvedata.com/time_series?symbol={symbol}&interval=1day&outputsize=5000&apikey={api_key}'
-    raw_df = requests.get(api_url).json()
-    df = pd.DataFrame(raw_df['values']).iloc[::-1].set_index('datetime').astype(float)
-    df = df[df.index >= start_date]
-    df.index = pd.to_datetime(df.index)
-    return df
-
-aapl = yf.download ('AAPL', period='5y')
+symbol = 'AAPL'
+aapl = yf.download ( symbol, start='2020-01-01', progress=False)
 
 aapl['high'] = aapl["High"]
 aapl['low'] = aapl["Low"]
