@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # https://medium.com/codex/algorithmic-trading-with-relative-strength-index-in-python-d969cf22dd85
 
 import pandas as pd
