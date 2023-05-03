@@ -76,17 +76,17 @@ def __MACD (data, m=12, n=26, p=9, pc='Close'):
     data['MACD_Crossover']  = np.where ( ( (  yesterday_data["MACD"] <  yesterday_data["MACD_SIGNAL"] ) & ( today_data["MACD"] > today_data["MACD_SIGNAL"] ) ),   1, 0 )
     data['MACD_Crossunder'] = np.where ( ( (  yesterday_data["MACD"] >  yesterday_data["MACD_SIGNAL"] ) & ( today_data["MACD"] < today_data["MACD_SIGNAL"] ) ), 1, 0 )
 
-    data['Trend_20'] = data['Close'] / data['Close'].rolling(20).mean()
+    #data['Trend_20'] = data['Close'] / data['Close'].rolling(20).mean()
 
     #df['MACD_Signal'] = np.select(
     #    [ ( data['Trend_20'] > 1) & ( ( data['MACD_HIST'] > 0 ) & ( data['MACD_HIST'].shift(1) < 0 ) ) ,
     #      ( data['Trend_20'] < 1) & ( ( data['MACD_HIST'] < 0 ) & ( data['MACD_HIST'].shift(1) > 0 ) ) ],
     #    [2, -2])
 
-    data['MACD_Signal'] = np.select(
-        [ ( ( data['MACD_HIST'] > 0 ) & ( data['MACD_HIST'].shift(1) < 0 ) ) ,
-          ( ( data['MACD_HIST'] < 0 ) & ( data['MACD_HIST'].shift(1) > 0 ) ) ],
-        [2, -2])
+    #data['MACD_Signal'] = np.select(
+    #    [ ( ( data['MACD_HIST'] > 0 ) & ( data['MACD_HIST'].shift(1) < 0 ) ) ,
+    #      ( ( data['MACD_HIST'] < 0 ) & ( data['MACD_HIST'].shift(1) > 0 ) ) ],
+    #    [2, -2])
 
     return data
 

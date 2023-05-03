@@ -3,6 +3,7 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
+import math
 
 #def __SMA ( data, n ):
 #    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
@@ -24,9 +25,8 @@ def backtest_strategy(stock, start_date):
     Function to backtest a strategy
     """
     # Download data
-    data = yf.download(stock, start=start_date, end=end_date, progress=False)
+    data = yf.download(stock, start=start_date, progress=False)
 
-    # Calculate Stochastic RSI
     data = __WSMA (data, 20)
     data = __WSMA (data, 50)
 
