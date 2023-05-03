@@ -76,7 +76,7 @@ ax1.set_ylabel('Price')
 
 ax2 = plt.subplot(2, 1, 2)
 ax2.plot(df['CCI'], label='Commodity Channel Index')
-ax2.axhline(y=100, color='red')
+ax2.axhline(y=100, color='green')
 ax2.axhline(y=-100, color='red')
 ax2.axhline(y=200, color='darkblue')
 ax2.axhline(y=-200, color='darkblue')

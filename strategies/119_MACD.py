@@ -1,0 +1,11 @@
+
+data = __MACD ( data )
+
+today_data = data.iloc[-1]
+yesterday_data = data.iloc[-2]
+
+if (  yesterday_data["MACD"] <  yesterday_data["MACD_SIGNAL"] ) & ( today_data["MACD"] > today_data["MACD_SIGNAL"] ):
+   print_log ( '119_MACD', 'LONG', [ 'MACD' ] )
+
+if (  yesterday_data["MACD"] >  yesterday_data["MACD_SIGNAL"] ) & ( today_data["MACD"] < today_data["MACD_SIGNAL"] ):
+   print_log ( '119_MACD', 'SHORT', [ 'MACD' ] )

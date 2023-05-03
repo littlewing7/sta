@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 plt.style.use('fivethirtyeight')
 plt.rcParams['figure.figsize'] = (20,10)
 
-def __STOCHASTIC (df, k, d):
+def __STO (df, k, d):
 
      temp_df = df.copy()
      low_min = temp_df["Low"].rolling(window=k).min()
@@ -33,7 +33,7 @@ def __STOCHASTIC (df, k, d):
 
 symbol = 'AAPL'
 data = yf.download (symbol, start='2020-01-01', progress=False)
-data = __STOCHASTIC ( data, 14, 3 )
+data = __STO ( data, 14, 3 )
 
 ax1 = plt.subplot2grid((11, 1), (0, 0), rowspan=5, colspan=1)
 ax2 = plt.subplot2grid((11, 1), (6, 0), rowspan=5, colspan=1)
@@ -44,12 +44,14 @@ ax1.legend( loc='center left', fontsize=10)
 
 ax2.plot ( data['%k'], color='#26a69a', label='Fast Stochastic', linewidth=3, alpha=0.3)
 ax2.plot ( data['%d'], color='#f44336', label='Slow Stochastic', linewidth=3, alpha=0.3)
-ax2.axhline ( 10, color='grey', linewidth=2, linestyle='--')
-ax2.axhline ( 90, color='grey', linewidth=2, linestyle='--')
+ax2.axhline ( 20, color='grey', linewidth=2, linestyle='--')
+ax2.axhline ( 80, color='grey', linewidth=2, linestyle='--')
+ax2.text(s='Overbought', x=data.index[30], y=80, fontsize=14)
+ax2.text(s='Oversold', x=data.index[30], y=20, fontsize=14)
 ax2.legend ( loc='lower right', fontsize=10)
 ax2.set_title ( 'Stochastic Oscillator', fontsize=14)
 
 #plt.show()
-plt.savefig ('_plots/' + symbol + '_STOCHASTIC_simple.png')
+plt.savefig ('_plots/' + symbol + '_STO_simple.png')
 
 

@@ -2,18 +2,14 @@
 
 import yfinance as yf
 import pandas as pd
-import numpy as np
 
-#  WMA and Double WMA
-def __WMA(df, window):
-    weights = pd.Series(range(1,window+1))
-    wma = df['Close'].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
-    #df_wma = pd.concat([df['Close'], wma], axis=1)
-    #df_wma.columns = ['Close', 'WMA']
-    #return df_wma
-    df['WMA_{}'.format(window)] = wma
-    df['DWMA_{}'.format(window)] = df['WMA_{}'.format(window)].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
-    return df
+def __EMA ( data, n=9 ):
+    #ema = data['Close'].ewm(span = period ,adjust = False).mean()
+    #return ( ema )
+
+    data['EMA_{}'.format(n)] = data['Close'].ewm(span = n ,adjust = False).mean()
+    return data
+
 
 def backtest_strategy(stock, start_date ):
     """
@@ -23,7 +19,7 @@ def backtest_strategy(stock, start_date ):
     data = yf.download(stock, start=start_date, progress=False)
 
     # Calculate indicator
-    data = __WMA (data, 20)
+    data = __EMA (data, 20)
 
     # Set initial conditions
     position = 0
@@ -34,14 +30,14 @@ def backtest_strategy(stock, start_date ):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if data["Close"][i] > data["DWMA_20"][i] and data["Close"][i - 1] < data["DWMA_20"][i - 1] and position == 0:
+        if data["Close"][i] > data["EMA_20"][i] and data["Close"][i - 1] < data["EMA_20"][i - 1] and position == 0:
             position = 1
             buy_price = data["Close"][i]
             today = data.index[i]
             #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
-        elif data["Close"][i] < data["DWMA_20"][i] and data["Close"][i - 1]  > data["DWMA_20"][i - 1] and position == 1:
+        elif data["Close"][i] < data["EMA_20"][i] and data["Close"][i - 1]  > data["EMA_20"][i - 1] and position == 1:
             position = 0
             sell_price = data["Close"][i]
             today = data.index[i]

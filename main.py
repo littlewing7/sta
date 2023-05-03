@@ -180,7 +180,7 @@ TIMEFRAMES = {
 
 settings = {
     "enable_debug": 0,
-    "enable_discord": 1,
+    "enable_discord": 0,
     "enable_slack": 0
 }
 

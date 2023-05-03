@@ -2,28 +2,31 @@
 
 import yfinance as yf
 import pandas as pd
+
 import numpy as np
 
-#  WMA and Double WMA
-def __WMA(df, window):
-    weights = pd.Series(range(1,window+1))
-    wma = df['Close'].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
-    #df_wma = pd.concat([df['Close'], wma], axis=1)
-    #df_wma.columns = ['Close', 'WMA']
-    #return df_wma
-    df['WMA_{}'.format(window)] = wma
-    df['DWMA_{}'.format(window)] = df['WMA_{}'.format(window)].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
-    return df
+import warnings
+warnings.simplefilter ( action='ignore', category=Warning )
 
-def backtest_strategy(stock, start_date ):
+
+def __EMA ( data, n=9 ):
+    #ema = data['Close'].ewm(span = period ,adjust = False).mean()
+    #return ( ema )
+
+    data['EMA_{}'.format(n)] = data['Close'].ewm(span = n ,adjust = False).mean()
+    return data
+
+
+def backtest_strategy(stock, start_date):
     """
     Function to backtest a strategy
     """
     # Download data
     data = yf.download(stock, start=start_date, progress=False)
 
-    # Calculate indicator
-    data = __WMA (data, 20)
+    # Calculate Stochastic RSI
+    data = __EMA (data, 9)
+    data = __EMA (data, 21)
 
     # Set initial conditions
     position = 0
@@ -34,18 +37,16 @@ def backtest_strategy(stock, start_date ):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if data["Close"][i] > data["DWMA_20"][i] and data["Close"][i - 1] < data["DWMA_20"][i - 1] and position == 0:
+        if data["EMA_9"][i] > data["EMA_21"][i] and data["EMA_9"][i - 1] < data["EMA_21"][i - 1] and position == 0:
             position = 1
             buy_price = data["Close"][i]
-            today = data.index[i]
-            #print(f"Buying {stock} at {buy_price} @ {today}")
+            #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif data["Close"][i] < data["DWMA_20"][i] and data["Close"][i - 1]  > data["DWMA_20"][i - 1] and position == 1:
+        elif data["EMA_9"][i] < data["EMA_21"][i] and data["EMA_9"][i - 1]  > data["EMA_21"][i - 1] and position == 1:
             position = 0
             sell_price = data["Close"][i]
-            today = data.index[i]
-            #print(f"Selling {stock} at {sell_price} @ {today}")
+            #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
             returns.append((sell_price - buy_price) / buy_price)
@@ -67,7 +68,7 @@ if __name__ == '__main__':
 
     start_date = "2020-01-01"
 
-    backtest_strategy("AAPL", start_date )
+    backtest_strategy("AAPL", start_date)
     print ("\n")
-    backtest_strategy("SPY", start_date )
+    backtest_strategy("SPY", start_date)
 

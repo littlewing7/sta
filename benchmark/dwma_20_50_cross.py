@@ -2,10 +2,9 @@
 
 import yfinance as yf
 import pandas as pd
-import numpy as np
 
 #  WMA and Double WMA
-def __WMA(df, window):
+def __DWMA(df, window):
     weights = pd.Series(range(1,window+1))
     wma = df['Close'].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
     #df_wma = pd.concat([df['Close'], wma], axis=1)
@@ -15,15 +14,17 @@ def __WMA(df, window):
     df['DWMA_{}'.format(window)] = df['WMA_{}'.format(window)].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
     return df
 
-def backtest_strategy(stock, start_date ):
+def backtest_strategy(stock, start_date):
     """
     Function to backtest a strategy
     """
     # Download data
-    data = yf.download(stock, start=start_date, progress=False)
+    data = yf.download(stock, start=start_date, end=end_date, progress=False)
 
-    # Calculate indicator
-    data = __WMA (data, 20)
+    # Calculate Stochastic RSI
+    data = __DWMA (data, 20)
+    data = __DWMA (data, 50)
+    #print ( data.tail(2) )
 
     # Set initial conditions
     position = 0
@@ -34,14 +35,14 @@ def backtest_strategy(stock, start_date ):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if data["Close"][i] > data["DWMA_20"][i] and data["Close"][i - 1] < data["DWMA_20"][i - 1] and position == 0:
+        if data["DWMA_20"][i] > data["DWMA_50"][i] and data["DWMA_20"][i - 1] < data["DWMA_50"][i - 1] and position == 0:
             position = 1
             buy_price = data["Close"][i]
             today = data.index[i]
             #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
-        elif data["Close"][i] < data["DWMA_20"][i] and data["Close"][i - 1]  > data["DWMA_20"][i - 1] and position == 1:
+        elif data["DWMA_20"][i] < data["DWMA_50"][i] and data["DWMA_20"][i - 1]  > data["DWMA_50"][i - 1] and position == 1:
             position = 0
             sell_price = data["Close"][i]
             today = data.index[i]
@@ -66,8 +67,9 @@ def backtest_strategy(stock, start_date ):
 if __name__ == '__main__':
 
     start_date = "2020-01-01"
+    end_date = "2023-04-19"
 
-    backtest_strategy("AAPL", start_date )
+    backtest_strategy("AAPL", start_date)
     print ("\n")
-    backtest_strategy("SPY", start_date )
+    backtest_strategy("SPY", start_date)
 

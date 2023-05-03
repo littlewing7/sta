@@ -8,14 +8,18 @@ import numpy as np
 import yfinance as yf
 import matplotlib.pyplot as plt
 
-def __WR (data, t):
-    highh = data["High"].rolling(t).max()
-    lowl  = data["Low"].rolling(t).min()
-    close = data["Close"]
+def __CCI(df, ndays = 20):
+    df['TP'] = (df['High'] + df['Low'] + df['Close']) / 3
+    df['sma'] = df['TP'].rolling(ndays).mean()
+    df['mad'] = df['TP'].rolling(ndays).apply(lambda x: pd.Series(x).mad())
 
-    data['WR_{}'.format(t)] = -100 * ((highh - close) / (highh - lowl))
+    df['CCI_{}'.format(ndays)] = (df['TP'] - df['sma']) / (0.015 * df['mad'])
 
-    return data
+    df = df.drop('TP', axis=1)
+    df = df.drop('sma', axis=1)
+    df = df.drop('mad', axis=1)
+
+    return df
 
 plt.rcParams['figure.figsize'] = (20, 10)
 plt.style.use('fivethirtyeight')
@@ -24,46 +28,49 @@ plt.style.use('fivethirtyeight')
 symbol = 'AAPL'
 data = yf.download(symbol, start='2020-01-01', progress=False).drop('Adj Close', axis=1)
 
-data = __WR ( data, 20 )
+data = __CCI ( data, 20 )
 data = data.dropna()
 
 
-def implement_wr_strategy(prices, wr):
+def implement_wr_strategy(prices, cci):
     buy_price = []
     sell_price = []
-    wr_signal = []
+    cci_signal = []
     signal = 0
 
-    for i in range(len(wr)):
-        if wr[i - 1] > -80 and wr[i] < -80:
+    cci_upper_level  =  100
+    cci_lower_level  =  (-100)
+
+    for i in range ( len (cci) ):
+        if cci[i - 1] < cci_lower_level and cci[i] > cci_lower_level:
             if signal != 1:
                 buy_price.append(prices[i])
                 sell_price.append(np.nan)
                 signal = 1
-                wr_signal.append(signal)
+                cci_signal.append(signal)
             else:
                 buy_price.append(np.nan)
                 sell_price.append(np.nan)
-                wr_signal.append(0)
-        elif wr[i - 1] < -20 and wr[i] > -20:
+                cci_signal.append(0)
+        elif cci[i - 1] > cci_upper_level and cci[i]< cci_upper_level:
             if signal != -1:
                 buy_price.append(np.nan)
                 sell_price.append(prices[i])
                 signal = -1
-                wr_signal.append(signal)
+                cci_signal.append(signal)
             else:
                 buy_price.append(np.nan)
                 sell_price.append(np.nan)
-                wr_signal.append(0)
+                cci_signal.append(0)
         else:
             buy_price.append(np.nan)
             sell_price.append(np.nan)
-            wr_signal.append(0)
+            cci_signal.append(0)
 
-    return buy_price, sell_price, wr_signal
+    return buy_price, sell_price, cci_signal
 
 
-buy_price, sell_price, wr_signal = implement_wr_strategy ( data['Close'], data['WR_20'])
+buy_price, sell_price, cci_signal = implement_wr_strategy ( data['Close'], data['CCI_20'])
 
 #  plotting the trading signals
 ax1 = plt.subplot2grid((11, 1), (0, 0), rowspan=5, colspan=1)
@@ -73,13 +80,15 @@ ax1.plot ( data['Close'], linewidth=2, label=symbol)
 ax1.plot ( data.index, buy_price, marker='^', markersize=10, linewidth=0, color='green', label='BUY SIGNAL')
 ax1.plot ( data.index, sell_price, marker='v', markersize=10, linewidth=0, color='r', label='SELL SIGNAL')
 ax1.legend(loc='upper left', fontsize=12)
-ax1.set_title(f'{symbol} W%R TRADING SIGNALS')
+ax1.set_title(f'{symbol} CCI TRADING SIGNALS')
 
-ax2.plot ( data['WR_20'], color='orange', linewidth=2)
-ax2.axhline ( -20, linewidth=1.5, linestyle='--', color='grey')
-ax2.axhline ( -80, linewidth=1.5, linestyle='--', color='grey')
-ax2.set_title (f'{symbol} W%R')
+ax2.plot ( data['CCI_20'], color='orange', linewidth=2)
+ax2.text(s='Overbought', x=data.index[30], y=100, fontsize=14)
+ax2.text(s='Oversold', x=data.index[30], y=-100, fontsize=14)
+ax2.axhline ( 100, linewidth=1.5, linestyle='--', color='red')
+ax2.axhline ( -100, linewidth=1.5, linestyle='--', color='green')
+ax2.set_title (f'{symbol} CCI')
 
 #plt.show()
-plt.savefig ('_plots/' + symbol + '_WR.png')
+plt.savefig ('_plots/' + symbol + '_CCI.png')
 

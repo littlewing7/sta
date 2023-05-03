@@ -14,12 +14,6 @@ warnings.simplefilter ( action='ignore', category=Warning )
 
 import yfinance as yf
 
-def __EMA ( data, n=9 ):
-    #ema = data['Close'].ewm(span = period ,adjust = False).mean()
-    #return ( ema )
-
-    data['EMA_{}'.format(n)] = data['Close'].ewm(span = n ,adjust = False).mean()
-    return data
 
 def __KC(dataframe, period=20, multiplier=2):
     """
@@ -65,5 +59,7 @@ plt.plot ( data['KC_middle'], linewidth = 1.5, color = 'grey', label = 'KC MIDDL
 plt.plot ( data['KC_lower'], linewidth = 2, color = 'orange', linestyle = '--', label = 'KC LOWER 20')
 plt.legend (loc = 'lower right', fontsize = 15)
 plt.title (f'{symbol} KELTNER CHANNEL 20')
-plt.show()
+
+#plt.show()
+plt.savefig ('_plots/' + symbol + '_KC_simple.png')
 

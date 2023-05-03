@@ -23,7 +23,7 @@ from util.mom  import __MOM
 
 # Define the ticker and download the historical data
 ticker = 'AAPL'
-data = yf.download(ticker, period='5y')
+data = yf.download(ticker, start='2020-01-01', progress=False)
 data = data.drop(['Adj Close'], axis=1).dropna()
 
 window_mom = 14
