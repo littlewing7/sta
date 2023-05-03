@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,13 +15,16 @@ start = dt.date.today() - dt.timedelta(days = 365)
 end = dt.date.today()
 
 # Read data 
-df = yf.download(symbol, period="5y")
+df = yf.download(symbol,start,end)
 
-n = 14
-df['Lowest Low'] = df['Low'].rolling(n).min()
-df['Highest High'] = df['High'].rolling(n).max()
-df['William%R'] = -100*(df['Highest High'] - df['Adj Close'])/(df['Highest High'] - df['Lowest Low'])
-df = df.drop(['Lowest Low','Highest High'],axis=1)
+df['Prior Close'] = df['Adj Close'].shift()
+df['BP'] = df['Adj Close'] - df[['Low','Prior Close']].min(axis=1)
+df['TR'] = df[['High','Prior Close']].max(axis=1) - df[['Low','Prior Close']].min(axis=1)
+df['Average7'] = df['BP'].rolling(7).sum()/df['TR'].rolling(7).sum()
+df['Average14'] = df['BP'].rolling(14).sum()/df['TR'].rolling(14).sum()
+df['Average28'] = df['BP'].rolling(28).sum()/df['TR'].rolling(28).sum()
+df['UO'] = 100 * (4*df['Average7']+2*df['Average14']+df['Average28'])/(4+2+1)
+df = df.drop(['Prior Close','BP','TR','Average7','Average14','Average28'],axis=1)
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
@@ -29,17 +34,17 @@ ax1.set_ylabel('Price')
 ax1.legend(loc='best')
 
 ax2 = plt.subplot(2, 1, 2)
-ax2.plot(df['William%R'], label='William %R')
-#ax2.axhline(y=20, color='red')
+ax2.plot(df['UO'], label='Ultimate Oscillator')
+#ax2.axhline(y=70, color='red')
 #ax2.axhline(y=50, color='black', linestyle='--')
-#ax2.axhline(y=80, color='red')
+#ax2.axhline(y=30, color='red')
 ax2.grid()
 ax2.legend(loc='best')
-ax2.set_ylabel('William %R')
+ax2.set_ylabel('Ultimate Oscillator')
 ax2.set_xlabel('Date')
 plt.show()
 
-# ## Candlestick with William %R
+# ## Candlestick with Ultimate Oscillator
 from matplotlib import dates as mdates
 dfc = df.copy()
 dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
@@ -64,12 +69,12 @@ ax1.set_title('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
 
 ax2 = plt.subplot(2, 1, 2)
-ax2.plot(df['William%R'], label='William %R')
-#ax2.axhline(y=20, color='red')
+ax2.plot(df['UO'], label='Ultimate Oscillator')
+#ax2.axhline(y=70, color='red')
 #ax2.axhline(y=50, color='black', linestyle='--')
-#ax2.axhline(y=80, color='red')
+#ax2.axhline(y=30, color='red')
 ax2.grid()
 ax2.legend(loc='best')
-ax2.set_ylabel('William %R')
+ax2.set_ylabel('Ultimate Oscillator')
 ax2.set_xlabel('Date')
 plt.show()

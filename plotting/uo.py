@@ -6,75 +6,52 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings("ignore")
 import yfinance as yf
-yf.pdr_override()
-import datetime as dt
 
-# input
+def __UO ( data ):
+    data['Prior_Close'] = data['Close'].shift()
+    data['BP']          = data['Close'] - data[['Low','Prior_Close']].min(axis=1)
+    data['TR']          = data[['High','Prior_Close']].max(axis=1) - data[['Low','Prior_Close']].min(axis=1)
+
+    data['Average7']  = data['BP'].rolling(7).sum()/data['TR'].rolling(7).sum()
+    data['Average14'] = data['BP'].rolling(14).sum()/data['TR'].rolling(14).sum()
+    data['Average28'] = data['BP'].rolling(28).sum()/data['TR'].rolling(28).sum()
+
+    data['UO'] = 100 * (4*data['Average7']+2*data['Average14']+data['Average28'])/(4+2+1)
+    data = data.drop(['Prior_Close','BP','TR','Average7','Average14','Average28'],axis=1)
+
+    return data
+
+
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 365)
-end = dt.date.today()
 
 # Read data 
-df = yf.download(symbol,start,end)
+data = yf.download(symbol,start='2020-01-01', progress=False)
+data = __UO ( data )
 
-df['Prior Close'] = df['Adj Close'].shift()
-df['BP'] = df['Adj Close'] - df[['Low','Prior Close']].min(axis=1)
-df['TR'] = df[['High','Prior Close']].max(axis=1) - df[['Low','Prior Close']].min(axis=1)
-df['Average7'] = df['BP'].rolling(7).sum()/df['TR'].rolling(7).sum()
-df['Average14'] = df['BP'].rolling(14).sum()/df['TR'].rolling(14).sum()
-df['Average28'] = df['BP'].rolling(28).sum()/df['TR'].rolling(28).sum()
-df['UO'] = 100 * (4*df['Average7']+2*df['Average14']+df['Average28'])/(4+2+1)
-df = df.drop(['Prior Close','BP','TR','Average7','Average14','Average28'],axis=1)
+
+#print ( data.tail(3))
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
-ax1.plot(df['Adj Close'])
-ax1.set_title('Stock '+ symbol +' Closing Price')
+ax1.plot ( data['Close'])
+ax1.set_title ('Stock '+ symbol +' Closing Price')
 ax1.set_ylabel('Price')
 ax1.legend(loc='best')
 
+
 ax2 = plt.subplot(2, 1, 2)
-ax2.plot(df['UO'], label='Ultimate Oscillator')
-#ax2.axhline(y=70, color='red')
-#ax2.axhline(y=50, color='black', linestyle='--')
-#ax2.axhline(y=30, color='red')
+ax2.plot ( data['UO'], label='Ultimate Oscillator')
+
+ax2.axhline(y=70, color='red')
+ax2.axhline(y=50, color='black', linestyle='--')
+ax2.axhline(y=30, color='red')
+
 ax2.grid()
 ax2.legend(loc='best')
 ax2.set_ylabel('Ultimate Oscillator')
 ax2.set_xlabel('Date')
-plt.show()
 
-# ## Candlestick with Ultimate Oscillator
-from matplotlib import dates as mdates
-dfc = df.copy()
-dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
-#dfc = dfc.dropna()
-dfc = dfc.reset_index()
-dfc['Date'] = mdates.date2num(dfc['Date'].tolist())
+#plt.show()
 
-from mplfinance.original_flavor import candlestick_ohlc
-fig = plt.figure(figsize=(14,7))
-ax1 = plt.subplot(2, 1, 1)
-candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
-ax1.xaxis_date()
-ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
-ax1.grid(True, which='both')
-ax1.minorticks_on()
-ax1v = ax1.twinx()
-colors = dfc.VolumePositive.map({True: 'g', False: 'r'})
-ax1v.bar(dfc.Date, dfc['Volume'], color=colors, alpha=0.4)
-ax1v.axes.yaxis.set_ticklabels([])
-ax1v.set_ylim(0, 3*df.Volume.max())
-ax1.set_title('Stock '+ symbol +' Closing Price')
-ax1.set_ylabel('Price')
+plt.savefig ('_plots/' + symbol + '_UO.png')
 
-ax2 = plt.subplot(2, 1, 2)
-ax2.plot(df['UO'], label='Ultimate Oscillator')
-#ax2.axhline(y=70, color='red')
-#ax2.axhline(y=50, color='black', linestyle='--')
-#ax2.axhline(y=30, color='red')
-ax2.grid()
-ax2.legend(loc='best')
-ax2.set_ylabel('Ultimate Oscillator')
-ax2.set_xlabel('Date')
-plt.show()

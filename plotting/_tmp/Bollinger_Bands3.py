@@ -19,7 +19,7 @@ plt.style.use('fivethirtyeight')
 # EXTRACTING STOCK DATA
 
 def get_historical_data(symbol, start_date):
-    data = yf.download(symbol, period="5y")
+    data = yf.download(symbol, period="3y")
     return data
 
 

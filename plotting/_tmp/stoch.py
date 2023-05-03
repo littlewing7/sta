@@ -15,7 +15,7 @@ def get_historical_aapl(symbol, start_date, end_date):
 
 symbol = 'AAPL'
 
-aapl = get_historical_aapl(symbol, '2021-04-23', '2022-04-23')
+aapl = get_historical_aapl(symbol, '2021-04-23', '2023-05-01')
 
 
 # stochastic oscillator
@@ -26,6 +26,25 @@ def get_stoch_osc(high, low, close, k_lookback, d_lookback):
     d_line = k_line.rolling(d_lookback).mean()
     return k_line, d_line
 
+def __STOCHASTIC (df, k, d):
+
+     temp_df = df.copy()
+     low_min = temp_df["Low"].rolling(window=k).min()
+     high_max = temp_df["High"].rolling(window=k).max()
+
+     # Fast Stochastic
+     temp_df['k_fast'] = 100 * (temp_df["Close"] - low_min)/(high_max - low_min)
+     temp_df['d_fast'] = temp_df['k_fast'].rolling(window=d).mean()
+
+     # Slow Stochastic
+     temp_df['STO_K'] = temp_df["d_fast"]
+     temp_df['STO_D'] = temp_df['STO_K'].rolling(window=d).mean()
+
+     temp_df = temp_df.drop(['k_fast'], axis=1)
+     temp_df = temp_df.drop(['d_fast'], axis=1)
+
+
+     return temp_df
 
 aapl['%k'], aapl['%d'] = get_stoch_osc(aapl['High'], aapl['Low'], aapl['Close'], 14, 3)
 print(aapl.head(30))

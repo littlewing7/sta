@@ -1,74 +1,81 @@
 #!/usr/bin/env python3
 
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import warnings
-warnings.filterwarnings("ignore")
+import numpy as np
+
 import yfinance as yf
-yf.pdr_override()
-import datetime as dt
 
-def __EMA(Close, timeperiod):
-    ema = Close.ewm(span=timeperiod, adjust=False).mean()
-    return ema
+def __TEMA(data, n=30):
+    """
+    Triple Exponential Moving Average (TEMA)
+    """
+    ema1 = data['Close'].ewm(span=n, adjust=False).mean()
+    ema2 = ema1.ewm(span=n, adjust=False).mean()
+    ema3 = ema2.ewm(span=n, adjust=False).mean()
+    tema = 3 * (ema1 - ema2) + ema3
+    data['TEMA_{}'.format(n)] = tema
+    return data
 
-# input
+plt.style.use('fivethirtyeight')
+plt.rcParams['figure.figsize'] = (20,10)
+
 symbol = 'AAPL'
-start = dt.date.today() - dt.timedelta(days = 365*2)
-end = dt.date.today()
-
-# Read data 
-df = yf.download(symbol,start,end)
+data = yf.download ( symbol, start='2020-01-01', progress=False)
+data = __TEMA ( data, 30 )
 
 
-df['EMA']   = __EMA(df['Adj Close'], timeperiod=30) 
-df['EMA_2'] = __EMA(df['EMA'], timeperiod=30) 
-df['EMA_3'] = __EMA(df['EMA_2'], timeperiod=30) 
-df['TEMA']  = (3*df['EMA']) - (3*(df['EMA_2'])) + (df['EMA_3'])
+def implement_tsi_strategy(prices, tema, close):
+    buy_price = []
+    sell_price = []
+    tema_signal = []
+    signal = 0
 
-# Line Chart
-fig = plt.figure(figsize=(16,8))
-ax1 = plt.subplot(111)
-ax1.plot(df.index, df['Adj Close'])
-ax1.plot(df.index, df['TEMA'])
-ax1.axhline(y=df['Adj Close'].mean(),color='r')
-ax1.grid()
-#ax1.grid(True, which='both')
-#ax1.grid(which='minor', linestyle='-', linewidth='0.5', color='black')
-#ax1.grid(which='major', linestyle='-', linewidth='0.5', color='red')
-#ax1.minorticks_on()
-ax1.legend(loc='best')
-ax1v = ax1.twinx()
-ax1v.fill_between(df.index[0:],0, df.Volume[0:], facecolor='#0079a3', alpha=0.4)
-ax1v.axes.yaxis.set_ticklabels([])
-ax1v.set_ylim(0, 3*df.Volume.max())
-ax1.set_title('Stock '+ symbol +' Closing Price')
-ax1.set_ylabel('Price')
-plt.show()
+    for i in range(len(prices)):
+        if tema[i-1] < close[i-1] and tema[i] > close[i]:
+            if signal != 1:
+                buy_price.append(prices[i])
+                sell_price.append(np.nan)
+                signal = 1
+                tema_signal.append(signal)
+            else:
+                buy_price.append(np.nan)
+                sell_price.append(np.nan)
+                tema_signal.append(0)
+        elif tema[i-1] > close[i-1] and tema[i] < close[i]:
+            if signal != -1:
+                buy_price.append(np.nan)
+                sell_price.append(prices[i])
+                signal = -1
+                tema_signal.append(signal)
+            else:
+                buy_price.append(np.nan)
+                sell_price.append(np.nan)
+                tema_signal.append(0)
+        else:
+            buy_price.append(np.nan)
+            sell_price.append(np.nan)
+            tema_signal.append(0)
 
-# ## Candlestick with TEMA
-from matplotlib import dates as mdates
-dfc = df.copy()
-dfc['VolumePositive'] = dfc['Open'] < dfc['Adj Close']
-dfc = dfc.dropna()
-dfc = dfc.reset_index()
-dfc['Date'] = mdates.date2num(dfc['Date'].tolist())
-from mplfinance.original_flavor import candlestick_ohlc
+    return buy_price, sell_price, tema_signal
 
-fig = plt.figure(figsize=(16,8))
-ax1 = plt.subplot(111)
-candlestick_ohlc(ax1,dfc.values, width=0.5, colorup='g', colordown='r', alpha=1.0)
-ax1.plot(df.index, df['TEMA'])
-ax1.xaxis_date()
-ax1.xaxis.set_major_formatter(mdates.DateFormatter('%d-%m-%Y'))
-ax1.grid(True, which='both')
-ax1.minorticks_on()
-ax1v = ax1.twinx()
-colors = dfc.VolumePositive.map({True: 'g', False: 'r'})
-ax1v.bar(dfc.Date, dfc['Volume'], color=colors, alpha=0.4)
-ax1v.axes.yaxis.set_ticklabels([])
-ax1v.set_ylim(0, 3*df.Volume.max())
-ax1.set_title('Stock '+ symbol +' Closing Price')
-ax1.set_ylabel('Price')
-plt.show()
+buy_price, sell_price, tema_signal = implement_tsi_strategy( data['Close'], data['TEMA_30'], data['Close'])
+
+# TSI PLOT
+ax1 = plt.subplot2grid((11,1), (0,0), rowspan = 5, colspan = 1)
+ax2 = plt.subplot2grid((11,1), (6,0), rowspan = 5, colspan = 1)
+
+ax1.plot ( data['Close'], linewidth = 2)
+ax1.plot ( data.index, buy_price, marker = '^', markersize = 12, color = 'green', linewidth = 0, label = 'BUY SIGNAL')
+ax1.plot ( data.index, sell_price, marker = 'v', markersize = 12, color = 'r', linewidth = 0, label = 'SELL SIGNAL')
+ax1.legend()
+ax1.set_title(f'{symbol} TEMA TRADING SIGNALS')
+
+ax2.plot ( data['TEMA_30'],        linewidth = 2, color = 'orange', label = 'TSI LINE')
+ax2.plot ( data['Close'], linewidth = 2, color = '#FF006E', label = 'Close')
+ax2.set_title(f'{symbol} TEMA 30')
+ax2.legend()
+
+#plt.show()
+plt.savefig ('_plots/' + symbol + '_TEMA.png')
+

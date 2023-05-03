@@ -1,54 +1,53 @@
 #!/usr/bin/env python3
 
 import pandas as pd
-import requests
 import numpy as np
 import matplotlib.pyplot as plt
-from math import floor
-from termcolor import colored as cl
 import yfinance as yf
+
+def __AO ( data, window1=5, window2=34 ):
+    """
+    Calculates the Awesome Oscillator for a given DataFrame containing historical stock data.
+
+    Parameters:
+        data (pandas.DataFrame): DataFrame containing the historical stock data.
+        window1 (int): Window size for the first simple moving average (default is 5).
+        window2 (int): Window size for the second simple moving average (default is 34).
+
+    Returns:
+        data (pandas.DataFrame): DataFrame with an additional column containing the Awesome Oscillator.
+    """
+    # Calculate the Awesome Oscillator (AO)
+    high = data["High"]
+    low = data["Low"]
+    median_price = (high + low) / 2
+    ao = median_price.rolling(window=window1).mean() - median_price.rolling(window=window2).mean()
+    #return ao
+
+    # Add the AO to the DataFrame
+    data["AO"] = ao
+
+    return data
+
 
 plt.rcParams['figure.figsize'] = (20, 10)
 plt.style.use('fivethirtyeight')
 
+symbol = 'AAPL'
+
 # EXTRACTING STOCK DATA
-aapl = yf.download ('AAPL', period='5y')
-aapl
+data = yf.download ( symbol, start='2020-01-01', progress=False)
 
-def sma(price, period):
-    sma = price.rolling(period).mean()
-    return sma
+data = __AO ( data, 5, 34)
+data = data.dropna()
 
-def ao(price, period1, period2):
-    median = price.rolling(2).median()
-    short = sma(median, period1)
-    long = sma(median, period2)
-    ao = short - long
-    ao_df = pd.DataFrame(ao).rename(columns = {'Close':'ao'})
-    return ao_df
-
-aapl['ao'] = ao(aapl['Close'], 5, 34)
-aapl = aapl.dropna()
-aapl.tail()
-
-ax1 = plt.subplot2grid((10,1), (0,0), rowspan = 5, colspan = 1)
-ax2 = plt.subplot2grid((10,1), (6,0), rowspan = 4, colspan = 1)
-ax1.plot(aapl['Close'])
-ax1.set_title('AAPL CLOSING PRICE')
-for i in range(len(aapl)):
-    if aapl['ao'][i-1] > aapl['ao'][i]:
-        ax2.bar(aapl.index[i], aapl['ao'][i], color = '#f44336')
-    else:
-        ax2.bar(aapl.index[i], aapl['ao'][i], color = '#26a69a')
-ax2.set_title('AAPL AWESOME OSCILLATOR 5,34')
-#plt.show()
 
 def implement_ao_crossover(price, ao):
     buy_price = []
     sell_price = []
     ao_signal = []
     signal = 0
-    
+
     for i in range(len(ao)):
         if ao[i] > 0 and ao[i-1] < 0:
             if signal != 1:
@@ -76,60 +75,24 @@ def implement_ao_crossover(price, ao):
             ao_signal.append(0)
     return buy_price, sell_price, ao_signal
 
-buy_price, sell_price, ao_signal = implement_ao_crossover(aapl['Close'], aapl['ao'])
+buy_price, sell_price, ao_signal = implement_ao_crossover( data['Close'], data['AO'])
 
 ax1 = plt.subplot2grid((10,1), (0,0), rowspan = 5, colspan = 1)
 ax2 = plt.subplot2grid((10,1), (6,0), rowspan = 4, colspan = 1)
-ax1.plot(aapl['Close'], label = 'aapl', color = 'skyblue')
-ax1.plot(aapl.index, buy_price, marker = '^', markersize = 12, color = '#26a69a', linewidth = 0, label = 'BUY SIGNAL')
-ax1.plot(aapl.index, sell_price, marker = 'v', markersize = 12, color = '#f44336', linewidth = 0, label = 'SELL SIGNAL')
+
+ax1.plot( data['Close'], label = symbol, color = 'skyblue')
+ax1.plot( data.index, buy_price, marker = '^', markersize = 12, color = '#26a69a', linewidth = 0, label = 'BUY SIGNAL')
+ax1.plot( data.index, sell_price, marker = 'v', markersize = 12, color = '#f44336', linewidth = 0, label = 'SELL SIGNAL')
 ax1.legend()
-ax1.set_title('AAPL CLOSING PRICE')
-for i in range(len(aapl)):
-    if aapl['ao'][i-1] > aapl['ao'][i]:
-        ax2.bar(aapl.index[i], aapl['ao'][i], color = '#f44336')
+ax1.set_title(f'{symbol} CLOSING PRICE')
+
+for i in range(len( data )):
+    if data['AO'][i-1] > data['AO'][i]:
+        ax2.bar( data.index[i], data['AO'][i], color = '#f44336')
     else:
-        ax2.bar(aapl.index[i], aapl['ao'][i], color = '#26a69a')
-ax2.set_title('AAPL AWESOME OSCILLATOR 5,34')
-plt.show()
-
-#position = []
-#for i in range(len(ao_signal)):
-#    if ao_signal[i] > 1:
-#        position.append(0)
-#    else:
-#        position.append(1)
-#
-#for i in range(len(aapl['Close'])):
-#    if ao_signal[i] == 1:
-#        position[i] = 1
-#    elif ao_signal[i] == -1:
-#        position[i] = 0
-#    else:
-#        position[i] = position[i-1]
-#
-#ao = aapl['ao']
-#close_price = aapl['Close']
-#ao_signal = pd.DataFrame(ao_signal).rename(columns = {0:'ao_signal'}).set_index(aapl.index)
-#position = pd.DataFrame(position).rename(columns = {0:'ao_position'}).set_index(aapl.index)
-#
-#frames = [close_price, ao, ao_signal, position]
-#strategy = pd.concat(frames, join = 'inner', axis = 1)
-#
-#strategy
-
-#rets = aapl.Close.pct_change().dropna()
-#strat_rets = strategy.ao_position[1:]*rets
-#
-#plt.title('Daily Returns')
-#rets.plot(color = 'blue', alpha = 0.3, linewidth = 7)
-#strat_rets.plot(color = 'r', linewidth = 1)
+        ax2.bar ( data.index[i], data['AO'][i], color = '#26a69a')
+ax2.set_title(f'{symbol} AWESOME OSCILLATOR 5,34')
 #plt.show()
-#
-#rets_cum = (1 + rets).cumprod() - 1 
-#strat_cum = (1 + strat_rets).cumprod() - 1
-#
-#plt.title('Cumulative Returns')
-#rets_cum.plot(color = 'blue', alpha = 0.3, linewidth = 7)
-#strat_cum.plot(color = 'r', linewidth = 2)
-#plt.show()
+plt.savefig ('_plots/' + symbol + '_AO.png')
+
+
