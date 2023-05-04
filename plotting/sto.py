@@ -85,8 +85,8 @@ ax1.plot ( data.index, buy_price, marker='^', color='#26a69a', markersize=12, li
 ax1.plot ( data.index, sell_price, marker='v', color='#f44336', markersize=12, linewidth=0, label='SELL SIGNAL')
 ax1.legend( loc='center left', fontsize=10)
 
-ax2.plot ( data['%k'], color='#26a69a', label='Fast Stochastic', linewidth=3, alpha=0.3)
-ax2.plot ( data['%d'], color='#f44336', label='Slow Stochastic', linewidth=3, alpha=0.3)
+ax2.plot ( data['%k'], color='#26a69a', label='Fast Stochastic %k', linewidth=3, alpha=0.3)
+ax2.plot ( data['%d'], color='#f44336', label='Slow Stochastic %d', linewidth=3, alpha=0.3)
 ax2.text(s='Overbought', x=data.index[30], y=80, fontsize=14)
 ax2.text(s='Oversold', x=data.index[30], y=20, fontsize=14)
 ax2.axhline ( 20, color='grey', linewidth=2, linestyle='--')
