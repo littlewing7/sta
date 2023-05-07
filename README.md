@@ -36,7 +36,7 @@ SPY 1h ---> SHORT ::: 113_EMA_TEMA ::: (['EMA_9', 'TEMA_30'],)
 - [ ] Add/fix benchmarks for add strategies
 
 - [x] Add Discord/Slack text alerting
-- [ ] Add Discord/Slack indicator plotting for every matching strategy
+- [ ] Add Discord/Slack plotting for every matching strategy
 
 - [ ] Add support for other data pandas/ohlc sources ( Alpaca, Alpha Vantage, Quandl )
 - [ ] Add support for data sources ( TradingView, TD Ameritrade etc )

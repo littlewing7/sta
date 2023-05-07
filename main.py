@@ -378,7 +378,7 @@ while True:
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['STO_Signal'] = np.select(
-            
+
             [ ( data['STO_K'].shift(1) < sto_lower_level ) & ( data['STO_K'] > sto_lower_level ),
               ( data['STO_K'].shift(1) > sto_upper_level ) & ( data['STO_K'] < sto_upper_level ) ],
             [2, -2])
