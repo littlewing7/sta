@@ -1,4 +1,5 @@
-Tue  9 May 2023 20:59:53 EDT
+Tue  9 May 2023 22:06:17 EDT
+AAPL sma_13_Close.py 108.61
 AAPL sma_20_Close.py 101.60
 AAPL dwma.py 98.50
 AAPL ema_tema.py 97.83
