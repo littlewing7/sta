@@ -1,134 +1,46 @@
-Sun  7 May 2023 19:26:19 EDT
-Close_4_days_down.py ::: AAPL - Profit/Loss: 59.05%
-Close_4_days_down.py ::: SPY - Profit/Loss: 34.48%
-
-
-adx.py ::: AAPL - Profit/Loss: 57.44%
-adx.py ::: SPY - Profit/Loss: 4.61%
-
-Profit gained from the ADX strategy by investing $100k in AAPL : 30592.8
-Profit percentage of the ADX strategy in AAPL : 30%
-
-adx_rsi.py ::: AAPL - Profit/Loss: 62.39%
-adx_rsi.py ::: SPY - Profit/Loss: 8.37%
-
-ao.py ::: AAPL - Profit/Loss: 90.83%
-ao.py ::: SPY - Profit/Loss: 17.25%
-
-bb_4_days_down.py ::: AAPL - Profit/Loss: 36.71%
-bb_4_days_down.py ::: SPY - Profit/Loss: 20.82%
-
-bb_kc_rsi.py ::: AAPL - Profit/Loss: 21.77%
-bb_kc_rsi.py ::: SPY - Profit/Loss: 22.72%
-
-bb_rsi_sma.py ::: AAPL - Profit/Loss: 75.07%
-bb_rsi_sma.py ::: SPY - Profit/Loss: 34.23%
-
-bb_sto.py ::: AAPL - Profit/Loss: 0.00%
-bb_sto.py ::: SPY - Profit/Loss: 0.00%
-
-bolinger_bands.py ::: AAPL - Profit/Loss: 20.00%
-bolinger_bands.py ::: SPY - Profit/Loss: 23.46%
-
-cci.py ::: AAPL - Profit/Loss: -9.68%
-cci.py ::: SPY - Profit/Loss: 15.37%
-
-cci_mfi_rsi_sto_wr.py ::: AAPL - Profit/Loss: 48.64%
-cci_mfi_rsi_sto_wr.py ::: SPY - Profit/Loss: -12.60%
-
-dwma.py ::: AAPL - Profit/Loss: 98.50%
-dwma.py ::: SPY - Profit/Loss: 10.37%
-
-dwma_20_50.py ::: AAPL - Profit/Loss: 11.27%
-dwma_20_50.py ::: SPY - Profit/Loss: -1.69%
-
-dwma_20_Close.py ::: AAPL - Profit/Loss: 79.70%
-dwma_20_Close.py ::: SPY - Profit/Loss: 28.02%
-
-dwma_9_21_cross.py ::: AAPL - Profit/Loss: 76.53%
-dwma_9_21_cross.py ::: SPY - Profit/Loss: 17.61%
-
-ema_20_50.py ::: AAPL - Profit/Loss: 60.14%
-ema_20_50.py ::: SPY - Profit/Loss: 20.66%
-
-ema_20_Close.py ::: AAPL - Profit/Loss: 62.22%
-ema_20_Close.py ::: SPY - Profit/Loss: 14.56%
-
-ema_50_200.py ::: AAPL - Profit/Loss: 52.53%
-ema_50_200.py ::: SPY - Profit/Loss: 24.33%
-
-ema_9_21_cross.py ::: AAPL - Profit/Loss: 87.49%
-ema_9_21_cross.py ::: SPY - Profit/Loss: 22.78%
-
-ema_tema.py ::: AAPL - Profit/Loss: 97.83%
-ema_tema.py ::: SPY - Profit/Loss: 13.14%
-
-emav_20_50.py ::: AAPL - Profit/Loss: 14.52%
-emav_20_50.py ::: SPY - Profit/Loss: 17.55%
-
-macd.py ::: AAPL - Profit/Loss: 95.00%
-macd.py ::: SPY - Profit/Loss: 27.66%
-
-Profit gained from the MACD strategy by investing $100k in AAPL : 134158.09
-Profit percentage of the MACD strategy : 134%
-
-macd_wr14.py ::: AAPL - Profit/Loss: 92.26%
-macd_wr14.py ::: SPY - Profit/Loss: 25.86%
-
-macd_wr20.py ::: AAPL - Profit/Loss: 85.09%
-macd_wr20.py ::: SPY - Profit/Loss: 18.23%
-
-mfi.py ::: AAPL - Profit/Loss: 41.13%
-mfi.py ::: SPY - Profit/Loss: 28.24%
-
-roc.py ::: AAPL - Profit/Loss: 49.50%
-roc.py ::: SPY - Profit/Loss: -9.99%
-
-rsi14.py ::: AAPL - Profit/Loss: 34.25%
-rsi14.py ::: SPY - Profit/Loss: 1.33%
-
-rsi14_sma200.py ::: AAPL - Profit/Loss: 9.46%
-rsi14_sma200.py ::: SPY - Profit/Loss: 34.54%
-
-rsi20.py ::: AAPL - Profit/Loss: 3.85%
-rsi20.py ::: SPY - Profit/Loss: 13.33%
-
-rsi_5_20_cross.py ::: AAPL - Profit/Loss: 23.95%
-rsi_5_20_cross.py ::: SPY - Profit/Loss: -9.66%
-
-sma_20_50_cross.py ::: AAPL - Profit/Loss: 50.15%
-sma_20_50_cross.py ::: SPY - Profit/Loss: 17.57%
-
-sma_20_Close.py ::: AAPL - Profit/Loss: 101.60%
-sma_20_Close.py ::: SPY - Profit/Loss: 26.49%
-
-sma_50_200.py ::: AAPL - Profit/Loss: -7.77%
-sma_50_200.py ::: SPY - Profit/Loss: 0.00%
-
-sma_9_21.py ::: AAPL - Profit/Loss: 86.48%
-sma_9_21.py ::: SPY - Profit/Loss: 28.01%
-
-stochastic_rsi_1.py ::: AAPL - Profit/Loss: -15.20%
-stochastic_rsi_1.py ::: SPY - Profit/Loss: -21.08%
-
-stochastic_rsi_2.py ::: AAPL - Profit/Loss: 65.21%
-stochastic_rsi_2.py ::: SPY - Profit/Loss: 11.71%
-
-tema_close.py ::: AAPL - Profit/Loss: 41.10%
-tema_close.py ::: SPY - Profit/Loss: 33.98%
-
-tema_close_2.py ::: AAPL - Profit/Loss: 74.16%
-tema_close_2.py ::: SPY - Profit/Loss: 16.21%
-
-tsi.py ::: AAPL - Profit/Loss: 63.92%
-tsi.py ::: SPY - Profit/Loss: 16.08%
-
-tsi_2.py ::: AAPL - Profit/Loss: 87.08%
-tsi_2.py ::: SPY - Profit/Loss: 33.74%
-
-wsma_20_50.py ::: AAPL - Profit/Loss: 63.36%
-wsma_20_50.py ::: SPY - Profit/Loss: 29.42%
-
-wsma_20_Close.py ::: AAPL - Profit/Loss: 84.17%
-wsma_20_Close.py ::: SPY - Profit/Loss: 7.47%
-
+Tue  9 May 2023 20:59:53 EDT
+AAPL sma_20_Close.py 101.60
+AAPL dwma.py 98.50
+AAPL ema_tema.py 97.83
+AAPL macd.py 95.00
+AAPL macd_wr14.py 92.26
+AAPL ao.py 90.83
+AAPL ema_9_21_cross.py 87.49
+AAPL tsi_2.py 87.08
+AAPL sma_9_21.py 86.48
+AAPL macd_wr20.py 85.09
+AAPL wsma_20_Close.py 84.17
+AAPL sma_13_20.py 81.55
+AAPL dwma_20_Close.py 79.70
+AAPL dwma_9_21_cross.py 76.53
+AAPL bb_rsi_sma.py 75.07
+AAPL tema_close_2.py 74.16
+AAPL stochastic_rsi_2.py 65.17
+AAPL tsi.py 63.92
+AAPL wsma_20_50.py 63.36
+AAPL adx_rsi.py 62.39
+AAPL ema_20_Close.py 62.22
+AAPL Close_4_days_down.py 62.14
+AAPL ema_20_50.py 60.14
+AAPL sma_13_34.py 58.55
+AAPL adx.py 57.44
+AAPL ema_50_200.py 52.53
+AAPL sma_20_50_cross.py 50.15
+AAPL roc.py 49.50
+AAPL cci_mfi_rsi_sto_wr.py 48.64
+AAPL mfi.py 41.13
+AAPL tema_close.py 41.10
+AAPL bb_4_days_down.py 36.71
+AAPL rsi14.py 34.25
+AAPL rsi_5_20_cross.py 22.92
+AAPL bb_kc_rsi.py 21.77
+AAPL bolinger_bands.py 20.00
+AAPL emav_20_50.py 13.49
+AAPL dwma_20_50.py 11.27
+AAPL rsi14_sma200.py 9.46
+AAPL rsi20.py 3.85
+AAPL bb_sto.py 0.00
+AAPL Profit strategy
+AAPL sma_50_200.py -7.77
+AAPL cci.py -9.68
+AAPL stochastic_rsi_1.py -15.20
