@@ -62,10 +62,14 @@ def backtest_strategy(stock, start_date):
 
 if __name__ == '__main__':
 
-    start_date = "2020-01-01"
-    end_date = "2023-04-19"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('ticker', nargs='+',  type=str, help='your name')
 
-    backtest_strategy("AAPL", start_date)
-    print ("\n")
-    backtest_strategy("SPY", start_date)
+    args = parser.parse_args()
+    start_date = "2020-01-01"
+
+    for symbol in args.ticker:
+
+        backtest_strategy(symbol, start_date )
+        print  ("\n")
 

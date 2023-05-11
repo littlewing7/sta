@@ -57,12 +57,16 @@ def backtest_strategy(stock, start_date):
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.2f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
 
-
 if __name__ == '__main__':
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('ticker', nargs='+',  type=str, help='your name')
+
+    args = parser.parse_args()
     start_date = "2020-01-01"
 
-    backtest_strategy("AAPL", start_date)
-    print  ("\n")
-    backtest_strategy("SPY", start_date)
+    for symbol in args.ticker:
+
+        backtest_strategy(symbol, start_date )
+        print  ("\n")
 

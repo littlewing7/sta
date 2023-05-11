@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# RETURN 53%
 
+import argparse
 import yfinance as yf
 import pandas as pd
 
@@ -60,10 +60,14 @@ def backtest_strategy(stock, start_date):
 
 if __name__ == '__main__':
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('ticker', nargs='+',  type=str, help='your name')
+
+    args = parser.parse_args()
     start_date = "2020-01-01"
 
-    backtest_strategy("AAPL", start_date)
-    print("\n")
-    backtest_strategy("SPY", start_date)
+    for symbol in args.ticker:
 
+        backtest_strategy(symbol, start_date )
+        print  ("\n")
 
