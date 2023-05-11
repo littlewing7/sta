@@ -2,6 +2,7 @@
 
 # https://medium.com/codex/algorithmic-trading-with-macd-in-python-1c2769a6ad1b
 
+import argparse
 import yfinance as yf
 import pandas as pd
 import numpy as np

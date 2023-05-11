@@ -4,6 +4,7 @@
 # Idea from: https://medium.com/@eymericplaisant/backtesting-chatgpt-investing-strategies-1-15-755-profit-part2-66cfff5cff32
 #
 
+import argparse
 import yfinance as yf
 import pandas as pd
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # https://medium.com/codex/algorithmic-trading-with-average-directional-index-in-python-2b5a20ecf06a
 
+import argparse
 import pandas as pd
 import numpy as np
 import yfinance as yf

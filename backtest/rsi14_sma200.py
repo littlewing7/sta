@@ -2,6 +2,7 @@
 
 # https://www.flowbank.com/en/research/trading-strategy-what-is-the-best-rsi-setting-a-good-rsi-to-buy
 
+import argparse
 import yfinance as yf
 import pandas as pd
 
