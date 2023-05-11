@@ -1,4 +1,4 @@
-Tue  9 May 2023 22:06:17 EDT
+Thu 11 May 2023 17:04:07 EDT
 AAPL sma_13_Close.py 108.61
 AAPL sma_20_Close.py 101.60
 AAPL dwma.py 98.50
@@ -19,9 +19,9 @@ AAPL tema_close_2.py 74.16
 AAPL stochastic_rsi_2.py 65.17
 AAPL tsi.py 63.92
 AAPL wsma_20_50.py 63.36
+AAPL Close_4_days_down.py 62.81
 AAPL adx_rsi.py 62.39
 AAPL ema_20_Close.py 62.22
-AAPL Close_4_days_down.py 62.14
 AAPL ema_20_50.py 60.14
 AAPL sma_13_34.py 58.55
 AAPL adx.py 57.44
