@@ -42,8 +42,8 @@ data['EMA_20_Close_Signal'] = np.select(
 plt.plot ( data['Close'],  alpha = 0.3, linewidth = 2,                  label = symbol + ' Price'  )
 plt.plot ( data["EMA_20"], alpha = 0.6, linewidth = 2, color='#FF006E', label = 'EMA_20' )
 
-plt.plot ( data.loc[data["EMA_20_Close_Signal"] ==  2.0].index, data["EMA_20"][data["EMA_20_Close_Signal"] ==  2.0], "^", markersize=10, color="g", label = 'BUY SIGNAL')
-plt.plot ( data.loc[data["EMA_20_Close_Signal"] == -2.0].index, data["EMA_20"][data["EMA_20_Close_Signal"] == -2.0], "v", markersize=10, color="r", label = 'SELL SIGNAL')
+plt.plot ( data.loc[data["EMA_20_Close_Signal"] == -2.0].index, data["EMA_20"][data["EMA_20_Close_Signal"] ==  -2.0], "^", markersize=10, color="g", label = 'BUY SIGNAL')
+plt.plot ( data.loc[data["EMA_20_Close_Signal"] ==  2.0].index, data["EMA_20"][data["EMA_20_Close_Signal"] ==  2.0], "v", markersize=10, color="r", label = 'SELL SIGNAL')
 
 plt.legend(loc = 'upper left')
 plt.title(f'{symbol}_{filename}')

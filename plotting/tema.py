@@ -21,7 +21,7 @@ plt.style.use('fivethirtyeight')
 plt.rcParams['figure.figsize'] = (20,10)
 
 symbol = 'AAPL'
-data = yf.download ( symbol, start='2020-01-01', progress=False)
+data = yf.download ( symbol, start='2022-01-01', progress=False)
 data = __TEMA ( data, 30 )
 
 

@@ -27,10 +27,10 @@ data["Signal"] = 0.0
 data['SMA_20_Close_Signal'] = np.select(
     [ ( data['SMA_20'].shift(1) <  data['Close'].shift(1) ) & ( data['SMA_20'] >  data['Close'] ) ,
       ( data['SMA_20'].shift(1) >  data['Close'].shift(1) ) & ( data['SMA_20'] <  data['Close'] ) ],
-[2, -2])
+[-2, 2])
 
 
-#print ( data.tail ( 60 ))
+print ( data.tail ( 60 ))
 
 # Plot the trading signals
 #plt.figure(figsize=(14,7))

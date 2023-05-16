@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
+import os
+
 import pandas as pd
 import matplotlib.pyplot as plt
-import math
 import numpy as np
-import yfinance as yf
 
-plt.style.use('fivethirtyeight')
-plt.rcParams['figure.figsize'] = (20, 10)
+import yfinance as yf
 
 def __SMA ( data, n ):
     data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
@@ -45,58 +44,80 @@ def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
 
     return data
 
+
+plt.style.use('fivethirtyeight')
+plt.rcParams['figure.figsize'] = (20,10)
+
+filename, ext =  os.path.splitext(os.path.basename(__file__))
+
 symbol = 'AAPL'
-data = yf.download( symbol, start='2020-01-01', progress=False)
+data = yf.download ( symbol, start='2022-01-01', progress=False)
 
 data = __SMA ( data, 13 )
 data = __SMA ( data, 20 )
 data = __BB ( data, 20 )
 data = __RSI ( data, 14 )
 
-buy_price = []
-sell_price = []
-bb_signal = []
-signal = 0
 
-for i in range(len(data)):
-    if ( data['SMA_13'][i] > data['BB_middle'][i] ) and ( data["RSI_14"][i] < 50 ):
-        if signal != 1:
-            buy_price.append(data[i])
-            sell_price.append(np.nan)
-            signal = 1
-            bb_signal.append(signal)
+def implement_strategy(prices, sma, middle, rsi ):
+    buy_price = []
+    sell_price = []
+    strategy_signal = []
+    signal = 0
+
+    for i in range(len(prices)):
+        if ( sma[i] > middle[i] ) and ( rsi[i] < 50 ):
+            if signal != 1:
+                buy_price.append(prices[i])
+                sell_price.append(np.nan)
+                signal = 1
+                strategy_signal.append(signal)
+            else:
+                buy_price.append(np.nan)
+                sell_price.append(np.nan)
+                strategy_signal.append(0)
+        elif  ( sma[i] < middle[i] ) and ( rsi[i] > 50 ):
+            if signal != -1:
+                buy_price.append(np.nan)
+                sell_price.append(prices[i])
+                signal = -1
+                strategy_signal.append(signal)
+            else:
+                buy_price.append(np.nan)
+                sell_price.append(np.nan)
+                strategy_signal.append(0)
         else:
             buy_price.append(np.nan)
             sell_price.append(np.nan)
-            bb_signal.append(0)
-    elif  ( data['SMA_13'][i] < data['BB_middle'][i] ) and ( data["RSI_14"][i] > 50 ):
-        if signal != -1:
-            buy_price.append(np.nan)
-            sell_price.append(data[i])
-            signal = -1
-            bb_signal.append(signal)
-        else:
-            buy_price.append(np.nan)
-            sell_price.append(np.nan)
-            bb_signal.append(0)
-    else:
-        buy_price.append(np.nan)
-        sell_price.append(np.nan)
-        bb_signal.append(0)
+            strategy_signal.append(0)
+
+    return buy_price, sell_price, strategy_signal
+
+buy_price, sell_price, strategy_signal = implement_strategy( data['Close'], data['SMA_13'], data['BB_middle'], data['RSI_14'])
+
+# TSI PLOT
+ax1 = plt.subplot2grid((11,1), (0,0), rowspan = 5, colspan = 1)
+ax2 = plt.subplot2grid((11,1), (6,0), rowspan = 5, colspan = 1)
+
+ax1.plot ( data['Close'], linewidth = 2)
+ax1.plot ( data.index, buy_price, marker = '^', markersize = 12, color = 'green', linewidth = 0, label = 'BUY SIGNAL')
+ax1.plot ( data.index, sell_price, marker = 'v', markersize = 12, color = 'r', linewidth = 0, label = 'SELL SIGNAL')
+ax1.legend()
+ax1.set_title(f'{symbol} {filename } TRADING SIGNALS')
 
 
 
-data['Close'].plot    ( label = 'Close PRICE', alpha = 0.3)
-data['BB_upper'].plot (label = 'UPPER BB', linestyle = '--', linewidth = 1, color = 'black')
-data['SMA_20'].plot   (label = 'MIDDLE BB', linestyle = '--', linewidth = 1.2, color = 'grey')
-data['BB_lower'].plot (label = 'LOWER BB', linestyle = '--', linewidth = 1, color = 'black')
+ax2.plot ( data['SMA_13'],        linewidth = 2, color = 'orange', label = 'SMA_13')
+ax2.plot ( data['Close'], linewidth = 2, color = 'skyblue', label = 'Close')
+ax2.set_title(f'{symbol} BB SMA_13 Close')
+ax2.legend()
 
-plt.scatter ( data.index, buy_price, marker = '^', color = 'green', label = 'BUY', s = 200)
-plt.scatter ( data.index, sell_price, marker = 'v', color = 'red', label = 'SELL', s = 200)
+ax2.plot ( data['BB_upper'], label = 'UPPER BB 20', linestyle = '--', linewidth = 1, color = 'black')
+ax2.plot ( data['SMA_20'],   label = 'MIDDLE BB 20',linestyle = '--', linewidth = 1.2, color = 'grey')
+ax2.plot ( data['BB_lower'], label = 'LOWER BB 20', linestyle = '--', linewidth = 1, color = 'black')
 
-plt.title(f'{symbol} BB STRATEGY TRADING SIGNALS')
-plt.legend(loc = 'upper left')
+#plt.show()
 
-plt.show()
-#plt.savefig ('_plots/' + symbol + '_BB.png')
+filename = "_plots/{}_{}.png".format ( symbol, filename )
+plt.savefig ( filename )
 

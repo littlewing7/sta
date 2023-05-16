@@ -430,9 +430,13 @@ while True:
         data = __MACD (data)
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
+        #data['MACD_Signal'] = np.select(
+        #    [ ( data['Trend_20'] > 1) & ((data['MACD_HIST'] > 0 ) & ( data['MACD_HIST'].shift(1)<0)) ,
+        #    (   data['Trend_20'] < 1) & ((data['MACD_HIST'] < 0 ) & ( data['MACD_HIST'].shift(1)>0))],
+        #    [2, -2])
         data['MACD_Signal'] = np.select(
-            [ ( data['Trend_20'] > 1) & ((data['MACD_HIST'] > 0 ) & ( data['MACD_HIST'].shift(1)<0)) ,
-            (   data['Trend_20'] < 1) & ((data['MACD_HIST'] < 0 ) & ( data['MACD_HIST'].shift(1)>0))],
+            [ ((data['MACD_HIST'] > 0 ) & ( data['MACD_HIST'].shift(1)<0)) ,
+              ((data['MACD_HIST'] < 0 ) & ( data['MACD_HIST'].shift(1)>0))],
             [2, -2])
 
         #########  KDJ  #####
