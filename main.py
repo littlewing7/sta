@@ -518,7 +518,8 @@ while True:
                 #print ("Loading file: strategies/" + strategy_file)
                 with open ( 'strategies/' + strategy_file ) as f: exec(f.read())
    
-        #print ("\n")
+        print ("\n")
+        time.sleep(1)
 
     #print ( strategies )
     #print ( indicators )        
