@@ -255,18 +255,23 @@ while True:
 
     # Use the list of stocks and integer value in the script
     for ticker in args.tickers:
-        
+
         #my_list = list ( set ( strategies[ticker] ))
         discord_message = ''
-        
+
         now = datetime.datetime.now()
 
         print("=====  " + ticker + "  =====  " + now.strftime("%Y-%m-%d %H:%M:%S") + "  =====" )
-    
+
         # Get stock data from Yahoo Finance
         #data = yf.download(ticker, period="5y")
         data = yf.download(ticker, period=period, interval = interval, progress=False, threads=True )
-     
+
+        # We need to fetch daily data in order to get strategy return numbers
+        if ( period != '1d' ):
+            data_1d = yf.download ( ticker, start='2020-01-01', progress=False, threads=True )
+            data_1d.to_csv('data/{}_1d.csv'.format ( ticker ) )
+
         data['Fibonacci_0.236'] = data['Close'].shift(0) * 0.236
         data['Fibonacci_0.382'] = data['Close'].shift(0) * 0.382
         data['Fibonacci_0.50']  = data['Close'].shift(0) * 0.50
@@ -280,7 +285,7 @@ while True:
         data = hammer ( data )
 
         #########  SMA 5, 8  #####
-        for i in [ 3, 5, 8, 9, 20, 21, 50, 100, 200]:
+        for i in [ 3, 5, 8, 9, 19, 20, 21, 50, 100, 200]:
             data = __SMA ( data, i )
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
