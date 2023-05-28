@@ -1,4 +1,4 @@
-Sat 27 May 2023 22:54:18 EDT
+Sat 27 May 2023 22:57:27 EDT
 AMD macd.py 140.08
 AMD tsi_2.py 117.45
 AMD roc.py 97.16

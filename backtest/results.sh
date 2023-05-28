@@ -2,20 +2,20 @@
 
 if [ $# -eq 0 ]
   then
-    echo "No arguments supplied"
+    echo "Try $0 <ticker>"
     exit
 fi
 
 if [ -z "$1" ]
   then
-    echo "No argument supplied"
+    echo "Try $0 <ticker>"
     exit
 fi
 
 
 ticker=$1
 
-rm -f results.txt; for i in `ls -1 *py | egrep -v BENCH`;do ( test -x $i && python3 $i -t $ticker | egrep Profit >> results.txt; echo >> results.txt);done
+rm -f results.txt; for i in `ls -1 *py | egrep -v BENCH`;do (echo "Running python3 $i -t $ticker"; test -x $i && python3 $i -t $ticker | egrep Profit >> results.txt; echo >> results.txt);done
 
 date > r.tmp
 
