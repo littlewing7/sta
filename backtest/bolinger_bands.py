@@ -81,8 +81,8 @@ def backtest_strategy(stock, start_date):
     # Print results
     print(f"\n{name} ::: {stock} Backtest Results ({start_date} - today)")
     print(f"---------------------------------------------")
-    print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.2f}")
-    print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
+    print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
+    print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
 if __name__ == '__main__':
 
