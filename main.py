@@ -280,7 +280,7 @@ while True:
         data = hammer ( data )
 
         #########  SMA 5, 8  #####
-        for i in [ 5, 8, 9, 20, 21, 50, 100, 200]:
+        for i in [ 3, 5, 8, 9, 20, 21, 50, 100, 200]:
             data = __SMA ( data, i )
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
@@ -517,9 +517,12 @@ while True:
             for strategy_file in files_py:
                 #print ("Loading file: strategies/" + strategy_file)
                 with open ( 'strategies/' + strategy_file ) as f: exec(f.read())
-   
+
+        data.to_csv('data/{}_{}.csv'.format (ticker, interval) )
+
         print ("\n")
         time.sleep(1)
+
 
     #print ( strategies )
     #print ( indicators )        

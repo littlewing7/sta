@@ -1,5 +1,5 @@
 # ignore all logs
 *.log
 push.sh
-
+data/*.csv
 
