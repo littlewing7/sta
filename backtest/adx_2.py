@@ -7,6 +7,8 @@ import numpy as np
 import yfinance as yf
 from math import floor
 
+import os, datetime
+
 def __ADX ( data, lookback):
     high = data["High"]
     low = data["Low"]

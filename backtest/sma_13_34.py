@@ -4,6 +4,10 @@ import argparse
 import yfinance as yf
 import pandas as pd
 
+import os, datetime
+
+pd.set_option('display.precision', 2)
+
 def __SMA ( data, n ):
     data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
     return data
@@ -13,8 +17,19 @@ def backtest_strategy(stock, start_date):
     """
     Function to backtest a strategy
     """
-    # Download data
-    data = yf.download(stock, start=start_date, progress=False)
+
+    csv_file = "../data/{}_1d.csv".format( stock )
+
+    # Get today's date
+    today = datetime.datetime.now().date()
+
+    # if the file was downloaded today, read from it
+    if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os.path.getmtime ( csv_file ) ).date() == today ) ):
+        data = pd.read_csv ( csv_file, index_col='Date' )
+    else:
+        # Download data
+        data = yf.download(stock, start=start_date, progress=False)
+        data.to_csv ( csv_file )
 
     # Calculate Stochastic RSI
     data = __SMA (data, 13)
@@ -62,7 +77,7 @@ def backtest_strategy(stock, start_date):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('ticker', nargs='+',  type=str, help='your name')
+    parser.add_argument('-t', '--ticker', nargs='+',  type=str, help='ticker')
 
     args = parser.parse_args()
     start_date = "2020-01-01"
@@ -71,4 +86,3 @@ if __name__ == '__main__':
 
         backtest_strategy(symbol, start_date )
         print  ("\n")
-

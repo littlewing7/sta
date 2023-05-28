@@ -3,7 +3,6 @@
 import argparse
 import yfinance as yf
 import pandas as pd
-
 import numpy as np
 
 import os, datetime
@@ -17,25 +16,47 @@ def __CCI(df, ndays = 20):
     df['sma'] = df['TP'].rolling(ndays).mean()
     df['mad'] = df['TP'].rolling(ndays).apply(lambda x: pd.Series(x).mad())
 
-    df['CCI_{}'.format(ndays)] = (df['TP'] - df['sma']) / (0.015 * df['mad'])
-
-    df['CCI_CrossOverBought'] = np.where ( ( df['CCI_20'].shift(1) < 100)  & ( df['CCI_20'] >= 100),  1, 0 )
-    df['CCI_CrossOverSold']   = np.where ( ( df['CCI_20'].shift(1) > -100) & ( df['CCI_20'] <= -100), 1, 0 )
-
-    # 2 = LONG, -2 = SHORT
-    #df['CCI_Signal'] = np.select(
-    #    [ ( df['CCI_20'] > -100 ) & ( df['CCI_20'].shift(1) < -100 ),
-    #      ( df['CCI_20'] <  100)  & ( df['CCI_20'].shift(1) >  100 ) ],
-    #    [2, -2])
-
+    df['CCI_20'] = (df['TP'] - df['sma']) / (0.015 * df['mad'])
 
     df = df.drop('TP', axis=1)
     df = df.drop('sma', axis=1)
     df = df.drop('mad', axis=1)
 
+
+    cci_upper_level  =  100
+    cci_lower_level  =  (-100)
+    cci_window = 20
+
+    df['CCI_Signal'] = np.select(
+        [ ( df['CCI_{}'.format(cci_window)].shift(1) < cci_lower_level ) & ( df['CCI_{}'.format(cci_window)] > cci_lower_level ) ,
+          ( df['CCI_{}'.format(cci_window)].shift(1) > cci_upper_level ) & ( df['CCI_{}'.format(cci_window)] < cci_upper_level ) ],
+        [2, -2])
+
     return df
 
-def backtest_strategy(stock, start_date):
+def __WR (data, t):
+    highh = data["High"].rolling(t).max()
+    lowl  = data["Low"].rolling(t).min()
+    close = data["Close"]
+
+    data['WR_{}'.format(t)] = -100 * ((highh - close) / (highh - lowl))
+
+
+    wr_window      = 20
+    wr_upper_level = -20
+    wr_lower_level = -80
+
+    # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
+    data['WR_Signal'] = np.select(
+         [ ( data['WR_{}'.format(wr_window)].shift(1) > wr_upper_level ) & ( data['WR_{}'.format(wr_window)] < wr_upper_level ),
+           ( data['WR_{}'.format(wr_window)].shift(1) < wr_lower_level ) & ( data['WR_{}'.format(wr_window)] > wr_lower_level )],
+         [-2, 2])
+
+    return data
+
+
+
+def backtest_strategy(stock, start_date ):
     """
     Function to backtest a strategy
     """
@@ -53,8 +74,12 @@ def backtest_strategy(stock, start_date):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate indicators
+
+    # Calculate Stochastic RSI
     data = __CCI ( data, 20 )
+    data = __WR ( data, 20 )
+
+    #print ( data.tail(60))
 
     # Set initial conditions
     position = 0
@@ -62,17 +87,32 @@ def backtest_strategy(stock, start_date):
     sell_price = 0
     returns = []
 
+
     # Loop through data
     for i in range(len(data)):
+        go_long  = 0
+        go_short = 0
+
+        if ( data['CCI_Signal'][i] == 2 ):
+            go_long += 1
+        if ( data['WR_Signal'][i] == 2 ):
+            go_long += 1
+
+        if ( data['CCI_Signal'][i] == -2 ):
+            go_short += 1
+        if ( data['WR_Signal'][i] == -2 ):
+            go_short += 1
 
         # Buy signal
-        if ( data['CCI_20'][i-1] < -100 ) & ( data['CCI_20'][i] > -100 ) and position == 0:
+        #if ( data['MFI_Signal'][i] == 2 and  (position == 0 )):
+        if ( go_long >= 2 and  (position == 0 )):
             position = 1
             buy_price = data["Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( data["CCI_20"][i-1] > 100 and data["CCI_20"][i] < 100 ) and position == 1:
+        #elif ( data['MFI_Signal'][i] == -2 and  (position == 1 )):
+        elif ( go_short >= 2 and ( position == 1 )):
             position = 0
             sell_price = data["Close"][i]
             #print(f"Selling {stock} at {sell_price}")
@@ -91,6 +131,7 @@ def backtest_strategy(stock, start_date):
     print(f"---------------------------------------------")
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.2f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.2f}%")
+
 
 if __name__ == '__main__':
 

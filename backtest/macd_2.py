@@ -9,6 +9,8 @@ import numpy as np
 from math import floor
 import matplotlib.pyplot as plt
 
+import os, datetime
+
 def __MACD (data, m=12, n=26, p=9, pc='Close'):
 
     data = data.copy()
