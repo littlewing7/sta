@@ -237,11 +237,21 @@ for ticker in args.tickers:
 
 while True:
 
-    def print_log ( strategy_name, long_short='LONG', *ind):
+    def print_log ( strategy_name, long_short='LONG', perc=0, *ind):
         my_list = sorted ( set ( strategies[ticker] ) )
+
+        #spath = "backtest/{}.py".format ( strategy_name )
+        #print ( spath )
+
+        # backtest each strategy and return a number
+        #if ( os.path.exists ( spath )):
+        #    with open ( spath ) as f: exec(f.read())
+        #percentage = backtest_strategy ( "AMD", '2020-01-01' )
+        #print ( " Streategy {} percentage {}".format ( strategy_name, percentage ) )
+
         #print ( my_list )
         if strategy_name not in my_list:
-            message = f"{ticker} {interval} ---> {long_short} ::: {strategy_name} ::: {ind}"
+            message = f"{ticker} {interval} ---> {long_short} ::: {strategy_name} ::: {ind} ::: {perc}"
             logging.warning(message)
             strategies[ticker].append(strategy_name)
             #indicators[ticker].extend ( ind )
