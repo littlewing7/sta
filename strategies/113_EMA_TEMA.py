@@ -99,7 +99,7 @@ if ( _close > tema_30 ) and ( tema_30 > tema_30_1 ) and ( _close > _close_1 ) an
     print_log ( '113_EMA_TEMA', 'LONG', [ 'Close', 'EMA_9', 'TEMA_30' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
 if ( _close < tema_30 ) and ( tema_30 < tema_30_1 ) and ( _close < _close_1) and ( _close < ema_9 ) and ( ema_9 < ema_9_1):
-    print_log ( '113_EMA_TEMA', 'SHORT', [ 'Close', 'EMA_9', 'TEMA_30' ] )
+    print_log ( '113_EMA_TEMA', 'SHORT', [ 'Close', 'EMA_9', 'TEMA_30' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
 
 
