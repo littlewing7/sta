@@ -251,7 +251,7 @@ while True:
 
         #print ( my_list )
         if strategy_name not in my_list:
-            message = f"{ticker} {interval} ---> {long_short} ::: {strategy_name} ::: ret {ind} ::: {perc}"
+            message = f"{ticker} {interval} ---> {long_short} ::: {strategy_name} ::: return {ind} ::: {perc}"
             logging.warning(message)
             strategies[ticker].append(strategy_name)
             #indicators[ticker].extend ( ind )
