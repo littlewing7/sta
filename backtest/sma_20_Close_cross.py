@@ -10,7 +10,8 @@ def __SMA ( data, n ):
     data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
     return data
 
-def backtest_strategy(stock, start_date):
+
+def backtest_strategy(stock, start_date ):
     """
     Function to backtest a strategy
     """
@@ -28,8 +29,8 @@ def backtest_strategy(stock, start_date):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate Stochastic RSI
-    data = __SMA (data, 19)
+    # Calculate indicator
+    data = __SMA (data, 20)
 
     # Set initial conditions
     position = 0
@@ -40,16 +41,16 @@ def backtest_strategy(stock, start_date):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if data["Close"][i] > data["SMA_19"][i] and data["Close"][i - 1] < data["SMA_19"][i - 1] and position == 0:
+        if data["Adj Close"][i] > data["SMA_20"][i] and data["Adj Close"][i - 1] < data["SMA_20"][i - 1] and position == 0:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             today = data.index[i]
             #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
-        elif data["Close"][i] < data["SMA_19"][i] and data["Close"][i - 1]  > data["SMA_19"][i - 1] and position == 1:
+        elif data["Adj Close"][i] < data["SMA_20"][i] and data["Adj Close"][i - 1]  > data["SMA_20"][i - 1] and position == 1:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             today = data.index[i]
             #print(f"Selling {stock} at {sell_price} @ {today}")
 

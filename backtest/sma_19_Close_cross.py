@@ -4,25 +4,11 @@ import argparse
 import yfinance as yf
 import pandas as pd
 
-import numpy as np
-
 import os, datetime
 
-import warnings
-warnings.simplefilter ( action='ignore', category=Warning )
-
-
-def __TEMA(data, n=30):
-    """
-    Triple Exponential Moving Average (TEMA)
-    """
-    ema1 = data['Close'].ewm(span=n, adjust=False).mean()
-    ema2 = ema1.ewm(span=n, adjust=False).mean()
-    ema3 = ema2.ewm(span=n, adjust=False).mean()
-    tema = 3 * (ema1 - ema2) + ema3
-    data['TEMA_{}'.format(n)] = tema
+def __SMA ( data, n ):
+    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
     return data
-
 
 def backtest_strategy(stock, start_date):
     """
@@ -42,10 +28,8 @@ def backtest_strategy(stock, start_date):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # EMA 9, TEMA 30
-    data = __TEMA ( data, 30 )
-
-    #print ( data.tail(2))
+    # Calculate Stochastic RSI
+    data = __SMA (data, 19)
 
     # Set initial conditions
     position = 0
@@ -56,16 +40,18 @@ def backtest_strategy(stock, start_date):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if (   data["Close"][i] > data["TEMA_30"][i] ) and ( data["Close"][i - 1] < data["TEMA_30"][i - 1] ) and ( data["TEMA_30"][i] > data["TEMA_30"][i - 1] ) and ( data["Close"][i] > data["Close"][i - 1] ) and (position == 0):
+        if data["Adj Close"][i] > data["SMA_19"][i] and data["Adj Close"][i - 1] < data["SMA_19"][i - 1] and position == 0:
             position = 1
             buy_price = data["Adj Close"][i]
-            #print(f"Buying {stock} at {buy_price}")
+            today = data.index[i]
+            #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
-        elif ( data["Close"][i] < data["TEMA_30"][i] ) and ( data["Close"][i - 1] > data["TEMA_30"][i - 1] ) and ( data["TEMA_30"][i] < data["TEMA_30"][i - 1] ) and ( data["Close"][i] < data["Close"][i - 1])  and position == 1:
+        elif data["Adj Close"][i] < data["SMA_19"][i] and data["Adj Close"][i - 1]  > data["SMA_19"][i - 1] and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
-            #print(f"Selling {stock} at {sell_price}")
+            today = data.index[i]
+            #print(f"Selling {stock} at {sell_price} @ {today}")
 
             # Calculate returns
             returns.append((sell_price - buy_price) / buy_price)

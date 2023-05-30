@@ -52,14 +52,14 @@ def backtest_strategy(stock, start_date):
         # Buy signal
         if data["WSMA_20"][i] > data["WSMA_50"][i] and data["WSMA_20"][i - 1] < data["WSMA_50"][i - 1] and position == 0:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             today = data.index[i]
             #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
         elif data["WSMA_20"][i] < data["WSMA_50"][i] and data["WSMA_20"][i - 1]  > data["WSMA_50"][i - 1] and position == 1:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             today = data.index[i]
             #print(f"Selling {stock} at {sell_price} @ {today}")
 

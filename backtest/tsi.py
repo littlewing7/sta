@@ -12,7 +12,7 @@ import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
 def __TSI ( data, long, short, signal):
-    close = data["Close"]
+    close = data["Adj Close"]
     diff = close - close.shift(1)
     abs_diff = abs(diff)
 
