@@ -34,8 +34,8 @@ def __CCI(df, ndays = 20):
 
     df['CCI_{}'.format(ndays)] = (df['TP'] - df['sma']) / (0.015 * df['mad'])
 
-    df['CCI_CrossOverBought'] = np.where ( ( df['CCI_20'].shift(1) < 100)  & ( df['CCI_20'] >= 100),  1, 0 )
-    df['CCI_CrossOverSold']   = np.where ( ( df['CCI_20'].shift(1) > -100) & ( df['CCI_20'] <= -100), 1, 0 )
+    #df['CCI_CrossOverBought'] = np.where ( ( df['CCI_{}'.format(ndays)].shift(1) < 100)  & ( df['CCI_{}'.format(ndays)] >= 100),  1, 0 )
+    #df['CCI_CrossOverSold']   = np.where ( ( df['CCI_{}'.format(ndays)].shift(1) > -100) & ( df['CCI_{}'.format(ndays)] <= -100), 1, 0 )
 
     # 2 = LONG, -2 = SHORT
     #df['CCI_Signal'] = np.select(

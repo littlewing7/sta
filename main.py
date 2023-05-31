@@ -426,9 +426,11 @@ while True:
              ( data['CCI_{}'.format(cci_window)].shift(1) > cci_upper_level ) & ( data['CCI_{}'.format(cci_window)] < cci_upper_level ) ],
             [2, -2])
 
+
+        data = __CCI ( data, 14 )
         data['CCI_Signal_14'] = np.select(
-           [ ( data['CCI_{}'.format(14)].shift(1) < cci_lower_level ) & ( data['CCI_{}'.format(14)] > cci_lower_level ) ,
-             ( data['CCI_{}'.format(14)].shift(1) > cci_upper_level ) & ( data['CCI_{}'.format(14)] < cci_upper_level ) ],
+           [ ( data['CCI_14'].shift(1) < cci_lower_level ) & ( data['CCI_14'] > cci_lower_level ) ,
+             ( data['CCI_14'].shift(1) > cci_upper_level ) & ( data['CCI_14'] < cci_upper_level ) ],
             [2, -2])
 
 
