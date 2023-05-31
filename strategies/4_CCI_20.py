@@ -40,13 +40,13 @@ def backtest_strategy(stock, start_date):
         # Buy signal
         if ( data['CCI_20'][i-1] < -100 ) & ( data['CCI_20'][i] > -100 ) and position == 0:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
         elif ( data["CCI_20"][i-1] > 100 and data["CCI_20"][i] < 100 ) and position == 1:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
@@ -63,14 +63,10 @@ def backtest_strategy(stock, start_date):
 # Optimal ticker interval for the strategy.
 timeframe = '15m'
 
-# CCI 20 crossover, crossunder
-data = __SMA  ( data, 5 )
-data = __SMA ( data, 8 )
-
 data = __CCI ( data, 20 )
 
 if data['CCI_Signal'][-1] == 2:
-    print_log ( '4_CCI', 'LONG', [ 'CCI_20' ], backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( '4_CCI_20', 'LONG', [ 'CCI_20' ], backtest_strategy ( ticker , '2020-01-01' ) )
 
 if data['CCI_Signal'][-1] == -2:
-    print_log ( '4_CCI', 'SHORT', [ 'CCI_20' ], backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( '4_CCI_20', 'SHORT', [ 'CCI_20' ], backtest_strategy ( ticker , '2020-01-01' ) )

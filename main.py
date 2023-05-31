@@ -414,7 +414,7 @@ while True:
         cci_upper_level  =  100
         cci_lower_level  =  (-100)
         cci_window = 20
-        
+
         data = __CCI (data, cci_window)
 
         data = __CCI ( data, 170 )
@@ -425,7 +425,12 @@ while True:
            [ ( data['CCI_{}'.format(cci_window)].shift(1) < cci_lower_level ) & ( data['CCI_{}'.format(cci_window)] > cci_lower_level ) ,
              ( data['CCI_{}'.format(cci_window)].shift(1) > cci_upper_level ) & ( data['CCI_{}'.format(cci_window)] < cci_upper_level ) ],
             [2, -2])
-        
+
+        data['CCI_Signal_14'] = np.select(
+           [ ( data['CCI_{}'.format(14)].shift(1) < cci_lower_level ) & ( data['CCI_{}'.format(14)] > cci_lower_level ) ,
+             ( data['CCI_{}'.format(14)].shift(1) > cci_upper_level ) & ( data['CCI_{}'.format(14)] < cci_upper_level ) ],
+            [2, -2])
+
 
         #####  Bolinger Bands  #####
         bb_window = 20
