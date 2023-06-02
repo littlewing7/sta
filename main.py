@@ -15,11 +15,13 @@ try:
     import yfinance as yf
     import numpy as np
     import pandas as pd
+    import bisect
 except ModuleNotFoundError or ImportError as ee:
     print('Error importing python module: {0}'.format(ee.msg), file=sys.stderr)
     sys.exit(1)
 except Exception as ee:
     print(ee)
+
 
 import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
@@ -131,6 +133,62 @@ from util.wma   import WMA
 
 from util.candles import hammer
 
+from util.support import isSupport, isResistance, sr
+
+def find_position(numbers, target):
+    numbers = [float(num) for num in numbers]  # Convert string numbers to floats
+    index = bisect.bisect_left(numbers, target)
+    if index == 0:
+        return "Number is less than all elements in the list."
+    elif index == len(numbers):
+        return "Number is greater than all elements in the list."
+    else:
+        lower_number = numbers[index-1]
+        upper_number = numbers[index]
+
+        percentage_lower = (target - lower_number) / (upper_number - lower_number) * 100
+        percentage_lower = round ( percentage_lower, 2 )
+
+        percentage_upper = 100 - percentage_lower
+        percentage_upper = round ( percentage_upper, 2 )
+
+        return f"                             {target} is between {lower_number} ( {percentage_lower:.2f} %  away)  and {upper_number} ( {percentage_upper:.2f} %  away )"
+
+
+def find_position_in_dictionary(dictionary, number):
+    # Convert string values to float values
+    float_dict = {k: float(v) for k, v in dictionary.items()}
+
+    # Sort the dictionary values
+    sorted_values = sorted(float_dict.values())
+
+    # Find the two values between which the number is positioned
+    lower_value = None
+    upper_value = None
+
+    for value in sorted_values:
+        if value <= number:
+            lower_value = value
+        else:
+            upper_value = value
+            break
+
+    # Calculate the percentage distance
+    if lower_value is None:
+        lower_percentage = 0.0
+        upper_percentage = 100.0
+    elif upper_value is None:
+        lower_percentage = 100.0
+        upper_percentage = 0.0
+    else:
+        lower_distance = number - lower_value
+        upper_distance = upper_value - number
+        total_distance = upper_value - lower_value
+
+        lower_percentage = (lower_distance / total_distance) * 100
+        upper_percentage = (upper_distance / total_distance) * 100
+
+    return lower_value, upper_value, lower_percentage, upper_percentage
 
 
 
@@ -269,9 +327,9 @@ while True:
         #my_list = list ( set ( strategies[ticker] ))
         discord_message = ''
 
+
         now = datetime.datetime.now()
 
-        print("=====  " + ticker + "  =====  " + now.strftime("%Y-%m-%d %H:%M:%S") + "  =====" )
 
         # Get stock data from Yahoo Finance
         #data = yf.download(ticker, period="5y")
@@ -281,6 +339,43 @@ while True:
         if ( period != '1d' ):
             data_1d = yf.download ( ticker, start='2020-01-01', progress=False, threads=True )
             data_1d.to_csv('data/{}_1d.csv'.format ( ticker ) )
+
+
+
+        # Current price, percentage from the previous day
+
+        current_price = data["Close"][-1]
+        current_price = round ( current_price, 2 )
+
+        # Get the price change percentage from the previous day
+        previous_close_price = data["Close"][-2]
+
+        price_change_percentage = ((current_price - previous_close_price) / previous_close_price) * 100
+        price_change_percentage = round(price_change_percentage, 2)  # Round to 2 decimal places
+
+        info = " [ {}  {} % ] ".format ( current_price, price_change_percentage )
+        print ( "=====  " + ticker + info + "  =====  " + now.strftime("%Y-%m-%d %H:%M:%S") + "  =====" )
+
+
+        #####  Support and R !!!  #####
+        with open ( 'util/fib.py') as f: exec(f.read())
+
+        #print ( "         [%s] FIBs CAM ---> %s" % ( symbol,  pivot_levels(_open, _high, _low, _close) ) )
+        #print ( "         [%s] ATR_band ---> (LOW %.2f, %.2f%% away )   CUR %s   (MAX %.2f, %.2f%% away)" % ( symbol, atr_band_lower, 100 - ( atr_band_lower * 100 / price ), price_string, atr_band_higher, 100 - ( price * 100 / atr_band_higher  ) ) )
+        print ( "%s  INFO  SupRes   ---> %s" % ( ticker, sr ( data ) ) )
+        position = find_position( sr ( data ), current_price )
+        print ( position )
+        print ()
+
+
+        #####  FIB !!!  #####
+        print ( "%s  INFO  FIBs     ---> %s" % ( ticker, fib ( data ) ) )
+        lower, upper, lower_percentage, upper_percentage = find_position_in_dictionary ( fib ( data ), current_price)
+        print (f"                            FIB  Lower value: {lower}, {lower_percentage:.2f} %  away")
+        print (f"                            FIB  Upper value: {upper}, {upper_percentage:.2f} %  away")
+        print ()
+
+
 
         data['Fibonacci_0.236'] = data['Close'].shift(0) * 0.236
         data['Fibonacci_0.382'] = data['Close'].shift(0) * 0.382
