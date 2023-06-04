@@ -1,4 +1,4 @@
-Tue 30 May 2023 19:52:02 EDT
+Sun  4 Jun 2023 15:18:12 EDT
 XLB tema_close.py 63
 XLB bb_kc_rsi.py 61
 XLB dwma_20_Close.py 53
@@ -6,16 +6,18 @@ XLB stochastic_rsi_2.py 47
 XLB rsi20.py 45
 XLB sma_13_48.py 40
 XLB ema_20_Close.py 37
+XLB cci_sma.py 37
 XLB mfi.py 35
 XLB wsma_20_50_cross.py 33
 XLB sma_9_21.py 31
 XLB sma_20_50_cross.py 30
-XLB rsi14_sma200.py 29
 XLB macd_wr14.py 28
 XLB emav_20_50.py 28
+XLB rsi14_sma200.py 26
 XLB macd_wr20.py 26
 XLB ema_20_50.py 26
-XLB bb_rsi_sma.py 26
+XLB bolinger_bands_rsi1.py 26
+XLB bb_rsi_sma.py 25
 XLB ema_50_200.py 24
 XLB bolinger_bands_mid.py 23
 XLB sma_13_20.py 22
@@ -34,10 +36,11 @@ XLB ema_9_21_cross.py 11
 XLB cci.py 10
 XLB bb_4_days_down.py 10
 XLB adx.py 10
+XLB bolinger_bands_rsi2.py 9
 XLB ao.py 9
 XLB tsi.py 7
+XLB Close_4_days_down.py 7
 XLB bolinger_bands.py 6
-XLB Close_4_days_down.py 4
 XLB tema30_close_cross.py 3
 XLB wsma_20_Close.py 2
 XLB stochastic_rsi_1.py 1

@@ -1,4 +1,4 @@
-Tue 30 May 2023 19:51:25 EDT
+Sun  4 Jun 2023 15:17:36 EDT
 XLU tsi.py 63
 XLU ema_tema.py 58
 XLU tsi_2.py 50
@@ -11,7 +11,9 @@ XLU cci_wr.py 30
 XLU stochastic_rsi_2.py 28
 XLU bb_4_days_down.py 26
 XLU macd_wr14.py 25
+XLU bolinger_bands_rsi2.py 25
 XLU cci_mfi_rsi_sto_wr.py 22
+XLU bolinger_bands_rsi1.py 22
 XLU bolinger_bands.py 22
 XLU cci.py 20
 XLU tema_close.py 18
@@ -23,6 +25,7 @@ XLU sma_50_200.py 7
 XLU ema_9_21_cross.py 7
 XLU dwma_20_Close.py 7
 XLU sma_9_21.py 6
+XLU cci_sma.py 3
 XLU rsi_5_20_cross.py 0
 XLU bb_sto.py 0
 XLU tema30_close_cross.py -1

@@ -1,7 +1,9 @@
-Tue 30 May 2023 19:52:38 EDT
+Sun  4 Jun 2023 15:18:48 EDT
 XLV rsi14.py 54
 XLV tema_close.py 53
 XLV adx_rsi.py 48
+XLV bolinger_bands_rsi2.py 41
+XLV bolinger_bands_rsi1.py 41
 XLV bb_kc_rsi.py 39
 XLV bolinger_bands.py 36
 XLV emav_20_50.py 35
@@ -17,7 +19,7 @@ XLV tsi.py 26
 XLV ema_tema.py 25
 XLV dwma_9_21_cross.py 25
 XLV sma_9_21.py 22
-XLV rsi14_sma200.py 21
+XLV rsi14_sma200.py 20
 XLV ema_9_21_cross.py 20
 XLV cci_mfi_rsi_sto_wr.py 20
 XLV rsi20.py 19
@@ -27,6 +29,7 @@ XLV tsi_2.py 13
 XLV Close_4_days_down.py 12
 XLV tema30_close_cross.py 11
 XLV sma_20_Close_cross.py 11
+XLV cci_sma.py 11
 XLV bolinger_bands_mid.py 11
 XLV sma_13_20.py 9
 XLV cci_wr.py 9
@@ -35,10 +38,10 @@ XLV stochastic_rsi_1.py 7
 XLV rsi_5_20_cross.py 7
 XLV wsma_20_50_cross.py 6
 XLV sma_19_Close_cross.py 5
-XLV dwma_20_50.py 5
 XLV wsma_20_Close.py 4
 XLV sma_13_34.py 4
 XLV cci.py 4
+XLV dwma_20_50.py 2
 XLV bb_sto.py 0
 XLV sma_13_48.py -2
 XLV roc.py -2

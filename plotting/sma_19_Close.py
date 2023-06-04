@@ -20,13 +20,13 @@ symbol = 'AAPL'
 data = yf.download( symbol, start="2020-01-01", progress=False)
 
 # SMA
-data["SMA_20"] = data["Close"].rolling(window=20).mean()
+data["SMA_19"] = data["Close"].rolling(window=19).mean()
 
 # Buy/sell signals for  SMA crosses
 data["Signal"] = 0.0
-data['SMA_20_Close_Signal'] = np.select(
-    [ ( data['SMA_20'].shift(1) <  data['Close'].shift(1) ) & ( data['SMA_20'] >  data['Close'] ) ,
-      ( data['SMA_20'].shift(1) >  data['Close'].shift(1) ) & ( data['SMA_20'] <  data['Close'] ) ],
+data['SMA_19_Close_Signal'] = np.select(
+    [ ( data['SMA_19'].shift(1) <  data['Close'].shift(1) ) & ( data['SMA_19'] >  data['Close'] ) ,
+      ( data['SMA_19'].shift(1) >  data['Close'].shift(1) ) & ( data['SMA_19'] <  data['Close'] ) ],
 [-2, 2])
 
 
@@ -36,10 +36,10 @@ data['SMA_20_Close_Signal'] = np.select(
 #plt.figure(figsize=(14,7))
 
 plt.plot ( data['Close'],  alpha = 0.3, linewidth = 2,                  label = symbol + ' Price'  )
-plt.plot ( data["SMA_20"], alpha = 0.6, linewidth = 2, color='#FF006E', label = 'SMA_20' )
+plt.plot ( data["SMA_19"], alpha = 0.6, linewidth = 2, color='#FF006E', label = 'SMA_19' )
 
-plt.plot ( data.loc[data["SMA_20_Close_Signal"] ==  2.0].index, data["SMA_20"][data["SMA_20_Close_Signal"] ==  2.0], "^", markersize=10, color="g", label = 'BUY SIGNAL')
-plt.plot ( data.loc[data["SMA_20_Close_Signal"] == -2.0].index, data["SMA_20"][data["SMA_20_Close_Signal"] == -2.0], "v", markersize=10, color="r", label = 'SELL SIGNAL')
+plt.plot ( data.loc[data["SMA_19_Close_Signal"] ==  2.0].index, data["SMA_19"][data["SMA_19_Close_Signal"] ==  2.0], "^", markersize=10, color="g", label = 'BUY SIGNAL')
+plt.plot ( data.loc[data["SMA_19_Close_Signal"] == -2.0].index, data["SMA_19"][data["SMA_19_Close_Signal"] == -2.0], "v", markersize=10, color="r", label = 'SELL SIGNAL')
 
 plt.legend(loc = 'upper left')
 plt.title(f'{symbol}_{filename}')

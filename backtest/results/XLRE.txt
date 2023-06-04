@@ -1,4 +1,4 @@
-Tue 30 May 2023 19:48:54 EDT
+Sun  4 Jun 2023 15:15:11 EDT
 XLRE rsi20.py 53
 XLRE ema_tema.py 42
 XLRE macd.py 41
@@ -6,6 +6,7 @@ XLRE macd_wr14.py 38
 XLRE bolinger_bands.py 37
 XLRE tsi.py 34
 XLRE bb_4_days_down.py 34
+XLRE bolinger_bands_rsi2.py 28
 XLRE rsi_5_20_cross.py 26
 XLRE bb_sto.py 26
 XLRE stochastic_rsi_2.py 23
@@ -14,18 +15,20 @@ XLRE tema_close.py 21
 XLRE Close_4_days_down.py 19
 XLRE tsi_2.py 15
 XLRE ema_50_200.py 15
+XLRE bolinger_bands_rsi1.py 12
 XLRE dwma.py 10
 XLRE bb_kc_rsi.py 10
 XLRE dwma_20_Close.py 8
 XLRE emav_20_50.py 5
 XLRE cci_wr.py 4
-XLRE bb_rsi_sma.py 3
 XLRE sma_9_21.py 2
 XLRE rsi14.py 2
+XLRE bb_rsi_sma.py 2
 XLRE cci.py 0
 XLRE adx.py 0
+XLRE cci_sma.py -1
+XLRE bolinger_bands_mid.py -1
 XLRE tema30_close_cross.py -3
-XLRE bolinger_bands_mid.py -3
 XLRE sma_13_34.py -5
 XLRE wsma_20_50_cross.py -6
 XLRE sma_19_Close_cross.py -6
@@ -47,4 +50,4 @@ XLRE dwma_20_50.py -17
 XLRE ao.py -18
 XLRE sma_13_20.py -19
 XLRE dwma_9_21_cross.py -20
-XLRE rsi14_sma200.py -25
+XLRE rsi14_sma200.py -24

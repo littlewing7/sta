@@ -1,4 +1,4 @@
-Tue 30 May 2023 19:56:22 EDT
+Sun  4 Jun 2023 15:12:12 EDT
 AAPL ema_tema.py 98
 AAPL dwma.py 97
 AAPL macd.py 94
@@ -29,8 +29,11 @@ AAPL ema_50_200.py 53
 AAPL sma_13_Close.py 51
 AAPL wsma_20_Close.py 50
 AAPL sma_20_50_cross.py 50
+AAPL bolinger_bands_rsi2.py 50
 AAPL roc.py 49
 AAPL cci_mfi_rsi_sto_wr.py 49
+AAPL cci_sma.py 47
+AAPL bolinger_bands_rsi1.py 44
 AAPL mfi.py 41
 AAPL bb_4_days_down.py 37
 AAPL rsi14.py 34

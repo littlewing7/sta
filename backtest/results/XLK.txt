@@ -1,4 +1,4 @@
-Tue 30 May 2023 19:48:17 EDT
+Sun  4 Jun 2023 15:14:35 EDT
 XLK adx_rsi.py 92
 XLK sma_9_21.py 70
 XLK Close_4_days_down.py 67
@@ -20,6 +20,7 @@ XLK ema_tema.py 31
 XLK bb_4_days_down.py 31
 XLK sma_13_34.py 30
 XLK ema_50_200.py 30
+XLK cci_sma.py 30
 XLK ao.py 29
 XLK bb_kc_rsi.py 28
 XLK dwma.py 23
@@ -32,7 +33,9 @@ XLK sma_20_Close_cross.py 13
 XLK sma_20_50_cross.py 13
 XLK ema_20_Close.py 12
 XLK sma_13_48.py 11
+XLK bolinger_bands_rsi2.py 11
 XLK tema30_close_cross.py 9
+XLK bolinger_bands_rsi1.py 9
 XLK sma_19_Close_cross.py 7
 XLK bolinger_bands_mid.py 6
 XLK emav_20_50.py 4
