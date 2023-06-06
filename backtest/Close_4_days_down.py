@@ -40,15 +40,15 @@ def backtest_strategy(stock, start_date):
     for i in range(len(data)):
 
         # Buy signal
-        if ( position == 0 ) and ( data["Close"][i] < data["Close"][i - 1] < data["Close"][i - 2] < data["Close"][i - 3] ):
+        if ( position == 0 ) and ( data["Adj Close"][i] < data["Adj Close"][i - 1] < data["Adj Close"][i - 2] < data["Adj Close"][i - 3] ):
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price} on {data.index[i]}")
 
         # Sell signal
-        elif ( position == 1 ) and ( data["Close"][i] > data["Close"][i - 1] > data["Close"][i - 2] ):
+        elif ( position == 1 ) and ( data["Adj Close"][i] > data["Adj Close"][i - 1] > data["Adj Close"][i - 2] ):
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price} {data.index[i]}")
 
             # Calculate returns

@@ -1,19 +1,20 @@
-Tue 30 May 2023 19:59:35 EDT
+Mon  5 Jun 2023 22:32:01 EDT
 NVDA ema_50_200.py 204
 NVDA dwma_20_Close.py 189
 NVDA sma_9_21.py 188
-NVDA Close_4_days_down.py 174
 NVDA sma_20_Close_cross.py 169
 NVDA sma_13_20.py 169
+NVDA close_4_days_down.py 169
 NVDA sma_13_Close.py 168
 NVDA wsma_20_Close.py 162
 NVDA dwma.py 156
 NVDA sma_19_Close_cross.py 152
-NVDA stochastic_rsi_2.py 149
+NVDA stochastic_rsi_2.py 147
 NVDA tsi.py 143
-NVDA rsi_5_20_cross.py 140
+NVDA rsi_5_20_cross.py 139
 NVDA ema_20_Close.py 135
 NVDA tsi_2.py 133
+NVDA adx.py 133
 NVDA tema30_close_cross.py 131
 NVDA bb_rsi_sma.py 128
 NVDA wsma_20_50_cross.py 112
@@ -31,8 +32,8 @@ NVDA sma_13_34.py 87
 NVDA adx_rsi.py 67
 NVDA sma_20_50_cross.py 65
 NVDA bolinger_bands_mid.py 64
+NVDA cci_sma.py 62
 NVDA cci.py 62
-NVDA adx.py 53
 NVDA roc.py 49
 NVDA cci_wr.py 44
 NVDA bb_kc_rsi.py 43
@@ -48,3 +49,5 @@ NVDA bb_sto.py 0
 NVDA mfi.py -20
 NVDA rsi14.py -27
 NVDA cci_mfi_rsi_sto_wr.py -28
+NVDA bolinger_bands_rsi2.py -30
+NVDA bolinger_bands_rsi1.py -30

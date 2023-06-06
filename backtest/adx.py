@@ -14,7 +14,7 @@ warnings.simplefilter ( action='ignore', category=Warning )
 def __ADX ( data, lookback):
     high = data["High"]
     low = data["Low"]
-    close = data["Close"]
+    close = data["Adj Close"]
     open = data["Open"]
 
     plus_dm = high.diff()
@@ -76,13 +76,13 @@ def backtest_strategy(stock, start_date):
         # Buy signal
         if data["ADX_14"][i-1] < 25 and data["ADX_14"][i] > 25 and data["ADX_14_plus_di"][i] > data["ADX_14_minus_di"][i] and position == 0:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
         elif data["ADX_14"][i-1] > 25 and data["ADX_14"][i] < 25 and data["ADX_14_minus_di"][i] > data["ADX_14_plus_di"][i] and position == 1:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns

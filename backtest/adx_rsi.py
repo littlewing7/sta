@@ -14,7 +14,7 @@ warnings.simplefilter ( action='ignore', category=Warning )
 def __ADX ( data, lookback):
     high = data["High"]
     low = data["Low"]
-    close = data["Close"]
+    close = data["Adj Close"]
     open = data["Open"]
 
     plus_dm = high.diff()
@@ -44,7 +44,7 @@ def __ADX ( data, lookback):
 
 # https://github.com/lukaszbinden/rsi_tradingview/blob/main/rsi.py
 def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
-    delta = data["Close"].diff()
+    delta = data["Adj Close"].diff()
 
     up = delta.copy()
     up[up < 0] = 0
@@ -99,13 +99,13 @@ def backtest_strategy(stock, start_date):
         # Buy signal
         if position == 0 and data["ADX_14"][i] > 35 and data["ADX_14_plus_di"][i] < data["ADX_14_minus_di"][i] and data["RSI_14"][i] < 50:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
         elif position == 1 and data["ADX_14"][i] > 35 and data["ADX_14_plus_di"][i] > data["ADX_14_minus_di"][i] and data["RSI_14"][i] > 50:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
