@@ -80,7 +80,7 @@ def backtest_strategy(stock, start_date):
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif data["ADX_14"][i-1] < 25 and data["ADX_14"][i] > 25 and data["ADX_14_minus_di"][i] > data["ADX_14_plus_di"][i] and position == 1:
+        elif data["ADX_14"][i-1] > 25 and data["ADX_14"][i] < 25 and data["ADX_14_minus_di"][i] > data["ADX_14_plus_di"][i] and position == 1:
             position = 0
             sell_price = data["Close"][i]
             #print(f"Selling {stock} at {sell_price}")

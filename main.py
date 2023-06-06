@@ -22,6 +22,7 @@ except ModuleNotFoundError or ImportError as ee:
 except Exception as ee:
     print(ee)
 
+import subprocess
 
 import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
@@ -298,14 +299,20 @@ while True:
     def print_log ( strategy_name, long_short='LONG', perc=0, *ind):
         my_list = sorted ( set ( strategies[ticker] ) )
 
-        #spath = "backtest/{}.py".format ( strategy_name )
-        #print ( spath )
+        spath = "plotting/{}".format ( strategy_name )
+        if ( os.path.exists ( spath )):
+            #os.chdir("plotting")
+            #command = ['python3', strategy_name, '-t', ticker]
+            command = ['python3', spath, '-t', ticker]
+            subprocess.call(command)
+            #os.chdir ("..")
 
-        # backtest each strategy and return a number
-        #if ( os.path.exists ( spath )):
-        #    with open ( spath ) as f: exec(f.read())
-        #percentage = backtest_strategy ( "AMD", '2020-01-01' )
-        #print ( " Streategy {} percentage {}".format ( strategy_name, percentage ) )
+            #try:
+            #    result = subprocess.run(['python3', strategy_name, '-t', ticker], capture_output=True, text=True, check=True)
+            #    print(result.stdout)  # Print the output on success
+            #except subprocess.CalledProcessError as e:
+            #    print(f"Script execution failed with error:\n{e.stderr}")
+            #os.chdir("..")
 
         #print ( my_list )
         if strategy_name not in my_list:

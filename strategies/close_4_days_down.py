@@ -9,6 +9,9 @@ def backtest_strategy(stock, start_date):
     Function to backtest a strategy
     """
 
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(script_dir)
+
     csv_file = "./data/{}_1d.csv".format( stock )
 
     # Get today's date
@@ -54,11 +57,7 @@ def backtest_strategy(stock, start_date):
     return percentage + '%'
 
 if ( ( data["Adj Close"][-1] > data["Adj Close"][-2] > data["Adj Close"][-3] < data["Adj Close"][-4] ) ):
-    print_log ( '122_Close_4_days_down', 'LONG', [ 'Close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( 'close_4_days_down.py', 'LONG', [ 'Close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
 if ( ( data["Adj Close"][-1] > data["Adj Close"][-2] > data["Adj Close"][-3] ) ):
-    print_log ( '122_Close_4_days_down', 'SHORT', [ 'Close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
-
-
-
-
+    print_log ( 'close_4_days_down.py', 'SHORT', [ 'Close' ] , backtest_strategy ( ticker , '2020-01-01' ) )

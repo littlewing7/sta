@@ -1,0 +1,8 @@
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(script_dir)
+
+    for symbol in args.ticker:
+
+        filename, ext =  os.path.splitext(os.path.basename(__file__))
+
+        csv_file = "{}/data/{}_1d.csv".format( parent_dir, symbol )

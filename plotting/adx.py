@@ -1,16 +1,24 @@
 #!/usr/bin/env python3
 # https://medium.com/codex/algorithmic-trading-with-average-directional-index-in-python-2b5a20ecf06a
 
+import argparse
+
 import pandas as pd
 import numpy as np
 import yfinance as yf
+
 import matplotlib.pyplot as plt
+plt.style.use('fivethirtyeight')
+plt.rcParams['figure.figsize'] = (20, 10)
+
+import os, datetime
+
 from math import floor
 
 def __ADX ( data, lookback):
     high = data["High"]
     low = data["Low"]
-    close = data["Close"]
+    close = data["Adj Close"]
     open = data["Open"]
 
     plus_dm = high.diff()
@@ -37,15 +45,6 @@ def __ADX ( data, lookback):
     #data["ADX"] = adx_smooth
     data['ADX_{}'.format(lookback)] = adx_smooth
     return data
-
-
-plt.style.use('fivethirtyeight')
-plt.rcParams['figure.figsize'] = (20, 10)
-
-symbol = 'AAPL'
-data = yf.download ('AAPL', start='2020-01-01', progress=False)
-data = __ADX ( data, 14 )
-
 
 def implement_adx_strategy(prices, pdi, ndi, adx):
     buy_price = []
@@ -82,22 +81,54 @@ def implement_adx_strategy(prices, pdi, ndi, adx):
     return buy_price, sell_price, adx_signal
 
 
-buy_price, sell_price, adx_signal = implement_adx_strategy ( data['Close'], data['ADX_14_plus_di'], data['ADX_14_minus_di'], data['ADX_14'])
 
-ax1 = plt.subplot2grid((11, 1), (0, 0), rowspan=5, colspan=1)
-ax2 = plt.subplot2grid((11, 1), (6, 0), rowspan=5, colspan=1)
+if __name__ == '__main__':
 
-ax1.plot ( data['Close'], linewidth=3, color='#ff9800', alpha=0.6)
-ax1.set_title(f'{symbol} CLOSING PRICE')
-ax1.plot ( data.index, buy_price, marker='^', color='#26a69a', markersize=14, linewidth=0, label='BUY SIGNAL')
-ax1.plot ( data.index, sell_price, marker='v', color='#f44336', markersize=14, linewidth=0, label='SELL SIGNAL')
-ax2.plot ( data['ADX_14_plus_di'], color='#26a69a', label='+ DI 14', linewidth=3, alpha=0.3)
-ax2.plot ( data['ADX_14_minus_di'], color='#f44336', label='- DI 14', linewidth=3, alpha=0.3)
-ax2.plot ( data['ADX_14'], color='#2196f3', label='ADX 14', linewidth=3)
-ax2.axhline (25, color='grey', linewidth=2, linestyle='--')
-ax2.legend()
-ax2.set_title(f'{symbol} ADX 14')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-#plt.show()
-plt.savefig ('_plots/' + symbol + '_ADX.png')
+    args = parser.parse_args()
+    start_date = "2020-01-01"
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(script_dir)
+
+    for symbol in args.ticker:
+
+        filename, ext =  os.path.splitext(os.path.basename(__file__))
+
+        csv_file = "{}/data/{}_1d.csv".format( parent_dir, symbol )
+
+        # Get today's date
+        today = datetime.datetime.now().date()
+
+        # if the file was downloaded today, read from it
+        if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os.path.getmtime ( csv_file ) ).date() == today ) ):
+            data = pd.read_csv ( csv_file, index_col='Date' )
+        else:
+            # Download data
+            data = yf.download ( symbol, start=start_date, progress=False)
+            data.to_csv ( csv_file )
+
+        data = __ADX ( data, 14 )
+
+        buy_price, sell_price, adx_signal = implement_adx_strategy ( data['Adj Close'], data['ADX_14_plus_di'], data['ADX_14_minus_di'], data['ADX_14'])
+
+        ax1 = plt.subplot2grid((11, 1), (0, 0), rowspan=5, colspan=1)
+        ax2 = plt.subplot2grid((11, 1), (6, 0), rowspan=5, colspan=1)
+
+        ax1.plot ( data['Adj Close'], linewidth=3, color='#ff9800', alpha=0.6)
+        ax1.set_title(f'{symbol} CLOSING PRICE')
+        ax1.plot ( data.index, buy_price, marker='^', color='#26a69a', markersize=14, linewidth=0, label='BUY SIGNAL')
+        ax1.plot ( data.index, sell_price, marker='v', color='#f44336', markersize=14, linewidth=0, label='SELL SIGNAL')
+        ax2.plot ( data['ADX_14_plus_di'], color='#26a69a', label='+ DI 14', linewidth=3, alpha=0.3)
+        ax2.plot ( data['ADX_14_minus_di'], color='#f44336', label='- DI 14', linewidth=3, alpha=0.3)
+        ax2.plot ( data['ADX_14'], color='#2196f3', label='ADX 14', linewidth=3)
+        ax2.axhline (25, color='grey', linewidth=2, linestyle='--')
+        ax2.legend()
+        ax2.set_title(f'{symbol} ADX 14')
+
+        #plt.show()
+        filename = "{}/plotting/_plots/{}_{}.png".format ( parent_dir, symbol, filename )
+        plt.savefig ( filename )
 

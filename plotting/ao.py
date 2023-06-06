@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+import argparse
 import yfinance as yf
+import pandas as pd
+
+import numpy as np
+
+import os, datetime
+
+import warnings
+warnings.simplefilter ( action='ignore', category=Warning )
+
+import matplotlib.pyplot as plt
+plt.rcParams['figure.figsize'] = (20, 10)
+plt.style.use('fivethirtyeight')
 
 def __AO ( data, window1=5, window2=34 ):
     """
@@ -29,24 +39,15 @@ def __AO ( data, window1=5, window2=34 ):
 
     return data
 
-
-plt.rcParams['figure.figsize'] = (20, 10)
-plt.style.use('fivethirtyeight')
-
-symbol = 'AAPL'
-
-# EXTRACTING STOCK DATA
-data = yf.download ( symbol, start='2020-01-01', progress=False)
-
-data = __AO ( data, 5, 34)
-data = data.dropna()
-
-
-def implement_ao_crossover(price, ao):
+def implement_ao_crossover ( price, ao ):
     buy_price = []
     sell_price = []
     ao_signal = []
     signal = 0
+
+    # Get today's date
+    today = datetime.datetime.now().date()
+
 
     for i in range(len(ao)):
         if ao[i] > 0 and ao[i-1] < 0:
@@ -75,24 +76,60 @@ def implement_ao_crossover(price, ao):
             ao_signal.append(0)
     return buy_price, sell_price, ao_signal
 
-buy_price, sell_price, ao_signal = implement_ao_crossover( data['Close'], data['AO'])
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, help='ticker')
+args = parser.parse_args()
 
-ax1 = plt.subplot2grid((10,1), (0,0), rowspan = 5, colspan = 1)
-ax2 = plt.subplot2grid((10,1), (6,0), rowspan = 4, colspan = 1)
+start_date = "2020-01-01"
 
-ax1.plot( data['Close'], label = symbol, color = 'skyblue')
-ax1.plot( data.index, buy_price, marker = '^', markersize = 12, color = '#26a69a', linewidth = 0, label = 'BUY SIGNAL')
-ax1.plot( data.index, sell_price, marker = 'v', markersize = 12, color = '#f44336', linewidth = 0, label = 'SELL SIGNAL')
-ax1.legend()
-ax1.set_title(f'{symbol} CLOSING PRICE')
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(script_dir)
 
-for i in range(len( data )):
-    if data['AO'][i-1] > data['AO'][i]:
-        ax2.bar( data.index[i], data['AO'][i], color = '#f44336')
+for symbol in args.ticker:
+
+    print  ("\n")
+
+    filename, ext =  os.path.splitext(os.path.basename(__file__))
+
+    csv_file = "{}/data/{}_1d.csv".format( parent_dir, symbol )
+
+    # Get today's date
+    today = datetime.datetime.now().date()
+
+    # if the file was downloaded today, read from it
+    if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os.path.getmtime ( csv_file ) ).date() == today ) ):
+        data = pd.read_csv ( csv_file, index_col='Date' )
     else:
-        ax2.bar ( data.index[i], data['AO'][i], color = '#26a69a')
-ax2.set_title(f'{symbol} AWESOME OSCILLATOR 5,34')
-#plt.show()
-plt.savefig ('_plots/' + symbol + '_AO.png')
+        # Download data
+        data = yf.download ( symbol, start=start_date, progress=False)
+        data.to_csv ( csv_file )
+
+    # Calculate indicators
+    data = __AO ( data, 5, 34 )
+    data = data.dropna()
+
+    buy_price, sell_price, ao_signal = implement_ao_crossover( data['Adj Close'], data['AO'])
+
+    ax1 = plt.subplot2grid((10,1), (0,0), rowspan = 5, colspan = 1)
+    ax2 = plt.subplot2grid((10,1), (6,0), rowspan = 4, colspan = 1)
+
+    ax1.plot( data['Adj Close'], label = symbol, color = 'skyblue')
+    ax1.plot( data.index, buy_price, marker = '^', markersize = 12, color = '#26a69a', linewidth = 0, label = 'BUY SIGNAL')
+    ax1.plot( data.index, sell_price, marker = 'v', markersize = 12, color = '#f44336', linewidth = 0, label = 'SELL SIGNAL')
+    ax1.legend()
+    ax1.set_title(f'{symbol} CLOSING PRICE')
+
+    for i in range(len( data )):
+        if data['AO'][i-1] > data['AO'][i]:
+            ax2.bar( data.index[i], data['AO'][i], color = '#f44336')
+        else:
+            ax2.bar ( data.index[i], data['AO'][i], color = '#26a69a')
+    ax2.set_title(f'{symbol} AWESOME OSCILLATOR 5,34')
+
+    #plt.show()
+    #filename = "_plots/{}_{}.png".format ( symbol, filename )
+    #plt.savefig ( filename )
+    filename = "{}/plotting/_plots/{}_{}.png".format ( parent_dir, symbol, filename )
+    plt.savefig ( filename )
 
 
