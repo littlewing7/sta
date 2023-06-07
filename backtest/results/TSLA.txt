@@ -1,4 +1,4 @@
-Mon  5 Jun 2023 22:33:14 EDT
+Tue  6 Jun 2023 23:04:32 EDT
 TSLA ema_50_200.py 1103
 TSLA rsi_5_20_cross.py 867
 TSLA macd_wr14.py 620
@@ -10,8 +10,8 @@ TSLA sma_20_Close_cross.py 462
 TSLA macd.py 460
 TSLA dwma.py 450
 TSLA dwma_20_Close.py 422
-TSLA sma_19_Close_cross.py 413
-TSLA ema_9_21_cross.py 392
+TSLA sma_19_close_cross.py 413
+TSLA ema_9_21_cross.py 391
 TSLA ema_20_50.py 390
 TSLA tema30_close_cross.py 387
 TSLA sma_13_Close.py 366
@@ -19,8 +19,8 @@ TSLA wsma_20_Close.py 363
 TSLA bb_kc_rsi.py 342
 TSLA sma_20_50_cross.py 340
 TSLA sma_13_48.py 335
+TSLA tsi_2.py 324
 TSLA roc.py 307
-TSLA tsi_2.py 305
 TSLA cci_mfi_rsi_sto_wr.py 294
 TSLA tema_close.py 278
 TSLA wsma_20_50_cross.py 261
@@ -31,13 +31,13 @@ TSLA stochastic_rsi_1.py 196
 TSLA adx.py 188
 TSLA dwma_9_21_cross.py 176
 TSLA sma_13_20.py 158
-TSLA stochastic_rsi_2.py 149
 TSLA rsi14.py 149
+TSLA stochastic_rsi_2.py 148
 TSLA sma_13_34.py 148
-TSLA emav_20_50.py 145
+TSLA emav_20_50.py 143
 TSLA adx_rsi.py 134
+TSLA tsi.py 133
 TSLA bolinger_bands_rsi2.py 120
-TSLA tsi.py 116
 TSLA bolinger_bands_rsi1.py 109
 TSLA bolinger_bands_mid.py 107
 TSLA sma_9_21.py 65
