@@ -14,7 +14,7 @@ def __SMA ( data, n ):
     return data
 
 def __BB (data, window=20):
-    std = data['Close'].rolling(window).std()
+    std = data['Adj Close'].rolling(window).std()
     data = __SMA ( data, window )
     data['BB_upper']   = data["SMA_20"] + std * 2
     data['BB_lower']   = data["SMA_20"] - std * 2
@@ -22,7 +22,7 @@ def __BB (data, window=20):
 
     return data
 
-symbol = 'AAPL'
+symbol = 'TSLA'
 data = yf.download( symbol, start='2020-01-01', progress=False)
 data = __SMA ( data, 20 )
 data = __BB ( data, 20 )
@@ -62,9 +62,9 @@ def implement_bb_strategy(data, lower_bb, upper_bb):
 
     return buy_price, sell_price, bb_signal
 
-buy_price, sell_price, bb_signal = implement_bb_strategy ( data['Close'], data['BB_lower'], data['BB_upper'])
+buy_price, sell_price, bb_signal = implement_bb_strategy ( data['Adj Close'], data['BB_lower'], data['BB_upper'])
 
-data['Close'].plot    ( label = 'Close PRICE', alpha = 0.3)
+data['Adj Close'].plot    ( label = 'Close PRICE', alpha = 0.3)
 data['BB_upper'].plot (label = 'UPPER BB', linestyle = '--', linewidth = 1, color = 'black')
 data['SMA_20'].plot   (label = 'MIDDLE BB', linestyle = '--', linewidth = 1.2, color = 'grey')
 data['BB_lower'].plot (label = 'LOWER BB', linestyle = '--', linewidth = 1, color = 'black')

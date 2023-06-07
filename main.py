@@ -301,12 +301,12 @@ while True:
 
         spath = "plotting/{}".format ( strategy_name )
         if ( os.path.exists ( spath )):
-            #os.chdir("plotting")
-            #command = ['python3', strategy_name, '-t', ticker]
             command = ['python3', spath, '-t', ticker]
-            subprocess.call(command)
-            #os.chdir ("..")
-
+            try:
+                result = subprocess.run(command, capture_output=True, text=True, check=True)
+                #subprocess.call(command)
+            except subprocess.CalledProcessError as e:
+                print(f"Script execution failed with error:\n{e.stderr}")
             #try:
             #    result = subprocess.run(['python3', strategy_name, '-t', ticker], capture_output=True, text=True, check=True)
             #    print(result.stdout)  # Print the output on success

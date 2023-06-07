@@ -29,8 +29,8 @@ data = __EMA ( data, 20 )
 # Buy/sell signals for  SMA crosses
 data["Signal"] = 0.0
 data['EMA_20_Close_Signal'] = np.select(
-    [ ( data['EMA_20'].shift(1) <  data['Close'].shift(1) ) & ( data['EMA_20'] >  data['Close'] ) ,
-      ( data['EMA_20'].shift(1) >  data['Close'].shift(1) ) & ( data['EMA_20'] <  data['Close'] ) ],
+    [ ( data['EMA_20'].shift(1) <  data['Adj Close'].shift(1) ) & ( data['EMA_20'] >  data['Adj Close'] ) ,
+      ( data['EMA_20'].shift(1) >  data['Adj Close'].shift(1) ) & ( data['EMA_20'] <  data['Adj Close'] ) ],
 [2, -2])
 
 
@@ -39,7 +39,7 @@ data['EMA_20_Close_Signal'] = np.select(
 # Plot the trading signals
 #plt.figure(figsize=(14,7))
 
-plt.plot ( data['Close'],  alpha = 0.3, linewidth = 2,                  label = symbol + ' Price'  )
+plt.plot ( data['Adj Close'],  alpha = 0.3, linewidth = 2,                  label = symbol + ' Price'  )
 plt.plot ( data["EMA_20"], alpha = 0.6, linewidth = 2, color='#FF006E', label = 'EMA_20' )
 
 plt.plot ( data.loc[data["EMA_20_Close_Signal"] == -2.0].index, data["EMA_20"][data["EMA_20_Close_Signal"] ==  -2.0], "^", markersize=10, color="g", label = 'BUY SIGNAL')
