@@ -2,7 +2,8 @@
 # isort: skip_file
 # --- Do not remove these libs ---
 
-data = __SMA  ( data, 19 )
+# SMA 5, SMA 8
+data = __SMA  ( data, 20 )
 
 
 def backtest_strategy(stock, start_date ):
@@ -24,7 +25,7 @@ def backtest_strategy(stock, start_date ):
         data.to_csv ( csv_file )
 
     # Calculate indicator
-    data = __SMA (data, 19)
+    data = __SMA (data, 20)
 
     # Set initial conditions
     position = 0
@@ -35,14 +36,14 @@ def backtest_strategy(stock, start_date ):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if data["Adj Close"][i] > data["SMA_19"][i] and data["Adj Close"][i - 1] < data["SMA_19"][i - 1] and position == 0:
+        if data["Adj Close"][i] > data["SMA_20"][i] and data["Adj Close"][i - 1] < data["SMA_20"][i - 1] and position == 0:
             position = 1
             buy_price = data["Adj Close"][i]
             today = data.index[i]
             #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
-        elif data["Adj Close"][i] < data["SMA_19"][i] and data["Adj Close"][i - 1]  > data["SMA_19"][i - 1] and position == 1:
+        elif data["Adj Close"][i] < data["SMA_20"][i] and data["Adj Close"][i - 1]  > data["SMA_20"][i - 1] and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
             today = data.index[i]
@@ -59,13 +60,13 @@ def backtest_strategy(stock, start_date ):
     return percentage + '%'
 
 
-# Price crossover SMA 19
-if ( ( data["Adj Close"][-1] > data["SMA_19"][-1] ) and ( data["Adj Close"][-2] < data["SMA_19"][-2] ) ):
-    print_log ( '111_SMA_19_Close_cross', 'LONG', [ 'SMA_19', 'Close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+# Price crossover SMA 20
+if ( ( data["Adj Close"][-1] > data["SMA_20"][-1] ) and ( data["Adj Close"][-2] < data["SMA_20"][-2] ) ):
+    print_log ( 'sma_20_close_cross.py', 'LONG', [ 'SMA_20', 'Close', 'cross' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
-# Price crossunder SMA 19
-if ( ( data["Adj Close"][-1] < data["SMA_19"][-1] ) and ( data["Adj Close"][-2] > data["SMA_19"][-2] ) ):
-    print_log ( '111_SMA_19_Close_cross', 'SHORT', [ 'SMA_19', 'Close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+# Price crossunder SMA 20
+if ( ( data["Adj Close"][-1] < data["SMA_20"][-1] ) and ( data["Adj Close"][-2] > data["SMA_20"][-2] ) ):
+    print_log ( 'sma_20_close_cross.py', 'SHORT', [ 'SMA_20', 'Close', 'cross' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
 
 

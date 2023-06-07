@@ -87,8 +87,6 @@ parent_dir = os.path.dirname(script_dir)
 
 for symbol in args.ticker:
 
-    print  ("\n")
-
     filename, ext =  os.path.splitext(os.path.basename(__file__))
 
     csv_file = "{}/data/{}_1d.csv".format( parent_dir, symbol )
@@ -110,6 +108,9 @@ for symbol in args.ticker:
 
     buy_price, sell_price, ao_signal = implement_ao_crossover( data['Adj Close'], data['AO'])
 
+    # Required otherwise year is 1970
+    data.index = pd.to_datetime(data.index)
+
     ax1 = plt.subplot2grid((10,1), (0,0), rowspan = 5, colspan = 1)
     ax2 = plt.subplot2grid((10,1), (6,0), rowspan = 4, colspan = 1)
 
@@ -119,12 +120,15 @@ for symbol in args.ticker:
     ax1.legend()
     ax1.set_title(f'{symbol} CLOSING PRICE')
 
+
     for i in range(len( data )):
         if data['AO'][i-1] > data['AO'][i]:
             ax2.bar( data.index[i], data['AO'][i], color = '#f44336')
         else:
             ax2.bar ( data.index[i], data['AO'][i], color = '#26a69a')
     ax2.set_title(f'{symbol} AWESOME OSCILLATOR 5,34')
+
+    plt.xticks(rotation=45)
 
     #plt.show()
     #filename = "_plots/{}_{}.png".format ( symbol, filename )

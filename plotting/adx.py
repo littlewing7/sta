@@ -121,12 +121,15 @@ if __name__ == '__main__':
         ax1.set_title(f'{symbol} CLOSING PRICE')
         ax1.plot ( data.index, buy_price, marker='^', color='#26a69a', markersize=14, linewidth=0, label='BUY SIGNAL')
         ax1.plot ( data.index, sell_price, marker='v', color='#f44336', markersize=14, linewidth=0, label='SELL SIGNAL')
+
         ax2.plot ( data['ADX_14_plus_di'], color='#26a69a', label='+ DI 14', linewidth=3, alpha=0.3)
         ax2.plot ( data['ADX_14_minus_di'], color='#f44336', label='- DI 14', linewidth=3, alpha=0.3)
         ax2.plot ( data['ADX_14'], color='#2196f3', label='ADX 14', linewidth=3)
         ax2.axhline (25, color='grey', linewidth=2, linestyle='--')
         ax2.legend()
         ax2.set_title(f'{symbol} ADX 14')
+
+        plt.xticks(rotation=45)
 
         #plt.show()
         filename = "{}/plotting/_plots/{}_{}.png".format ( parent_dir, symbol, filename )
