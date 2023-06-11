@@ -28,6 +28,7 @@ import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
 pd.set_option('display.precision', 2)
+pd.set_option('display.float_format', '{:.2f}'.format)
 
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
@@ -39,7 +40,6 @@ pd.set_option('display.max_rows', None)
 pd.set_option('display.max_seq_items', None)
 pd.set_option('display.max_colwidth', 500)
 pd.set_option('expand_frame_repr', True)
-
 
 # disable SSL cert warn
 #from urllib3.exceptions import InsecureRequestWarning
@@ -304,15 +304,15 @@ while True:
             command = ['python3', spath, '-t', ticker]
             try:
                 result = subprocess.run(command, capture_output=True, text=True, check=True)
-                #subprocess.call(command)
+                # Check if the command was successful
+                #if result.returncode == 0:
+                #    # Print the output on the screen
+                #    print(result.stdout)
+                #else:
+                #    # Print an error message
+                #    print("Error:", result.stderr)
             except subprocess.CalledProcessError as e:
                 print(f"Script execution failed with error:\n{e.stderr}")
-            #try:
-            #    result = subprocess.run(['python3', strategy_name, '-t', ticker], capture_output=True, text=True, check=True)
-            #    print(result.stdout)  # Print the output on success
-            #except subprocess.CalledProcessError as e:
-            #    print(f"Script execution failed with error:\n{e.stderr}")
-            #os.chdir("..")
 
         #print ( my_list )
         if strategy_name not in my_list:
@@ -364,24 +364,41 @@ while True:
         print ( "=====  " + ticker + info + "  =====  " + now.strftime("%Y-%m-%d %H:%M:%S") + "  =====" )
 
 
-        #####  Support and R !!!  #####
+        # FIBONACCI #
         with open ( 'util/fib.py') as f: exec(f.read())
 
-        #print ( "         [%s] FIBs CAM ---> %s" % ( symbol,  pivot_levels(_open, _high, _low, _close) ) )
-        #print ( "         [%s] ATR_band ---> (LOW %.2f, %.2f%% away )   CUR %s   (MAX %.2f, %.2f%% away)" % ( symbol, atr_band_lower, 100 - ( atr_band_lower * 100 / price ), price_string, atr_band_higher, 100 - ( price * 100 / atr_band_higher  ) ) )
-        print ( "%s  INFO  SupRes   ---> %s" % ( ticker, sr ( data ) ) )
-        position = find_position( sr ( data ), current_price )
-        print ( position )
-        print ()
 
+        fib_path = "scripts/fibonacci.py"
+        fib_name = 'camarilla'
+
+        if ( os.path.exists ( fib_path )):
+            command = ['python3', fib_path, '-t', ticker, '-f', fib_name]
+            try:
+                result = subprocess.run(command, capture_output=True, text=True, check=True)
+                # Check if the command was successful
+                if result.returncode == 0:
+                    # Print the output on the screen
+                    print(result.stdout)
+                else:
+                    # Print an error message
+                    print("Error:", result.stderr)
+            except subprocess.CalledProcessError as e:
+                print(f"Script execution failed with error:\n{e.stderr}")
 
         #####  FIB !!!  #####
-        print ( "%s  INFO  FIBs     ---> %s" % ( ticker, fib ( data ) ) )
+        print ( "%s 1d --->  INFO  (FIBs)     ---> %s" % ( ticker, fib ( data ) ) )
         lower, upper, lower_percentage, upper_percentage = find_position_in_dictionary ( fib ( data ), current_price)
         print (f"                            FIB  Lower value: {lower}, {lower_percentage:.2f} %  away")
         print (f"                            FIB  Upper value: {upper}, {upper_percentage:.2f} %  away")
         print ()
 
+        #####  Support and R !!!  #####
+        #print ( "         [%s] FIBs CAM ---> %s" % ( symbol,  pivot_levels(_open, _high, _low, _close) ) )
+        #print ( "         [%s] ATR_band ---> (LOW %.2f, %.2f%% away )   CUR %s   (MAX %.2f, %.2f%% away)" % ( symbol, atr_band_lower, 100 - ( atr_band_lower * 100 / price ), price_string, atr_band_higher, 100 - ( price * 100 / atr_band_higher  ) ) )
+        print ( "%s 1d ---> INFO (SupplyRes)   ---> %s" % ( ticker, sr ( data ) ) )
+        position = find_position( sr ( data ), current_price )
+        print ( position )
+        print ()
 
 
         data['Fibonacci_0.236'] = data['Close'].shift(0) * 0.236
