@@ -48,6 +48,12 @@ if __name__ == '__main__':
               ( data['Adj Close'] > data['Adj Close'].shift(1) ) & ( data['Adj Close'].shift(1) >  data['Adj Close'].shift(2) ) ],
         [2, -2])
 
+        latest_price = data['Adj Close'][-1]
+
+        data = data.tail(365)
+        # Required otherwise year is 1970
+        data.index = pd.to_datetime(data.index)
+
         #print ( data.tail ( 60 ))
 
         # Plot the trading signals
@@ -60,6 +66,10 @@ if __name__ == '__main__':
 
         plt.legend(loc = 'upper left')
         plt.title(f'{symbol}_{filename}')
+
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        label = f"Current Price: ${latest_price:.2f}\n{timestamp}"
+        plt.text(0.05, 0.05, label, transform=plt.gca().transAxes, verticalalignment='bottom', bbox={'facecolor': 'white', 'alpha': 0.8, 'pad': 10})
 
         #plt.show()
         filename = "{}/plotting/_plots/{}_{}.png".format ( parent_dir, symbol, filename )

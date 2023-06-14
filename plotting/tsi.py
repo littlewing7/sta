@@ -1,13 +1,24 @@
 #!/usr/bin/env python3
 
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
+import argparse
 
+import os, datetime
+
+import pandas as pd
+import numpy as np
 import yfinance as yf
 
+import matplotlib.pyplot as plt
+plt.style.use('fivethirtyeight')
+plt.rcParams['figure.figsize'] = (20, 10)
+
+from matplotlib import rcParams
+rcParams.update({'figure.autolayout': True})
+
+import matplotlib.dates as mdates
+
 def __TSI ( data, long, short, signal):
-    close = data["Close"]
+    close = data["Adj Close"]
     diff = close - close.shift(1)
     abs_diff = abs(diff)
 
@@ -25,9 +36,6 @@ def __TSI ( data, long, short, signal):
 plt.style.use('fivethirtyeight')
 plt.rcParams['figure.figsize'] = (20,10)
 
-symbol = 'AAPL'
-data = yf.download ( symbol, start='2020-01-01', progress=False)
-data = __TSI ( data, 25, 13, 12 )
 
 
 def implement_tsi_strategy(prices, tsi, signal_line):
@@ -64,23 +72,66 @@ def implement_tsi_strategy(prices, tsi, signal_line):
 
     return buy_price, sell_price, tsi_signal
 
-buy_price, sell_price, tsi_signal = implement_tsi_strategy( data['Close'], data['TSI'], data['TSI_SIGNAL'])
 
-# TSI PLOT
-ax1 = plt.subplot2grid((11,1), (0,0), rowspan = 5, colspan = 1)
-ax2 = plt.subplot2grid((11,1), (6,0), rowspan = 5, colspan = 1)
+filename, ext =  os.path.splitext(os.path.basename(__file__))
 
-ax1.plot ( data['Close'], linewidth = 2)
-ax1.plot ( data.index, buy_price, marker = '^', markersize = 12, color = 'green', linewidth = 0, label = 'BUY SIGNAL')
-ax1.plot ( data.index, sell_price, marker = 'v', markersize = 12, color = 'r', linewidth = 0, label = 'SELL SIGNAL')
-ax1.legend()
-ax1.set_title(f'{symbol} TSI TRADING SIGNALS')
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+', required=True,  type=str, help='ticker')
+args = parser.parse_args()
 
-ax2.plot ( data['TSI'],        linewidth = 2, color = 'orange', label = 'TSI LINE')
-ax2.plot ( data['TSI_SIGNAL'], linewidth = 2, color = '#FF006E', label = 'SIGNAL LINE')
-ax2.set_title(f'{symbol} TSI 25,13,12')
-ax2.legend()
+start_date = "2020-01-01"
 
-#plt.show()
-plt.savefig ('_plots/' + symbol + '_TSI.png')
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(script_dir)
+
+for symbol in args.ticker:
+
+    csv_file = "{}/data/{}_1d.csv".format( parent_dir, symbol )
+
+    # Get today's date
+    today = datetime.datetime.now().date()
+
+    # if the file was downloaded today, read from it
+    if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os.path.getmtime ( csv_file ) ).date() == today ) ):
+        data = pd.read_csv ( csv_file, index_col='Date' )
+    else:
+        # Download data
+        data = yf.download ( symbol, start=start_date, progress=False)
+        data.to_csv ( csv_file )
+
+    data = __TSI ( data, 25, 13, 12 )
+    latest_price = data['Adj Close'][-1]
+
+    data = data.tail(365)
+    # Required otherwise year is 1970
+    data.index = pd.to_datetime(data.index)
+
+    buy_price, sell_price, tsi_signal = implement_tsi_strategy( data['Adj Close'], data['TSI'], data['TSI_SIGNAL'])
+
+    # TSI PLOT
+    ax1 = plt.subplot2grid((11,1), (0,0), rowspan = 5, colspan = 1)
+    ax2 = plt.subplot2grid((11,1), (6,0), rowspan = 5, colspan = 1)
+
+    ax1.plot ( data['Adj Close'], linewidth = 2)
+    ax1.plot ( data.index, buy_price, marker = '^', markersize = 12, color = 'green', linewidth = 0, label = 'BUY SIGNAL')
+    ax1.plot ( data.index, sell_price, marker = 'v', markersize = 12, color = 'r', linewidth = 0, label = 'SELL SIGNAL')
+    ax1.legend()
+    ax1.set_title(f'{symbol} TSI TRADING SIGNALS')
+
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    label = f"Current Price: ${latest_price:.2f}\n{timestamp}"
+    ax1.text(0.05, 0.95, label, transform=ax1.transAxes, verticalalignment='bottom', bbox={'facecolor': 'white', 'alpha': 0.8, 'pad': 10})
+
+    ax2.plot ( data['TSI'],        linewidth = 2, color = 'orange', label = 'TSI LINE')
+    ax2.plot ( data['TSI_SIGNAL'], linewidth = 2, color = '#FF006E', label = 'SIGNAL LINE')
+    ax2.set_title(f'{symbol} TSI 25,13,12')
+    ax2.legend()
+
+    plt.xticks(rotation=45)
+    plt.grid(True)
+
+
+    filename = "{}/plotting/_plots/{}_{}.png".format ( parent_dir, symbol, filename )
+    plt.savefig ( filename )
+    plt.clf()  # Clear the plot for the next iteration
 

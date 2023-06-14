@@ -11,7 +11,8 @@ import yfinance as yf
 def __CCI(df, ndays = 20):
     df['TP'] = (df['High'] + df['Low'] + df['Close']) / 3
     df['sma'] = df['TP'].rolling(ndays).mean()
-    df['mad'] = df['TP'].rolling(ndays).apply(lambda x: pd.Series(x).mad())
+    #df['mad'] = df['TP'].rolling(ndays).apply(lambda x: pd.Series(x).mad())
+    df['mad'] = df['TP'].rolling(ndays).apply(lambda x: np.abs(x - x.mean()).mean())
 
     df['CCI_{}'.format(ndays)] = (df['TP'] - df['sma']) / (0.015 * df['mad'])
 

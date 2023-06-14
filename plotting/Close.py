@@ -9,9 +9,8 @@ import yfinance as yf
 
 import os, datetime
 
-#def __SMA ( data, n ):
-#    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
-#    return data
+from matplotlib import rcParams
+rcParams.update({'figure.autolayout': True})
 
 plt.style.use('fivethirtyeight')
 plt.rcParams['figure.figsize'] = (20, 10)
@@ -44,15 +43,24 @@ if __name__ == '__main__':
             data = yf.download ( symbol, start=start_date, progress=False)
             data.to_csv ( csv_file )
 
-        #data = __SMA ( data, 20 )
+        data = data.dropna()
+        data.index = pd.to_datetime(data.index)
+
+        latest_price = data['Adj Close'][-1]
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        label = f"Current Price: ${latest_price:.2f}\n{timestamp}"
+        plt.text(0.05, 0.05, label, transform=plt.gca().transAxes, verticalalignment='bottom', bbox={'facecolor': 'white', 'alpha': 0.8, 'pad': 10})
 
         plt.plot ( data.index, data['Adj Close'])
         plt.xlabel('Date')
         plt.ylabel('Closing Price')
         plt.title(f'{symbol} Adj Closing Price')
-        #plt.legend(loc = 'upper left')
+
+        plt.xticks(rotation=45)
+        plt.grid(True)
 
         #plt.show()
         filename = "{}/plotting/_plots/{}_{}.png".format ( parent_dir, symbol, filename )
         plt.savefig ( filename )
+        plt.clf()  # Clear the plot for the next iteration
 

@@ -96,7 +96,8 @@ if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os
     data = pd.read_csv ( csv_file, index_col='Date' )
 else:
     # Download data
-    data = yf.download(stock, start=start_date, progress=False)
+    start_date = "2020-01-01"
+    data = yf.download( args.ticker, start=start_date, progress=False)
     #data.to_csv ( csv_file )
 
 

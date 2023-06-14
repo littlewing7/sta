@@ -64,6 +64,7 @@ for symbol in args.ticker:
 
     # Chart 1 year
     data = data.tail(365)
+    latest_price = data['Adj Close'][-1]
 
     # Required otherwise year is 1970
     data.index = pd.to_datetime(data.index)
@@ -82,9 +83,10 @@ for symbol in args.ticker:
     plt.xlabel('Date')
     plt.ylabel('Closing Price')
     plt.legend(loc = 'upper left')
-    plt.annotate(f'Current Price: ${latest_price:.2f}', ( data.index[-1], latest_price ), xytext=(-50, 30), textcoords='offset points', arrowprops=dict(arrowstyle="->", linewidth=1))
 
-    plt.xticks(rotation=45)
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    label = f"Current Price: ${latest_price:.2f}\n{timestamp}"
+    plt.text(0.05, 0.05, label, transform=plt.gca().transAxes, verticalalignment='bottom', bbox={'facecolor': 'white', 'alpha': 0.8, 'pad': 10})
     plt.grid(True)
 
     #plt.show()
