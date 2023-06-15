@@ -33,11 +33,6 @@ def __TSI ( data, long, short, signal):
     data['TSI_SIGNAL'] = signal
     return data
 
-plt.style.use('fivethirtyeight')
-plt.rcParams['figure.figsize'] = (20,10)
-
-
-
 def implement_tsi_strategy(prices, tsi, signal_line):
     buy_price = []
     sell_price = []
@@ -72,6 +67,8 @@ def implement_tsi_strategy(prices, tsi, signal_line):
 
     return buy_price, sell_price, tsi_signal
 
+plt.style.use('fivethirtyeight')
+plt.rcParams['figure.figsize'] = (20,10)
 
 filename, ext =  os.path.splitext(os.path.basename(__file__))
 
