@@ -24,15 +24,15 @@ from util.sma   import __SMA
 #    return rolling_mean, upper_band, lower_band
 
 def __BB (data, window=20):
-    std = data['Close'].rolling(window).std()
+    std = data['Adj Close'].rolling(window).std()
     data = __SMA ( data, window )
     data['BB_upper']   = data["SMA_20"] + std * 2
     data['BB_lower']   = data["SMA_20"] - std * 2
     data['BB_middle']  = data["SMA_20"]
 
     # Calculate the cross over and cross under values
-    data['BB_Cross_Over']  = np.where ( data['Close'] > data['BB_upper'], 1, 0 )
-    data['BB_Cross_Under'] = np.where ( data['Close'] < data['BB_lower'], 1, 0 )
+    data['BB_Cross_Over']  = np.where ( data['Adj Close'] > data['BB_upper'], 1, 0 )
+    data['BB_Cross_Under'] = np.where ( data['Adj Close'] < data['BB_lower'], 1, 0 )
 
     ## 2 = LONG, -2 = SHORT
     #data['BB_Signal'] = np.select(

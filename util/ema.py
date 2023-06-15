@@ -7,6 +7,6 @@ def __EMA ( data, n=9 ):
     #ema = data['Close'].ewm(span = period ,adjust = False).mean()
     #return ( ema )
 
-    data['EMA_{}'.format(n)] = data['Close'].ewm(span = n ,adjust = False).mean()
+    data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
     return data
 

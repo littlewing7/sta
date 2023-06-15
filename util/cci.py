@@ -28,7 +28,7 @@ import numpy as np
 #    return df
 
 def __CCI(df, ndays = 20):
-    df['TP'] = (df['High'] + df['Low'] + df['Close']) / 3
+    df['TP'] = (df['High'] + df['Low'] + df['Adj Close']) / 3
     df['sma'] = df['TP'].rolling(ndays).mean()
     #df['mad'] = df['TP'].rolling(ndays).apply(lambda x: pd.Series(x).mad())
     df['mad'] = df['TP'].rolling(ndays).apply(lambda x: np.abs(x - x.mean()).mean())
