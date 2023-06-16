@@ -28,14 +28,14 @@ def __KC(dataframe, period=20, multiplier=2):
 
     tr = pd.DataFrame()
     tr['h_l'] = dataframe['High'] - dataframe['Low']
-    tr['h_pc'] = abs(dataframe['High'] - dataframe['Close'].shift())
-    tr['l_pc'] = abs(dataframe['Low'] - dataframe['Close'].shift())
+    tr['h_pc'] = abs(dataframe['High'] - dataframe[Adj 'Close'].shift())
+    tr['l_pc'] = abs(dataframe['Low'] - dataframe['Adj Close'].shift())
     tr['tr'] = tr[['h_l', 'h_pc', 'l_pc']].max(axis=1)
 
     atr = tr['tr'].rolling(atr_lookback).mean()
     #atr = tr['tr'].ewm(alpha = 1/atr_lookback).mean()
 
-    kc_middle = dataframe['Close'].rolling(period).mean()
+    kc_middle = dataframe['Adj Close'].rolling(period).mean()
     kc_upper = kc_middle + multiplier * atr
     kc_lower = kc_middle - multiplier * atr
 

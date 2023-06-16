@@ -17,7 +17,7 @@ import pandas as pd
 
 #Momentum
 def __MOM(data, window=14):
-    mom = pd.Series(data['Close'].diff(window), name = 'MOM_' + str(window))
+    mom = pd.Series(data['Adj Close'].diff(window), name = 'MOM_' + str(window))
 
     data['MOM_{}'.format(window)] = mom
 

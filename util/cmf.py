@@ -1,5 +1,5 @@
 def __CMF (df, window=20):
-    close = df['Close']
+    close = df['Adj Close']
     low = df['Low']
     high = df['High']
     volume = df['Volume']

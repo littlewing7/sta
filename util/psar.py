@@ -5,8 +5,8 @@ def __PSAR (df, iaf = 0.02, maxaf = 0.2):
     #dates = (df['Date'])
     high = (df['High'])
     low = (df['Low'])
-    close = (df['Close'])
-    psar = df['Close'][0:len(df['Close'])]
+    close = (df['Adj Close'])
+    psar = df['Adj Close'][0:len(df['Adj Close'])]
     psarbull = [None] * length
     psarbear = [None] * length
     bull = True

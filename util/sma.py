@@ -27,7 +27,7 @@
 ##SMA Ends here
 
 def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
     #data['Trend_{}'.format(n)]= data['Close'] / data['Close'].rolling(n).mean()
     return data
 

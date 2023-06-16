@@ -19,8 +19,8 @@ import numpy as np
 import pandas as pd
 
 def __UO ( data ):
-    data['Prior_Close'] = data['Close'].shift()
-    data['BP']          = data['Close'] - data[['Low','Prior_Close']].min(axis=1)
+    data['Prior_Close'] = data['Adj Close'].shift()
+    data['BP']          = data['Adj Close'] - data[['Low','Prior_Close']].min(axis=1)
     data['TR']          = data[['High','Prior_Close']].max(axis=1) - data[['Low','Prior_Close']].min(axis=1)
 
     data['Average7']  = data['BP'].rolling(7).sum()/data['TR'].rolling(7).sum()

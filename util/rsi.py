@@ -45,7 +45,7 @@ def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
     :return: an array with the RSI indicator values
     """
 
-    delta = data["Close"].diff()
+    delta = data["Adj Close"].diff()
 
     up = delta.copy()
     up[up < 0] = 0

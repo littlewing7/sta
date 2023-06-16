@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# https://www.flowbank.com/en/research/trading-strategy-what-is-the-best-rsi-setting-a-good-rsi-to-buy
+
 import argparse
 import yfinance as yf
 import pandas as pd
@@ -33,7 +35,7 @@ def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
     :return: an array with the RSI indicator values
     """
 
-    delta = data["Close"].diff()
+    delta = data["Adj Close"].diff()
 
     up = delta.copy()
     up[up < 0] = 0
@@ -73,7 +75,8 @@ def backtest_strategy(stock, start_date):
         data.to_csv ( csv_file )
 
     # Calculate indicators
-    data = __RSI ( data, 14 )
+    data = __RSI ( data, 2 )
+    data['SMA_200'] = data['Adj Close'] / data['Adj Close'].rolling(200).mean()
 
     # Set initial conditions
     position = 0
@@ -85,15 +88,15 @@ def backtest_strategy(stock, start_date):
     for i in range(len(data)):
 
         # Buy signal
-        if data["RSI_14"][i - 1] < 30 and data["RSI_14"][i] > 30 and position == 0:
+        if position == 0 and data["Adj Close"][i] > data['SMA_200'][i] and data["RSI_2"][i] < 15:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif data["RSI_14"][i - 1] > 70 and data["RSI_14"][i] < 70 and position == 1:
+        elif position == 1 and data["Adj Close"][i] > data['SMA_200'][i] and data["RSI_2"][i] > 85:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns

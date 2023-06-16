@@ -35,7 +35,7 @@ data = calculate_ATR_bands(data)
 
 def __ATR_BANDS ( data, t=14 ):
     _open  = data['Open']
-    _close = data['Close']
+    _close = data['Adj Close']
     _high  = data['High']
     _low   = data['Low']
 

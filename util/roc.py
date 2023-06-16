@@ -24,7 +24,7 @@ import numpy as np
 #    return df
 
 def __ROC (df, n=12, m=6):
-    df['ROC']   = ( df["Close"] - df["Close"].shift(n))/df["Close"].shift(n) * 100
+    df['ROC']   = ( df["Adj Close"] - df["Adj Close"].shift(n))/df["Adj Close"].shift(n) * 100
     df['ROCMA'] = df["ROC"].rolling(m).mean()
     return df
 

@@ -6,7 +6,7 @@ import pandas as pd
 def __ADX ( data, lookback):
     high = data["High"]
     low = data["Low"]
-    close = data["Close"]
+    close = data["Adj Close"]
     open = data["Open"]
 
     plus_dm = high.diff()
