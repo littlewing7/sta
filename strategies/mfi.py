@@ -2,7 +2,7 @@
 # Optimal timeframe for the strategy
 timeframe = '1h'
 
-data = __ROC ( data, 12, 6 )
+data = __MFI ( data, 14 )
 
 
 def backtest_strategy ( stock, start_date):
@@ -24,7 +24,7 @@ def backtest_strategy ( stock, start_date):
         data.to_csv ( csv_file )
 
     # Calculate Stochastic RSI
-    data = __ROC ( data, 12, 6 )
+    data = __MFI ( data, 14 )
 
 # BUY CRITERIA: if TSI line and signal line is below 0 and tsi crosses signal line
 
@@ -38,13 +38,13 @@ def backtest_strategy ( stock, start_date):
     for i in range(len(data)):
 
         # Buy signal
-        if (position == 0) and ( data["ROC"].iloc[i-1] < -10 and data["ROC"][i] > -10 ):
+        if (position == 0) and ( data["MFI_14"].iloc[i-1] < 20 and data["MFI_14"][i] > 20 ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( data["ROC"].iloc[i-1] > 20 and data["ROC"][i] < 20 ):
+        elif ( position == 1 ) and ( data["MFI_14"].iloc[i-1] > 75 and data["MFI_14"][i] < 75 ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
@@ -60,11 +60,10 @@ def backtest_strategy ( stock, start_date):
     return percentage + '%'
 
 
+if ( data["MFI_14"].iloc[-2] < 20 and data["MFI_14"][-1] > 20 ):
+    print_log ( 'mfi.py', 'LONG', [ 'MFI' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
-if ( data["ROC"].iloc[i-2] < -10 and data["ROC"][-1] > -10 ):
-    print_log ( 'roc.py', 'LONG', [ 'ROC' ] , backtest_strategy ( ticker , '2020-01-01' ) )
-
-if ( data["ROC"].iloc[i-2] > 20 and data["ROC"][-1] < 20 ):
-    print_log ( 'roc.py', 'SHORT', [ 'ROC' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+if ( data["MFI_14"].iloc[-2] > 75 and data["MFI_14"][-1] < 75 ):
+    print_log ( 'mfi.py', 'SHORT', [ 'MFI' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
 
