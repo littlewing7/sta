@@ -1,7 +1,6 @@
-data = __AO ( data, 5, 34 )
-data = data.dropna()
 
-def backtest_strategy ( stock, start_date ):
+
+def backtest_strategy(stock, start_date):
     """
     Function to backtest a strategy
     """
@@ -19,8 +18,8 @@ def backtest_strategy ( stock, start_date ):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate indicators
-    data = __AO ( data, 5, 34 )
+    data = __MACD (data )
+    #print ( data.tail(2) )
 
     # Set initial conditions
     position = 0
@@ -30,18 +29,19 @@ def backtest_strategy ( stock, start_date ):
 
     # Loop through data
     for i in range(len(data)):
-
         # Buy signal
-        if  data["AO"][i] > 0 and data["AO"][i-1] < 0 and position == 0:
+        if data["MACD_HIST"][i] > 0 and data["MACD_HIST"][i - 1] < 0 and position == 0:
             position = 1
-            buy_price = data["Close"][i]
-            #print(f"Buying {stock} at {buy_price}")
+            buy_price = data["Adj Close"][i]
+            today = data.index[i]
+            #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
-        elif data["AO"][i] < 0 and data["AO"][i-1] > 0 and position == 1:
+        elif data["MACD_HIST"][i] < 0 and data["MACD_HIST"][i - 1]  > 0 and position == 1:
             position = 0
-            sell_price = data["Close"][i]
-            #print(f"Selling {stock} at {sell_price}")
+            sell_price = data["Adj Close"][i]
+            today = data.index[i]
+            #print(f"Selling {stock} at {sell_price} @ {today}")
 
             # Calculate returns
             returns.append((sell_price - buy_price) / buy_price)
@@ -53,8 +53,12 @@ def backtest_strategy ( stock, start_date ):
 
     return percentage + '%'
 
-if ( data["AO"].iloc[-1] > 0 ) and ( data["AO"].iloc[-2] < 0 ):
-    print_log ( 'ao.py', 'LONG', [ 'AO', 'AO_cross' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
-if ( data["AO"].iloc[-1] < 0 ) and ( data["AO"].iloc[-2] > 0 ):
-    print_log ( 'ao.py', 'SHORT', [ 'AO', 'AO_cross' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+data = __MACD ( data )
+
+
+if ( data["MACD_HIST"].iloc[-1] > 0 and data["MACD_HIST"].iloc[-2] < 0 ):
+   print_log ( 'macd.py', 'LONG', [ 'MACD', 'MACD crossover' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+
+if ( data["MACD_HIST"].iloc[-1] < 0 and data["MACD_HIST"].iloc[-2] > 0 ):
+   print_log ( 'macd.py', 'SHORT', [ 'MACD', 'MACD crossunder' ] , backtest_strategy ( ticker , '2020-01-01' ) )

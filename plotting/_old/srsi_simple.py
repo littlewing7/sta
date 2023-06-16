@@ -1,13 +1,21 @@
-import numpy as np
+#!/usr/bin/env python3
+
+import argparse
+
+import os, datetime
+
 import pandas as pd
+import numpy as np
+import yfinance as yf
+
 import matplotlib.pyplot as plt
+
 import warnings
 warnings.filterwarnings("ignore")
-import yfinance as yf
 
 # https://github.com/lukaszbinden/rsi_tradingview/blob/main/rsi.py
 def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
-    delta = data["Close"].diff()
+    delta = data["Adj Close"].diff()
 
     up = delta.copy()
     up[up < 0] = 0

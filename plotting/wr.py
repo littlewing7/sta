@@ -3,30 +3,35 @@
 # https://github.com/carlpaulus/Memoire
 # https://medium.com/codex/algorithmic-trading-with-williams-r-in-python-5a8e0db9ff1f
 
+import argparse
+
+import os, datetime
+
 import pandas as pd
 import numpy as np
 import yfinance as yf
+
 import matplotlib.pyplot as plt
+plt.style.use('fivethirtyeight')
+plt.rcParams['figure.figsize'] = (20, 10)
 
-def __WR (data, t):
-    highh = data["High"].rolling(t).max()
-    lowl  = data["Low"].rolling(t).min()
-    close = data["Close"]
+from matplotlib import rcParams
+rcParams.update({'figure.autolayout': True})
 
-    data['WR_{}'.format(t)] = -100 * ((highh - close) / (highh - lowl))
-
-    return data
+import matplotlib.dates as mdates
 
 plt.rcParams['figure.figsize'] = (20, 10)
 plt.style.use('fivethirtyeight')
 
 
-symbol = 'AAPL'
-data = yf.download(symbol, start='2020-01-01', progress=False).drop('Adj Close', axis=1)
+def __WR (data, t):
+    highh = data["High"].rolling(t).max()
+    lowl  = data["Low"].rolling(t).min()
+    close = data["Adj Close"]
 
-data = __WR ( data, 20 )
-data = data.dropna()
+    data['WR_{}'.format(t)] = -100 * ((highh - close) / (highh - lowl))
 
+    return data
 
 def implement_wr_strategy(prices, wr):
     buy_price = []
@@ -62,24 +67,71 @@ def implement_wr_strategy(prices, wr):
 
     return buy_price, sell_price, wr_signal
 
+plt.style.use('fivethirtyeight')
+plt.rcParams['figure.figsize'] = (20,10)
 
-buy_price, sell_price, wr_signal = implement_wr_strategy ( data['Close'], data['WR_20'])
+filename, ext =  os.path.splitext(os.path.basename(__file__))
 
-#  plotting the trading signals
-ax1 = plt.subplot2grid((11, 1), (0, 0), rowspan=5, colspan=1)
-ax2 = plt.subplot2grid((11, 1), (6, 0), rowspan=5, colspan=1)
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+', required=True,  type=str, help='ticker')
+args = parser.parse_args()
 
-ax1.plot ( data['Close'], linewidth=2, label=symbol)
-ax1.plot ( data.index, buy_price, marker='^', markersize=10, linewidth=0, color='green', label='BUY SIGNAL')
-ax1.plot ( data.index, sell_price, marker='v', markersize=10, linewidth=0, color='r', label='SELL SIGNAL')
-ax1.legend(loc='upper left', fontsize=12)
-ax1.set_title(f'{symbol} W%R TRADING SIGNALS')
+start_date = "2020-01-01"
 
-ax2.plot ( data['WR_20'], color='orange', linewidth=2)
-ax2.axhline ( -20, linewidth=1.5, linestyle='--', color='grey')
-ax2.axhline ( -80, linewidth=1.5, linestyle='--', color='grey')
-ax2.set_title (f'{symbol} W%R')
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(script_dir)
 
-#plt.show()
-plt.savefig ('_plots/' + symbol + '_WR.png')
+for symbol in args.ticker:
+
+    csv_file = "{}/data/{}_1d.csv".format( parent_dir, symbol )
+
+    # Get today's date
+    today = datetime.datetime.now().date()
+
+    # if the file was downloaded today, read from it
+    if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os.path.getmtime ( csv_file ) ).date() == today ) ):
+        data = pd.read_csv ( csv_file, index_col='Date' )
+    else:
+        # Download data
+        data = yf.download ( symbol, start=start_date, progress=False)
+        data.to_csv ( csv_file )
+
+    data = __WR ( data, 20 )
+    data = data.dropna()
+    latest_price = data['Adj Close'][-1]
+
+    data = data.tail(365)
+    # Required otherwise year is 1970
+    data.index = pd.to_datetime(data.index)
+
+
+    buy_price, sell_price, wr_signal = implement_wr_strategy ( data['Adj Close'], data['WR_20'])
+
+    #  plotting the trading signals
+    ax1 = plt.subplot2grid((11, 1), (0, 0), rowspan=5, colspan=1)
+    ax2 = plt.subplot2grid((11, 1), (6, 0), rowspan=5, colspan=1)
+
+    ax1.plot ( data['Adj Close'], linewidth=2, label=symbol)
+    ax1.plot ( data.index, buy_price, marker='^', markersize=10, linewidth=0, color='green', label='BUY SIGNAL')
+    ax1.plot ( data.index, sell_price, marker='v', markersize=10, linewidth=0, color='r', label='SELL SIGNAL')
+    ax1.legend(loc='upper left', fontsize=12)
+    ax1.set_title(f'{symbol} W%R TRADING SIGNALS')
+
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    label = f"Current Price: ${latest_price:.2f}\n{timestamp}"
+    ax1.text(0.05, 0.95, label, transform=ax1.transAxes, verticalalignment='bottom', bbox={'facecolor': 'white', 'alpha': 0.8, 'pad': 10})
+
+    ax2.plot ( data['WR_20'], color='orange', linewidth=2)
+    ax2.axhline ( -20, linewidth=1.5, linestyle='--', color='grey')
+    ax2.axhline ( -80, linewidth=1.5, linestyle='--', color='grey')
+    ax2.set_title (f'{symbol} W%R')
+
+    plt.xticks(rotation=45)
+    plt.grid(True)
+
+
+    filename = "{}/plotting/_plots/{}_{}.png".format ( parent_dir, symbol, filename )
+    plt.savefig ( filename )
+    plt.clf()  # Clear the plot for the next iteration
+
 

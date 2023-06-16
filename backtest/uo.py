@@ -12,30 +12,19 @@ import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
 
-def __WR (data, t):
-    highh = data["High"].rolling(t).max()
-    lowl  = data["Low"].rolling(t).min()
-    close = data["Close"]
+def __UO ( data ):
+    data['Prior_Close'] = data['Adj Close'].shift()
+    data['BP']          = data['Adj Close'] - data[['Low','Prior_Close']].min(axis=1)
+    data['TR']          = data[['High','Prior_Close']].max(axis=1) - data[['Low','Prior_Close']].min(axis=1)
 
-    data['WR_{}'.format(t)] = -100 * ((highh - close) / (highh - lowl))
+    data['Average7']  = data['BP'].rolling(7).sum()/data['TR'].rolling(7).sum()
+    data['Average14'] = data['BP'].rolling(14).sum()/data['TR'].rolling(14).sum()
+    data['Average28'] = data['BP'].rolling(28).sum()/data['TR'].rolling(28).sum()
 
-    return data
-
-def __MACD (data, m=12, n=26, p=9, pc='Close'):
-
-    data = data.copy()
-    data['EMA_s'] = data[pc].ewm(span=m, adjust=False).mean()
-    data['EMA_l'] = data[pc].ewm(span=n, adjust=False).mean()
-
-    data['MACD']  = data['EMA_s'] - data['EMA_l']
-    data['MACD_SIGNAL'] = data['MACD'].ewm(span=p, adjust=False).mean()
-    data['MACD_HIST']   = (data['MACD'] - data['MACD_SIGNAL'])
-
-
-    data.drop(['EMA_s', 'EMA_l'], axis=1, inplace=True)
+    data['UO'] = 100 * (4*data['Average7']+2*data['Average14']+data['Average28'])/(4+2+1)
+    data = data.drop(['Prior_Close','BP','TR','Average7','Average14','Average28'],axis=1)
 
     return data
-
 
 def backtest_strategy(stock, start_date):
     """
@@ -56,8 +45,7 @@ def backtest_strategy(stock, start_date):
         data.to_csv ( csv_file )
 
     # Calculate indicators
-    data = __MACD (data)
-    data = __WR (data, 14)
+    data = __UO ( data )
 
     # Set initial conditions
     position = 0
@@ -69,15 +57,15 @@ def backtest_strategy(stock, start_date):
     for i in range(len(data)):
 
         # Buy signal
-        if position == 0 and ( data["WR_14"][i-1] > -50 and data["WR_14"][i] < -50 and data["MACD"][i] > data["MACD_SIGNAL"][i] ):
+        if  data["UO"][i] < 35 and data["UO"][i-1] > 35 and position == 0:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif position == 1 and ( data["WR_14"][i-1] < -50 and data["WR_14"][i] > -50 and data["MACD"][i] < data["MACD_SIGNAL"][i] ):
+        elif data["AO"][i] > 65 and data["AO"][i-1] < 65 and position == 1:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns

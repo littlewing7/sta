@@ -22,7 +22,7 @@ import numpy as np
 
 
 # Download historical data for a stock
-symbol = "AAPL"
+symbol = "CP"
 data = yf.download(symbol, period='3y')
 
 # Calculate the MACD and signal lines using the calculate_macd function

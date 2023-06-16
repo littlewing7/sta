@@ -51,7 +51,7 @@ import numpy as np
 #    df = df.join(MACDdiff)
 #    return df
 
-def __MACD (data, m=12, n=26, p=9, pc='Close'):
+def __MACD (data, m=12, n=26, p=9, pc='Adj Close'):
 
     data = data.copy()
     data['EMA_s'] = data[pc].ewm(span=m, adjust=False).mean()
@@ -66,15 +66,14 @@ def __MACD (data, m=12, n=26, p=9, pc='Close'):
     data.drop(['EMA_s', 'EMA_l'], axis=1, inplace=True)
 
     # Get the most recent day and the previous day in the dataframe
-    today_data = data.iloc[-1]
-    yesterday_data = data.iloc[-2]
+    #today_data = data.iloc[-1]
+    #yesterday_data = data.iloc[-2]
+    #data['MACD_Crossover']  = np.where ( ( (  yesterday_data["MACD"] <  yesterday_data["MACD_SIGNAL"] ) & ( today_data["MACD"] > today_data["MACD_SIGNAL"] ) ),   1, 0 )
+    #data['MACD_Crossunder'] = np.where ( ( (  yesterday_data["MACD"] >  yesterday_data["MACD_SIGNAL"] ) & ( today_data["MACD"] < today_data["MACD_SIGNAL"] ) ), 1, 0 )
 
     ## Find the MACD crossover and crossunder
     #data['macd_crossover']  =  ( today_data["MACD"] > today_data["MACD_SIGNAL"] ) & ( yesterday_data["MACD"] <  yesterday_data["MACD_SIGNAL"] )
     #data['macd_crossunder'] = ( today_data["MACD"] < today_data["MACD_SIGNAL"] ) & ( yesterday_data["MACD"] >  yesterday_data["MACD_SIGNAL"] )
-
-    data['MACD_Crossover']  = np.where ( ( (  yesterday_data["MACD"] <  yesterday_data["MACD_SIGNAL"] ) & ( today_data["MACD"] > today_data["MACD_SIGNAL"] ) ),   1, 0 )
-    data['MACD_Crossunder'] = np.where ( ( (  yesterday_data["MACD"] >  yesterday_data["MACD_SIGNAL"] ) & ( today_data["MACD"] < today_data["MACD_SIGNAL"] ) ), 1, 0 )
 
     #data['Trend_20'] = data['Close'] / data['Close'].rolling(20).mean()
 

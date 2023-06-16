@@ -9,7 +9,7 @@ warnings.filterwarnings("ignore")
 import yfinance as yf
 
 def __CCI(df, ndays = 20):
-    df['TP'] = (df['High'] + df['Low'] + df['Close']) / 3
+    df['TP'] = (df['High'] + df['Low'] + df['Adj Close']) / 3
     df['sma'] = df['TP'].rolling(ndays).mean()
     #df['mad'] = df['TP'].rolling(ndays).apply(lambda x: pd.Series(x).mad())
     df['mad'] = df['TP'].rolling(ndays).apply(lambda x: np.abs(x - x.mean()).mean())
@@ -32,7 +32,7 @@ data = __CCI ( data, 20 )
 
 fig = plt.figure(figsize=(14,7))
 ax1 = plt.subplot(2, 1, 1)
-ax1.plot ( data['Close'])
+ax1.plot ( data['Adj Close'])
 ax1.set_title(symbol +' Closing Price')
 ax1.set_ylabel('Price')
 

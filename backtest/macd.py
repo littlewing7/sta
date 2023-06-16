@@ -12,7 +12,7 @@ import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
 
-def __MACD (data, m=12, n=26, p=9, pc='Close'):
+def __MACD (data, m=12, n=26, p=9, pc='Adj Close'):
 
     data = data.copy()
     data['EMA_s'] = data[pc].ewm(span=m, adjust=False).mean()
@@ -59,13 +59,13 @@ def backtest_strategy(stock, start_date):
         # Buy signal
         if data['MACD'][i] > data['MACD_SIGNAL'][i] and position == 0:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
         elif data['MACD'][i] < data['MACD_SIGNAL'][i] and position == 1:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns

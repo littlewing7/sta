@@ -14,7 +14,7 @@ warnings.simplefilter ( action='ignore', category=Warning )
 # https://github.com/lukaszbinden/rsi_tradingview/blob/main/rsi.py
 def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
 
-    delta = data["Close"].diff()
+    delta = data["Adj Close"].diff()
 
     up = delta.copy()
     up[up < 0] = 0

@@ -9,7 +9,7 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 
 def __CCI(df, ndays = 20):
-    df['TP'] = (df['High'] + df['Low'] + df['Close']) / 3
+    df['TP'] = (df['High'] + df['Low'] + df['Adj Close']) / 3
     df['sma'] = df['TP'].rolling(ndays).mean()
     #df['mad'] = df['TP'].rolling(ndays).apply(lambda x: pd.Series(x).mad())
     df['mad'] = df['TP'].rolling(ndays).apply(lambda x: np.abs(x - x.mean()).mean())
@@ -71,13 +71,13 @@ def implement_wr_strategy(prices, cci):
     return buy_price, sell_price, cci_signal
 
 
-buy_price, sell_price, cci_signal = implement_wr_strategy ( data['Close'], data['CCI_20'])
+buy_price, sell_price, cci_signal = implement_wr_strategy ( data['Adj Close'], data['CCI_20'])
 
 #  plotting the trading signals
 ax1 = plt.subplot2grid((11, 1), (0, 0), rowspan=5, colspan=1)
 ax2 = plt.subplot2grid((11, 1), (6, 0), rowspan=5, colspan=1)
 
-ax1.plot ( data['Close'], linewidth=2, label=symbol)
+ax1.plot ( data['Adj Close'], linewidth=2, label=symbol)
 ax1.plot ( data.index, buy_price, marker='^', markersize=10, linewidth=0, color='green', label='BUY SIGNAL')
 ax1.plot ( data.index, sell_price, marker='v', markersize=10, linewidth=0, color='r', label='SELL SIGNAL')
 ax1.legend(loc='upper left', fontsize=12)
