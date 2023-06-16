@@ -7,7 +7,7 @@ import pandas as pd
 import os, datetime
 
 def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
     return data
 
 def backtest_strategy(stock, start_date):

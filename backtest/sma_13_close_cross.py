@@ -7,11 +7,11 @@ import pandas as pd
 import os, datetime
 
 def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
     return data
 
 def __BB (data, window=20):
-    std = data['Close'].rolling(window).std()
+    std = data['Adj Close'].rolling(window).std()
     data = __SMA ( data, window )
     data['BB_upper']   = data["SMA_20"] + std * 2
     data['BB_lower']   = data["SMA_20"] - std * 2

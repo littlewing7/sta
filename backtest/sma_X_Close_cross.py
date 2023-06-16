@@ -7,11 +7,11 @@ import argparse
 import os, datetime
 
 def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
     return data
 
 def __BB (data, window=20):
-    std = data['Close'].rolling(window).std()
+    std = data['Adj Close'].rolling(window).std()
     data = __SMA ( data, window )
     data['BB_upper']   = data["SMA_20"] + std * 2
     data['BB_lower']   = data["SMA_20"] - std * 2
@@ -50,14 +50,14 @@ def backtest_strategy(stock, start_date):
         # Loop through data
         for i in range(len(data)):
             # Buy signal
-            if data["Close"][i] > data["SMA_{}".format(ma)][i] and data["Close"][i - 1] < data["SMA_{}".format(ma)][i - 1] and position == 0:
+            if data["Adj Close"][i] > data["SMA_{}".format(ma)][i] and data["Adj Close"][i - 1] < data["SMA_{}".format(ma)][i - 1] and position == 0:
                 position = 1
                 buy_price = data["Adj Close"][i]
                 today = data.index[i]
                 #print(f"Buying {stock} at {buy_price} @ {today}")
 
             # Sell signal
-            elif data["Close"][i] < data["SMA_{}".format(ma)][i] and data["Close"][i - 1]  > data["SMA_{}".format(ma)][i - 1] and position == 1:
+            elif data["Adj Close"][i] < data["SMA_{}".format(ma)][i] and data["Adj Close"][i - 1]  > data["SMA_{}".format(ma)][i - 1] and position == 1:
                 position = 0
                 sell_price = data["Adj Close"][i]
                 today = data.index[i]

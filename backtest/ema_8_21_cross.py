@@ -11,22 +11,12 @@ import os, datetime
 import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
+
 def __EMA ( data, n=9 ):
     #ema = data['Close'].ewm(span = period ,adjust = False).mean()
     #return ( ema )
 
     data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
-    return data
-
-def __TEMA(data, n=30):
-    """
-    Triple Exponential Moving Average (TEMA)
-    """
-    ema1 = data['Adj Close'].ewm(span=n, adjust=False).mean()
-    ema2 = ema1.ewm(span=n, adjust=False).mean()
-    ema3 = ema2.ewm(span=n, adjust=False).mean()
-    tema = 3 * (ema1 - ema2) + ema3
-    data['TEMA_{}'.format(n)] = tema
     return data
 
 
@@ -48,11 +38,9 @@ def backtest_strategy(stock, start_date):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # EMA 9, TEMA 30
-    data = __EMA  ( data, 9 )
-    data = __TEMA ( data, 30 )
-
-    #print ( data.tail(2))
+    # Calculate Stochastic RSI
+    data = __EMA (data, 8)
+    data = __EMA (data, 21)
 
     # Set initial conditions
     position = 0
@@ -63,13 +51,13 @@ def backtest_strategy(stock, start_date):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if ( data["Adj Close"][i] > data["TEMA_30"][i] ) and ( data["TEMA_30"][i] > data["TEMA_30"][i - 1] ) and ( data["Adj Close"][i] > data["Adj Close"][i - 1] ) and ( data["Adj Close"][i] > data["EMA_9"][i] ) and ( data["EMA_9"][i] > data["EMA_9"][i -1] ) and ( data["EMA_9"][i] > data["TEMA_30"][i] ) and (position == 0):
+        if data["EMA_8"][i] > data["EMA_21"][i] and data["EMA_8"][i - 1] < data["EMA_21"][i - 1] and position == 0:
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( data["Adj Close"][i] < data["TEMA_30"][i] ) and ( data["TEMA_30"][i] < data["TEMA_30"][i - 1] ) and ( data["Adj Close"][i] < data["Adj Close"][i - 1]) and ( data["Adj Close"][i] < data["EMA_9"][i] ) and ( data["EMA_9"][i] < data["EMA_9"][i - 1] ) and position == 1:
+        elif data["EMA_8"][i] < data["EMA_21"][i] and data["EMA_8"][i - 1]  > data["EMA_21"][i - 1] and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")

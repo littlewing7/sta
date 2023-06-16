@@ -8,12 +8,12 @@ import numpy as np
 import os, datetime
 
 #def __SMA ( data, n ):
-#    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
+#    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
 #    return data
 
 def __WSMA( data, n):
     weights = np.arange(1, n+1)
-    wma = data['Close'].rolling(n).apply(lambda prices: np.dot(prices, weights) / weights.sum(), raw=True)
+    wma = data['Adj Close'].rolling(n).apply(lambda prices: np.dot(prices, weights) / weights.sum(), raw=True)
     data['WSMA_{}'.format(n)] = pd.Series(wma)
 
     return data
@@ -82,7 +82,7 @@ def backtest_strategy(stock, start_date):
     #plt.style.use('fivethirtyeight')
     #plt.rcParams['figure.figsize'] = (15, 8)
 
-    #plt.plot(data['Close'],   label='AAPL', linewidth=5, alpha=0.3)
+    #plt.plot(data['Adj Close'],   label='AAPL', linewidth=5, alpha=0.3)
     #plt.plot(data['WSMA_20'], label='SMA 20')
     #plt.plot(data['WSMA_50'], label='SMA 50')
     #plt.title('AAPL Weighted Simple Moving Averages (20, 50)')

@@ -13,7 +13,7 @@ warnings.simplefilter ( action='ignore', category=Warning )
 
 
 def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
     return data
 
 
