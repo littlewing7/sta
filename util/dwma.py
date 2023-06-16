@@ -1,5 +1,8 @@
+import pandas as pd
+import numpy as np
+
 #  WMA and Double WMA
-def WMA(df, window):
+def __DWMA(df, window):
     weights = pd.Series(range(1,window+1))
     wma = df['Adj Close'].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
     #df_wma = pd.concat([df['Close'], wma], axis=1)
