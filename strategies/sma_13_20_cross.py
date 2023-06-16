@@ -73,5 +73,5 @@ def backtest_strategy(stock, start_date):
 if data["SMA_13"][-1] > data["SMA_20"][-1] and data["SMA_13"][-2] < data["SMA_20"][-2]:
     print_log ( 'sma_13_20_cross.py', 'LONG', [ 'SMA_13', 'SMA_20', 'SMA_13_20_cross' ], backtest_strategy ( ticker , '2020-01-01' ) )
 
-if data["SMA_3"][-1] < data["SMA_20"][-1] and data["SMA_13"][-2]  > data["SMA_20"][-2]:
-    print_log ( 'sma_13_20.py', 'SHORT', [ 'SMA_13', 'SMA_20', 'SMA_13_20_cross' ], backtest_strategy ( ticker , '2020-01-01' ) )
+if data["SMA_13"][-1] < data["SMA_20"][-1] and data["SMA_13"][-2]  > data["SMA_20"][-2]:
+    print_log ( 'sma_13_20_cross.py', 'SHORT', [ 'SMA_13', 'SMA_20', 'SMA_13_20_cross' ], backtest_strategy ( ticker , '2020-01-01' ) )

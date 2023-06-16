@@ -33,7 +33,7 @@ def backtest_strategy(stock, start_date):
         data.to_csv ( csv_file )
 
     # Calculate Stochastic RSI
-    data = __SMA (data, 9)
+    data = __SMA (data, 8)
     data = __SMA (data, 21)
     #print ( data.tail(2) )
 
@@ -73,7 +73,7 @@ def backtest_strategy(stock, start_date):
 if data["SMA_8"][-1] > data["SMA_21"][-1] and data["SMA_8"][-2] < data["SMA_21"][-2]:
     print_log ( 'sma_8_21_cross.py', 'LONG', [ 'SMA_8', 'SMA_21', 'SMA_8_21_cross' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
-if data["SMA_3"][-1] < data["SMA_21"][-1] and data["SMA_8"][-2]  > data["SMA_21"][-2]:
+if data["SMA_8"][-1] < data["SMA_21"][-1] and data["SMA_8"][-2]  > data["SMA_21"][-2]:
     print_log ( 'sma_8_21_cross.py', 'SHORT', [ 'SMA_8', 'SMA_21', 'SMA_8_21_cross' ], backtest_strategy ( ticker , '2020-01-01' ) )
 
 
