@@ -76,6 +76,9 @@ from util.sma   import __SMA
 # def __EMA (df, window=9):
 from util.ema   import __EMA
 
+# def __DWMA ( data, window=9)
+from util.dwma   import __DWMA
+
 from util.emav   import __EMAV
 
 # def __WSMA ( data, window=20 )

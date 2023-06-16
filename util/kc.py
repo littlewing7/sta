@@ -28,7 +28,7 @@ def __KC(dataframe, period=20, multiplier=2):
 
     tr = pd.DataFrame()
     tr['h_l'] = dataframe['High'] - dataframe['Low']
-    tr['h_pc'] = abs(dataframe['High'] - dataframe[Adj 'Close'].shift())
+    tr['h_pc'] = abs(dataframe['High'] - dataframe['Adj Close'].shift())
     tr['l_pc'] = abs(dataframe['Low'] - dataframe['Adj Close'].shift())
     tr['tr'] = tr[['h_l', 'h_pc', 'l_pc']].max(axis=1)
 

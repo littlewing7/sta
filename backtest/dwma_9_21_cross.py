@@ -15,7 +15,7 @@ warnings.simplefilter ( action='ignore', category=Warning )
 #  WMA and Double WMA
 def __DWMA(df, window):
     weights = pd.Series(range(1,window+1))
-    wma = df['Close'].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
+    wma = df['Adj Close'].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
     #df_wma = pd.concat([df['Close'], wma], axis=1)
     #df_wma.columns = ['Close', 'WMA']
     #return df_wma
@@ -56,13 +56,13 @@ def backtest_strategy(stock, start_date):
         # Buy signal
         if data["DWMA_9"][i] > data["DWMA_21"][i] and data["DWMA_9"][i - 1] < data["DWMA_21"][i - 1] and position == 0:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
         elif data["DWMA_9"][i] < data["DWMA_21"][i] and data["DWMA_9"][i - 1]  > data["DWMA_21"][i - 1] and position == 1:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
