@@ -6,7 +6,7 @@ rm -f results/*
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
 
-for i in SPY TSLA
+for i in SPY
 do
     for x in `ls -1 *py`
     do
@@ -16,6 +16,6 @@ do
         sleep 1
     done
     cat results/$i | sort -nr -k 6 | tee results/$i.tmp
-    mv -f results/$i.txt results/$i
+    mv -f results/$i.tmp results/$i
 done
 
