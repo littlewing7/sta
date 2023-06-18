@@ -11,13 +11,16 @@ import os, datetime
 import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
+def append_to_log(logfile, line):
+    with open(logfile, 'a') as file:
+        file.write(line + '\n')
 
 def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
     return data
 
 def __BB (data, window=20):
-    std = data['Close'].rolling(window).std()
+    std = data['Adj Close'].rolling(window).std()
     data = __SMA ( data, window )
     data['BB_upper']   = data["SMA_20"] + std * 2
     data['BB_lower']   = data["SMA_20"] - std * 2
@@ -42,14 +45,14 @@ def __KC(dataframe, period=20, multiplier=2):
 
     tr = pd.DataFrame()
     tr['h_l'] = dataframe['High'] - dataframe['Low']
-    tr['h_pc'] = abs(dataframe['High'] - dataframe['Close'].shift())
-    tr['l_pc'] = abs(dataframe['Low'] - dataframe['Close'].shift())
+    tr['h_pc'] = abs(dataframe['High'] - dataframe['Adj Close'].shift())
+    tr['l_pc'] = abs(dataframe['Low'] - dataframe['Adj Close'].shift())
     tr['tr'] = tr[['h_l', 'h_pc', 'l_pc']].max(axis=1)
 
     atr = tr['tr'].rolling(atr_lookback).mean()
     #atr = tr['tr'].ewm(alpha = 1/atr_lookback).mean()
 
-    kc_middle = dataframe['Close'].rolling(period).mean()
+    kc_middle = dataframe['Adj Close'].rolling(period).mean()
     kc_upper = kc_middle + multiplier * atr
     kc_lower = kc_middle - multiplier * atr
 
@@ -79,7 +82,7 @@ def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
     :return: an array with the RSI indicator values
     """
 
-    delta = data["Close"].diff()
+    delta = data["Adj Close"].diff()
 
     up = delta.copy()
     up[up < 0] = 0
@@ -100,7 +103,7 @@ def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
     return data
 
 
-def backtest_strategy(stock, start_date):
+def backtest_strategy(stock, start_date, logfile):
     """
     Function to backtest a strategy
     """
@@ -136,13 +139,13 @@ def backtest_strategy(stock, start_date):
         # Buy signal
         if position ==0 and data["BB_lower"][i] < data["KC_lower"][i] and data["BB_upper"][i] > data["KC_upper"][i] and data["RSI_10"][i] < 30:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
         elif position == 1 and data["BB_lower"][i] < data["KC_lower"][i] and data["BB_upper"][i] > data["KC_upper"][i] and data["RSI_10"][i] > 70:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
@@ -160,16 +163,19 @@ def backtest_strategy(stock, start_date):
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
+    append_line = (f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
+    append_to_log ( logfile, append_line )
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--ticker', nargs='+',  type=str, help='ticker')
+    parser.add_argument('-t', '--ticker', nargs='+', required=True,  type=str, help='ticker')
+    parser.add_argument('-l', '--logfile',  required=True, type=str, help='ticker')
 
     args = parser.parse_args()
     start_date = "2020-01-01"
 
     for symbol in args.ticker:
 
-        backtest_strategy(symbol, start_date )
-        print  ("\n")
+        backtest_strategy(symbol, start_date, args.logfile )
 

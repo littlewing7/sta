@@ -6,12 +6,16 @@ import pandas as pd
 
 import os, datetime
 
+def append_to_log(logfile, line):
+    with open(logfile, 'a') as file:
+        file.write(line + '\n')
+
 def __SMA ( data, n ):
     data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
     return data
 
 
-def backtest_strategy(stock, start_date ):
+def backtest_strategy(stock, start_date, logfile ):
     """
     Function to backtest a strategy
     """
@@ -70,16 +74,19 @@ def backtest_strategy(stock, start_date ):
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
 
+    append_line = (f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
+    append_to_log ( logfile, append_line )
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--ticker', nargs='+',  type=str, help='ticker')
+    parser.add_argument('-t', '--ticker', nargs='+', required=True,  type=str, help='ticker')
+    parser.add_argument('-l', '--logfile',  required=True, type=str, help='ticker')
 
     args = parser.parse_args()
     start_date = "2020-01-01"
 
     for symbol in args.ticker:
 
-        backtest_strategy(symbol, start_date )
-        print  ("\n")
+        backtest_strategy(symbol, start_date, args.logfile )
 

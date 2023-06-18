@@ -6,6 +6,10 @@ import pandas as pd
 
 import os, datetime
 
+def append_to_log(logfile, line):
+    with open(logfile, 'a') as file:
+        file.write(line + '\n')
+
 #  WMA and Double WMA
 def __DWMA(df, window):
     weights = pd.Series(range(1,window+1))
@@ -17,7 +21,7 @@ def __DWMA(df, window):
     df['DWMA_{}'.format(window)] = df['WMA_{}'.format(window)].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
     return df
 
-def backtest_strategy(stock, start_date):
+def backtest_strategy ( stock, start_date, logfile ):
     """
     Function to backtest a strategy
     """
@@ -77,17 +81,19 @@ def backtest_strategy(stock, start_date):
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
+    append_line = (f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
+    append_to_log ( logfile, append_line )
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--ticker', nargs='+',  type=str, help='ticker')
+    parser.add_argument('-t', '--ticker', nargs='+', required=True,  type=str, help='ticker')
+    parser.add_argument('-l', '--logfile',  required=True, type=str, help='ticker')
 
     args = parser.parse_args()
     start_date = "2020-01-01"
 
     for symbol in args.ticker:
 
-        backtest_strategy(symbol, start_date )
-        print  ("\n")
+        backtest_strategy(symbol, start_date, args.logfile )
 

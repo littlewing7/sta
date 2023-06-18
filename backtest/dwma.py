@@ -11,19 +11,22 @@ import os, datetime
 import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
+def append_to_log(log_file, line):
+    with open(log_file, 'a') as file:
+        file.write(line + '\n')
 
 #  WMA and Double WMA
 def WMA(df, window):
     weights = pd.Series(range(1,window+1))
     wma = df['Adj Close'].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
-    #df_wma = pd.concat([df['Close'], wma], axis=1)
-    #df_wma.columns = ['Close', 'WMA']
+    #df_wma = pd.concat([df['Adj Close'], wma], axis=1)
+    #df_wma.columns = ['Adj Close', 'WMA']
     #return df_wma
     df['WMA_{}'.format(window)] = wma
     df['DWMA_{}'.format(window)] = df['WMA_{}'.format(window)].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
     return df
 
-def backtest_strategy(stock, start_date):
+def backtest_strategy(stock, start_date, logfile):
     """
     Function to backtest a strategy
     """
@@ -54,15 +57,15 @@ def backtest_strategy(stock, start_date):
     for i in range(len(data)):
 
         # Buy signal
-        if position == 0 and ( ( data["Close"][i] > data["DWMA_14"][i] ) and ( data["Close"][i - 1] < data["DWMA_14"][i - 1] ) ):
+        if position == 0 and ( ( data["Adj Close"][i] > data["DWMA_14"][i] ) and ( data["Adj Close"][i - 1] < data["DWMA_14"][i - 1] ) ):
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif position == 1 and ( ( data["Close"][i] < data["DWMA_14"][i] ) and ( data["Close"][i - 1] > data["DWMA_14"][i - 1] ) ):
+        elif position == 1 and ( ( data["Adj Close"][i] < data["DWMA_14"][i] ) and ( data["Adj Close"][i - 1] > data["DWMA_14"][i - 1] ) ):
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
@@ -80,16 +83,20 @@ def backtest_strategy(stock, start_date):
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
+    append_line = (f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
+    append_to_log ( logfile, append_line )
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--ticker', nargs='+',  type=str, help='ticker')
+    parser.add_argument('-t', '--ticker', nargs='+', required=True,  type=str, help='ticker')
+    parser.add_argument('-l', '--logfile',  required=True, type=str, help='ticker')
 
     args = parser.parse_args()
     start_date = "2020-01-01"
 
     for symbol in args.ticker:
 
-        backtest_strategy(symbol, start_date )
+        backtest_strategy(symbol, start_date, args.logfile )
         print  ("\n")
 

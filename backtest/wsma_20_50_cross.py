@@ -7,9 +7,9 @@ import numpy as np
 
 import os, datetime
 
-#def __SMA ( data, n ):
-#    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
-#    return data
+def append_to_log(logfile, line):
+    with open(logfile, 'a') as file:
+        file.write(line + '\n')
 
 def __WSMA( data, n):
     weights = np.arange(1, n+1)
@@ -19,7 +19,7 @@ def __WSMA( data, n):
     return data
 
 
-def backtest_strategy(stock, start_date):
+def backtest_strategy ( stock, start_date, logfile):
     """
     Function to backtest a strategy
     """
@@ -78,28 +78,19 @@ def backtest_strategy(stock, start_date):
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
-    #import matplotlib.pyplot as plt
-    #plt.style.use('fivethirtyeight')
-    #plt.rcParams['figure.figsize'] = (15, 8)
-
-    #plt.plot(data['Adj Close'],   label='AAPL', linewidth=5, alpha=0.3)
-    #plt.plot(data['WSMA_20'], label='SMA 20')
-    #plt.plot(data['WSMA_50'], label='SMA 50')
-    #plt.title('AAPL Weighted Simple Moving Averages (20, 50)')
-    #plt.legend(loc='upper left')
-    #plt.show()
-
+    append_line = (f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
+    append_to_log ( logfile, append_line )
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--ticker', nargs='+',  type=str, help='ticker')
+    parser.add_argument('-t', '--ticker', nargs='+', required=True,  type=str, help='ticker')
+    parser.add_argument('-l', '--logfile',  required=True, type=str, help='ticker')
 
     args = parser.parse_args()
     start_date = "2020-01-01"
 
     for symbol in args.ticker:
 
-        backtest_strategy(symbol, start_date )
-        print  ("\n")
+        backtest_strategy(symbol, start_date, args.logfile )
 

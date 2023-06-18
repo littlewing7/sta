@@ -10,12 +10,16 @@ import os, datetime
 import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
+def append_to_log(logfile, line):
+    with open(logfile, 'a') as file:
+        file.write(line + '\n')
+
 def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
     return data
 
 def __CCI(df, ndays = 20):
-    df['TP'] = (df['High'] + df['Low'] + df['Close']) / 3
+    df['TP'] = (df['High'] + df['Low'] + df['Adj Close']) / 3
     df['sma'] = df['TP'].rolling(ndays).mean()
     df['mad'] = df['TP'].rolling(ndays).apply(lambda x: np.abs(x - x.mean()).mean())
 
@@ -40,7 +44,7 @@ def __CCI(df, ndays = 20):
 def __WR (data, t):
     highh = data["High"].rolling(t).max()
     lowl  = data["Low"].rolling(t).min()
-    close = data["Close"]
+    close = data["Adj Close"]
 
     data['WR_{}'.format(t)] = -100 * ((highh - close) / (highh - lowl))
 
@@ -64,7 +68,7 @@ def __STOCHASTIC (df, k, d):
      high_max = temp_df["High"].rolling(window=k).max()
 
      # Fast Stochastic
-     temp_df['k_fast'] = 100 * (temp_df["Close"] - low_min)/(high_max - low_min)
+     temp_df['k_fast'] = 100 * (temp_df["Adj Close"] - low_min)/(high_max - low_min)
      temp_df['d_fast'] = temp_df['k_fast'].rolling(window=d).mean()
 
      # Slow Stochastic
@@ -85,7 +89,7 @@ def __STOCHASTIC (df, k, d):
 
 def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
 
-    delta = data["Close"].diff()
+    delta = data["Adj Close"].diff()
 
     up = delta.copy()
     up[up < 0] = 0
@@ -113,7 +117,7 @@ def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
 
 def __MFI ( data, window=14):
     # Calculate the Money Flow Index (MFI)
-    typical_price = ( data['High'] + data['Low'] + data['Close']) / 3
+    typical_price = ( data['High'] + data['Low'] + data['Adj Close']) / 3
     money_flow = typical_price * data['Volume']
     positive_money_flow = money_flow.where(typical_price > typical_price.shift(1), 0)
     negative_money_flow = money_flow.where(typical_price < typical_price.shift(1), 0)
@@ -133,7 +137,7 @@ def __MFI ( data, window=14):
 
 
 
-def backtest_strategy(stock, start_date ):
+def backtest_strategy(stock, start_date, logfile ):
     """
     Function to backtest a strategy
     """
@@ -226,16 +230,19 @@ def backtest_strategy(stock, start_date ):
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
 
+    append_line = (f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
+    append_to_log ( logfile, append_line )
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--ticker', nargs='+',  type=str, help='ticker')
+    parser.add_argument('-t', '--ticker', nargs='+', required=True,  type=str, help='ticker')
+    parser.add_argument('-l', '--logfile',  required=True, type=str, help='ticker')
 
     args = parser.parse_args()
     start_date = "2020-01-01"
 
     for symbol in args.ticker:
 
-        backtest_strategy(symbol, start_date )
-        print  ("\n")
+        backtest_strategy(symbol, start_date, args.logfile )
 

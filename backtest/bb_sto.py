@@ -11,12 +11,16 @@ import os, datetime
 import warnings
 warnings.simplefilter ( action='ignore', category=Warning )
 
+def append_to_log(logfile, line):
+    with open(logfile, 'a') as file:
+        file.write(line + '\n')
+
 def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
     return data
 
 def __BB (data, window=20):
-    std = data['Close'].rolling(window).std()
+    std = data['Adj Close'].rolling(window).std()
     data = __SMA ( data, window )
     data['BB_upper']   = data["SMA_20"] + std * 2
     data['BB_lower']   = data["SMA_20"] - std * 2
@@ -31,7 +35,7 @@ def __STO (df, k, d):
      high_max = temp_df["High"].rolling(window=k).max()
 
      # Fast Stochastic
-     temp_df['k_fast'] = 100 * (temp_df["Close"] - low_min)/(high_max - low_min)
+     temp_df['k_fast'] = 100 * (temp_df["Adj Close"] - low_min)/(high_max - low_min)
      temp_df['d_fast'] = temp_df['k_fast'].rolling(window=d).mean()
 
      # Slow Stochastic
@@ -46,7 +50,7 @@ def __STO (df, k, d):
 
 
 
-def backtest_strategy(stock, start_date):
+def backtest_strategy(stock, start_date, logfile):
     """
     Function to backtest a strategy
     """
@@ -79,15 +83,15 @@ def backtest_strategy(stock, start_date):
     for i in range(len(data)):
 
         # Buy signal
-        if position == 0 and data["%k"][i-1] > 30 and data["%d"][i-1] > 30 and data["%k"][i] < 30 and data["%d"][i] < 30 and data["Close"][i] < data["BB_lower"][i]:
+        if position == 0 and data["%k"][i-1] > 30 and data["%d"][i-1] > 30 and data["%k"][i] < 30 and data["%d"][i] < 30 and data["Adj Close"][i] < data["BB_lower"][i]:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif position == 1 and data["%k"][i-1] < 70 and data["%d"][i-1] < 70 and data["%k"][i] > 70 and data["%d"][i] > 70 and data["Close"][i] > data["BB_upper"][i]:
+        elif position == 1 and data["%k"][i-1] < 70 and data["%d"][i-1] < 70 and data["%k"][i] > 70 and data["%d"][i] > 70 and data["Adj Close"][i] > data["BB_upper"][i]:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
@@ -105,16 +109,19 @@ def backtest_strategy(stock, start_date):
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
+    append_line = (f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
+    append_to_log ( logfile, append_line )
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--ticker', nargs='+',  type=str, help='ticker')
+    parser.add_argument('-t', '--ticker', nargs='+', required=True,  type=str, help='ticker')
+    parser.add_argument('-l', '--logfile',  required=True, type=str, help='ticker')
 
     args = parser.parse_args()
     start_date = "2020-01-01"
 
     for symbol in args.ticker:
 
-        backtest_strategy(symbol, start_date )
-        print  ("\n")
+        backtest_strategy(symbol, start_date, args.logfile )
 

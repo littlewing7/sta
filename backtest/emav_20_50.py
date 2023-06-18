@@ -6,11 +6,15 @@ import pandas as pd
 
 import os, datetime
 
+def append_to_log(logfile, line):
+    with open(logfile, 'a') as file:
+        file.write(line + '\n')
+
 def __EMAV ( data, n=9 ):
     data['EMAV_{}'.format(n)] = data['Volume'].ewm(span = n ,adjust = False).mean()
     return data
 
-def backtest_strategy(stock, start_date):
+def backtest_strategy(stock, start_date, logfile):
     """
     Function to backtest a strategy
     """
@@ -42,14 +46,14 @@ def backtest_strategy(stock, start_date):
         # Buy signal
         if data["EMAV_20"][i] > data["EMAV_50"][i] and data["EMAV_20"][i - 1] < data["EMAV_50"][i - 1] and position == 0:
             position = 1
-            buy_price = data["Close"][i]
+            buy_price = data["Adj Close"][i]
             today = data.index[i]
             #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
         elif data["EMAV_20"][i] < data["EMAV_50"][i] and data["EMAV_20"][i - 1]  > data["EMAV_50"][i - 1] and position == 1:
             position = 0
-            sell_price = data["Close"][i]
+            sell_price = data["Adj Close"][i]
             today = data.index[i]
             #print(f"Selling {stock} at {sell_price} @ {today}")
 
@@ -68,17 +72,19 @@ def backtest_strategy(stock, start_date):
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
+    append_line = (f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
+    append_to_log ( logfile, append_line )
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--ticker', nargs='+',  type=str, help='ticker')
+    parser.add_argument('-t', '--ticker', nargs='+', required=True,  type=str, help='ticker')
+    parser.add_argument('-l', '--logfile',  required=True, type=str, help='ticker')
 
     args = parser.parse_args()
     start_date = "2020-01-01"
 
     for symbol in args.ticker:
 
-        backtest_strategy(symbol, start_date )
-        print  ("\n")
+        backtest_strategy(symbol, start_date, args.logfile )
 
