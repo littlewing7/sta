@@ -1,13 +1,14 @@
 #!/bin/bash
 
 mkdir -p results
-rm -f results/*
+
 
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
 
-for i in SPY
+for i in SPY NVDA TSLA XLE MSFT
 do
+    rm -f results/$i
     for x in `ls -1 *py`
     do
         echo
@@ -15,7 +16,7 @@ do
         python3 $x -t $i -l results/$i
         sleep 1
     done
-    cat results/$i | sort -nr -k 6 | tee results/$i.tmp
+    cat results/$i | sort -nr -k 3 | tee results/$i.tmp
     mv -f results/$i.tmp results/$i
 done
 

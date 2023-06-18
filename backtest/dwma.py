@@ -37,7 +37,7 @@ def backtest_strategy(stock, start_date, logfile):
     today = datetime.datetime.now().date()
 
     # if the file was downloaded today, read from it
-    if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os.path.getmtime ( csv_file ) ).date() == today ) ):
+    if os.path.exists(csv_file) and (lambda file_path: datetime.datetime.now() - datetime.datetime.fromtimestamp(os.path.getmtime(file_path)) < datetime.timedelta(minutes=60))(csv_file):
         data = pd.read_csv ( csv_file, index_col='Date' )
     else:
         # Download data
@@ -83,8 +83,10 @@ def backtest_strategy(stock, start_date, logfile):
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
-    append_line = (f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
-    append_to_log ( logfile, append_line )
+    tot = ((total_returns - 100000) / 100000) * 100
+    tot = (f"{tot:.0f}")
+    line = (f"{name:<25}{stock:>6}{tot:>6} %")
+    append_to_log ( logfile, line)
 
 if __name__ == '__main__':
 

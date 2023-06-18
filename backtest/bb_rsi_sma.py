@@ -133,8 +133,10 @@ def backtest_strategy(stock, start_date, logfile):
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
-    append_line = (f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
-    append_to_log ( logfile, append_line )
+    tot = ((total_returns - 100000) / 100000) * 100
+    tot = (f"{tot:.0f}")
+    line = (f"{name:<25}{stock:>6}{tot:>6} %")
+    append_to_log ( logfile, line)
 
 if __name__ == '__main__':
 
