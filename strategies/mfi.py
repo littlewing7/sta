@@ -39,7 +39,7 @@ def backtest_strategy ( stock, start_date):
     for i in range(len(data)):
 
         # Buy signal
-        if (position == 0) and ( data["MFI_14"].iloc[i-1] < 20 and data["MFI_14"][i] > 20 ):
+        if (position == 0) and ( data["MFI_14"].iloc[i-1] < 30 and data["MFI_14"][i] > 30 ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
