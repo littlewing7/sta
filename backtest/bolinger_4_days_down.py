@@ -28,8 +28,6 @@ def __BB (data, window=20):
 
     return data
 
-
-
 def backtest_strategy(stock, start_date, logfile):
     """
     Function to backtest a strategy
