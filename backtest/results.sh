@@ -20,3 +20,7 @@ do
     mv -f results/$i.tmp results/$i
 done
 
+git add results/*
+git commit -m 'results folder updates'
+git push
+

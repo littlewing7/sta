@@ -15,40 +15,28 @@ def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
-def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
-    return data
+def __CCI(df, ndays = 20):
+    df['TP'] = (df['High'] + df['Low'] + df['Adj Close']) / 3
+    df['sma'] = df['TP'].rolling(ndays).mean()
+    df['mad'] = df['TP'].rolling(ndays).apply(lambda x: np.abs(x - x.mean()).mean())
 
-def __BB (data, window=20):
-    std = data['Adj Close'].rolling(window).std()
-    data = __SMA ( data, window )
-    data['BB_upper']   = data["SMA_20"] + std * 2
-    data['BB_lower']   = data["SMA_20"] - std * 2
-    data['BB_middle']  = data["SMA_20"]
+    df['CCI_{}'.format(ndays)] = (df['TP'] - df['sma']) / (0.015 * df['mad'])
 
-    return data
+    df['CCI_CrossOverBought'] = np.where ( ( df['CCI_20'].shift(1) < 100)  & ( df['CCI_20'] >= 100),  1, 0 )
+    df['CCI_CrossOverSold']   = np.where ( ( df['CCI_20'].shift(1) > -100) & ( df['CCI_20'] <= -100), 1, 0 )
 
-def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
+    # 2 = LONG, -2 = SHORT
+    #df['CCI_Signal'] = np.select(
+    #    [ ( df['CCI_20'] > -100 ) & ( df['CCI_20'].shift(1) < -100 ),
+    #      ( df['CCI_20'] <  100)  & ( df['CCI_20'].shift(1) >  100 ) ],
+    #    [2, -2])
 
-    delta = data["Adj Close"].diff()
 
-    up = delta.copy()
-    up[up < 0] = 0
-    up = pd.Series.ewm ( up, alpha =1 / window ).mean()
+    df = df.drop('TP', axis=1)
+    df = df.drop('sma', axis=1)
+    df = df.drop('mad', axis=1)
 
-    down = delta.copy()
-    down[down > 0] = 0
-    down *= -1
-    down = pd.Series.ewm(down, alpha = 1 / window ).mean()
-
-    rsi = np.where(up == 0, 0, np.where(down == 0, 100, 100 - (100 / (1 + up / down))))
-
-    if ( round_rsi ):
-        data['RSI_{}'.format ( window )] = np.round (rsi, 2)
-    else:
-        data['RSI_{}'.format( window )] = rsi
-
-    return data
+    return df
 
 def backtest_strategy(stock, start_date, logfile):
     """
@@ -69,9 +57,8 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate Stochastic RSI
-    data = __BB ( data, 20 )
-    data = __RSI ( data, 14 )
+    # Calculate indicators
+    data = __CCI ( data, 14 )
 
     # Set initial conditions
     position = 0
@@ -83,13 +70,13 @@ def backtest_strategy(stock, start_date, logfile):
     for i in range(len(data)):
 
         # Buy signal
-        if (position == 0) and ( ( data["RSI_14"][i] < 30 ) and ( data["Adj Close"][i] < data['BB_lower'][i] ) ):
+        if ( data['CCI_14'][i-1] < -100 ) & ( data['CCI_14'][i] > -100 ) and position == 0:
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( ( data["Adj Close"][i] >= data['BB_upper'][i] ) and ( data["RSI_14"][i] >= 70 ) ):
+        elif ( data["CCI_14"][i-1] > 100 and data["CCI_14"][i] < 100 ) and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")

@@ -51,9 +51,9 @@ if data['WR_Signal'][-1] == -2:
 
 # go LONG if 3 out of 5 indicators flag oversold level and crossing up from below
 if ( go_long >= 3 ):
-   print_log ( '112_CCI_STO_WR_RSI', 'LONG', [ 'CCI', 'MFI', 'RSI', 'STOCHASTIC', 'SRSI', 'WR' ] )
+   print_log ( 'cci_mfi_rsi_sto_wr.py', 'LONG', [ 'CCI', 'MFI', 'RSI', 'STOCHASTIC', 'SRSI', 'WR' ] )
 
 # go SHORT if 3 out of 5 indicators flag overbought level and crossing down from above
 if ( go_short >= 3 ):
-   print_log ( '112_CCI_STO_WR_RSI', 'SHORT', [ 'CCI', 'MFI', 'RSI', 'STOCHASTIC', 'SRSI', 'WR' ] )
+   print_log ( 'cci_mfi_rsi_sto_wr.py', 'SHORT', [ 'CCI', 'MFI', 'RSI', 'STOCHASTIC', 'SRSI', 'WR' ] )
 

@@ -18,7 +18,8 @@ def backtest_strategy(stock, start_date):
     today = datetime.datetime.now().date()
 
     # if the file was downloaded today, read from it
-    if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os.path.getmtime ( csv_file ) ).date() == today ) ):
+    #if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os.path.getmtime ( csv_file ) ).date() == today ) ):
+    if os.path.exists(csv_file) and (lambda file_path: datetime.datetime.now() - datetime.datetime.fromtimestamp(os.path.getmtime(file_path)) < datetime.timedelta(minutes=60))(csv_file):
         data = pd.read_csv ( csv_file, index_col='Date' )
     else:
         # Download data
@@ -26,7 +27,8 @@ def backtest_strategy(stock, start_date):
         data.to_csv ( csv_file )
 
     # Calculate indicators
-    data = __CCI ( data, 14 )
+    data = __CCI ( data, 20 )
+    data = __SMA ( data, 15 )
 
     # Set initial conditions
     position = 0
@@ -37,14 +39,15 @@ def backtest_strategy(stock, start_date):
     # Loop through data
     for i in range(len(data)):
 
+
         # Buy signal
-        if ( data['CCI_14'][i-1] < -100 ) & ( data['CCI_14'][i] > -100 ) and position == 0:
+        if ( position == 0 ) and ( data['CCI_20'][i-1] < -100 ) and ( data['CCI_20'][i] > -100 ) and ( data['Adj Close'][i] > data['SMA_15'][i] ) and ( data['Adj Close'][i - 1] < data['SMA_15'][i - 1]):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( data["CCI_14"][i-1] > 100 and data["CCI_14"][i] < 100 ) and position == 1:
+        elif ( position == 1 ) and ( data["CCI_20"][i-1] > 100  ) and ( data["CCI_20"][i] < 100 ) and ( data['Adj Close'][i] < data['SMA_15'][i] ) and ( data['Adj Close'][i - 1] > data['SMA_15'][i - 1]):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
@@ -63,10 +66,10 @@ def backtest_strategy(stock, start_date):
 # Optimal ticker interval for the strategy.
 timeframe = '15m'
 
-data = __CCI ( data, 14 )
+data = __CCI ( data, 20 )
 
-if data['CCI_Signal_14'][-1] == 2:
-    print_log ( '4_CCI_14', 'LONG', [ 'CCI_14' ], backtest_strategy ( ticker , '2020-01-01' ) )
+if data['CCI_Signal'][-1] == 2:
+    print_log ( 'cci_sma.py', 'LONG', [ 'CCI_20', 'SMA_15' ], backtest_strategy ( ticker , '2020-01-01' ) )
 
-if data['CCI_Signal_14'][-1] == -2:
-    print_log ( '4_CCI_14', 'SHORT', [ 'CCI_14' ], backtest_strategy ( ticker , '2020-01-01' ) )
+if data['CCI_Signal'][-1] == -2:
+    print_log ( 'cci_sma.py', 'SHORT', [ 'CCI_20', 'SMA_15' ], backtest_strategy ( ticker , '2020-01-01' ) )
