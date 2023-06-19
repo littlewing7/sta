@@ -77,8 +77,8 @@ tema_30_1  = data['TEMA_30'].iloc[-2]
 
 
 if ( _close > tema_30 ) and ( tema_30 > tema_30_1 ) and ( _close > _close_1 ):
-    print_log ( '120_TEMA_Close', 'LONG TREND', [ 'Close', 'TEMA_30' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( 'tema_close.py', 'LONG TREND', [ 'Close', 'TEMA_30' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
 if ( _close < tema_30 ) and ( tema_30 < tema_30_1 ) and ( _close < _close_1):
-    print_log ( '120_TEMA_Close', 'SHORT TREND', [ 'Close', 'TEMA_30' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( 'tema_close.py', 'SHORT TREND', [ 'Close', 'TEMA_30' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
