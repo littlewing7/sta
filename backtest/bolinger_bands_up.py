@@ -50,9 +50,6 @@ def backtest_strategy(stock, start_date, logfile):
     # Calculate Stochastic RSI
     data = __BB ( data, 20 )
 
-
-# BUY CRITERIA: if TSI line and signal line is below 0 and tsi crosses signal line
-
     # Set initial conditions
     position = 0
     buy_price = 0
@@ -63,13 +60,13 @@ def backtest_strategy(stock, start_date, logfile):
     for i in range(len(data)):
 
         # Buy signal
-        if (position == 0) and ( data["Adj Close"][i-1] > data['BB_lower'][i-1] and data["Adj Close"][i] < data['BB_lower'][i] ):
+        if (position == 0) and ( ( data["Adj Close"][i-1] > data['BB_middle'][i-1] ) and ( data["Adj Close"][i] > data['BB_middle'][i] ) ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( data["Adj Close"][i-1] < data['BB_middle'][i-1] and data["Adj Close"][i] > data['BB_middle'][i] ):
+        elif ( position == 1 ) and ( data["Adj Close"][i-1] < data['BB_upper'][i-1] and data["Adj Close"][i] > data['BB_upper'][i] ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
