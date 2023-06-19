@@ -65,9 +65,9 @@ def backtest_strategy ( stock, start_date):
 
 
 if ( (  data["RSI_14"][-1] < 30 ) & ( data["Adj Close"][-1]  < data["BB_lower"][-1] ) ):
-    print_log ( 'bband_rsi1.py', 'LONG', [ 'BB', 'RSI_14' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( 'bolinger_rsi1.py', 'LONG', [ 'BB', 'RSI_14' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
 if ( data["RSI_14"][-1] > 70 ):
-    print_log ( 'bband_rsi1.py', 'SHORT', [ 'RSI_14' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( 'bolinger_rsi1.py', 'SHORT', [ 'RSI_14' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
 

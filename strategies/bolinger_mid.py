@@ -37,7 +37,7 @@ def backtest_strategy(stock, start_date, logfile):
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( data["Adj Close"][i-1] < data['BB_upper'][i-1] and data["Adj Close"][i] > data['BB_upper'][i] ):
+        elif ( position == 1 ) and ( data["Adj Close"][i-1] < data['BB_middle'][i-1] and data["Adj Close"][i] > data['BB_middle'][i] ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
@@ -56,8 +56,8 @@ def backtest_strategy(stock, start_date, logfile):
 data = __BB ( data, 20 )
 
 if ( data["Adj Close"][-2] > data['BB_lower'][-2] and data["Adj Close"][-1] < data['BB_lower'][-1] ):
-    print_log ( 'bolinger_bands.py', 'LONG', [ 'BB', 'close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( 'bolinger_mid.py', 'LONG', [ 'BB', 'close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
 if ( data["Adj Close"][-2] < data['BB_middle'][-2] and data["Adj Close"][-1] > data['BB_middle'][-1] ):
-    print_log ( 'bolinger_bands.py', 'SHORT', [ 'BB', 'close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( 'bolinger_mid.py', 'SHORT', [ 'BB', 'close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 

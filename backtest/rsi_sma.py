@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 
-#
-# Idea from: https://medium.com/@eymericplaisant/backtesting-chatgpt-investing-strategies-1-15-755-profit-part2-66cfff5cff32
-#
-
 import argparse
 import yfinance as yf
 import pandas as pd
@@ -21,15 +17,6 @@ def append_to_log(logfile, line):
 
 def __SMA ( data, n ):
     data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
-    return data
-
-def __BB (data, window=20):
-    std = data['Adj Close'].rolling(window).std()
-    data = __SMA ( data, window )
-    data['BB_upper']   = data["SMA_20"] + std * 2
-    data['BB_lower']   = data["SMA_20"] - std * 2
-    data['BB_middle']  = data["SMA_20"]
-
     return data
 
 # https://github.com/lukaszbinden/rsi_tradingview/blob/main/rsi.py
@@ -94,9 +81,9 @@ def backtest_strategy(stock, start_date, logfile):
         data.to_csv ( csv_file )
 
     # Calculate indicators
-    data = __RSI ( data, 14 )
-    data = __SMA ( data, 13 )
-    data = __BB ( data, 20 )
+    data = __RSI ( data, 2 )
+    data = __SMA ( data, 5 )
+    data = __SMA ( data, 200 )
 
     # Set initial conditions
     position = 0
@@ -108,13 +95,13 @@ def backtest_strategy(stock, start_date, logfile):
     for i in range(len(data)):
 
         # Buy signal
-        if  ( data['SMA_13'][i] > data['BB_middle'][i] ) and ( data["RSI_14"][i] < 50 ) and position == 0:
+        if ( position == 0 ) and ( data['RSI_2'].iloc[i] < 10 and data['Adj Close'].iloc[i] > data['SMA_200'].iloc[i] and data['Adj Close'].iloc[i] < data['SMA_5'].iloc[i] ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif  ( data['SMA_13'][i] < data['BB_middle'][i] ) and ( data["RSI_14"][i] > 50 )  and position == 1:
+        elif ( position == 1 ) and ( data['RSI_2'].iloc[i] > 90 and data['Adj Close'].iloc[i] < data['SMA_200'].iloc[i] and data['Adj Close'].iloc[i] > data['SMA_5'].iloc[i] ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")

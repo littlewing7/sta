@@ -1,5 +1,6 @@
 
-def backtest_strategy(stock, start_date, logfile):
+
+def backtest_strategy(stock, start_date ):
     """
     Function to backtest a strategy
     """
@@ -7,7 +8,7 @@ def backtest_strategy(stock, start_date, logfile):
     csv_file = "./data/{}_1d.csv".format( stock )
 
     # Get today's date
-    #today = datetime.datetime.now().date()
+    today = datetime.datetime.now().date()
 
     # if the file was downloaded today, read from it
     #if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os.path.getmtime ( csv_file ) ).date() == today ) ):
@@ -18,7 +19,9 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate Stochastic RSI
+    # Calculate indicators
+    data = __RSI ( data, 14 )
+    data = __SMA ( data, 13 )
     data = __BB ( data, 20 )
 
     # Set initial conditions
@@ -31,13 +34,13 @@ def backtest_strategy(stock, start_date, logfile):
     for i in range(len(data)):
 
         # Buy signal
-        if (position == 0) and ( data["Adj Close"][i-1] > data['BB_lower'][i-1] and data["Adj Close"][i] < data['BB_lower'][i] ):
+        if  ( data['SMA_13'][i] > data['BB_middle'][i] ) and ( data["RSI_14"][i] < 50 ) and position == 0:
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( data["Adj Close"][i-1] < data['BB_middle'][i-1] and data["Adj Close"][i] > data['BB_middle'][i] ):
+        elif  ( data['SMA_13'][i] < data['BB_middle'][i] ) and ( data["RSI_14"][i] > 50 )  and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
@@ -53,11 +56,15 @@ def backtest_strategy(stock, start_date, logfile):
     return percentage + '%'
 
 
+
+data = __RSI ( data, 14 )
 data = __BB ( data, 20 )
+data = __SMA ( data, 13 )
 
-if ( data["Adj Close"][-2] > data['BB_lower'][-2] and data["Adj Close"][-1] < data['BB_lower'][-1] ):
-    print_log ( 'bolinger_bands_mid.py', 'LONG', [ 'BB', 'close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
-if ( data["Adj Close"][-2] < data['BB_middle'][-2] and data["Adj Close"][-1] > data['BB_middle'][-1] ):
-    print_log ( 'bolinger_bands_mid.py', 'SHORT', [ 'BB', 'close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+if ( ( data['SMA_13'][-1] > data['BB_middle'][-1] ) and ( data['RSI_14'][-1] < 50 ) ):
+    print_log ( 'bolinger_rsi_sma.py', 'LONG', [ 'BB', 'RSI', 'SMA_13' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+
+if ( ( data['SMA_13'][-1] < data['BB_middle'][-1] ) and ( data["RSI_14"][-1] > 50 ) ):
+    print_log ( 'bolinger_rsi_sma.py', 'SHORT', [ 'BB', 'RSI', 'SMA_13' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
