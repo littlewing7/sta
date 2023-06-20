@@ -5,7 +5,7 @@ When the price is below the 200 Moving Average, and 2-period RSI is above 90, th
 '''
 
 
-def backtest_strategy(stock, start_date, logfile):
+def backtest_strategy(stock, start_date ):
     """
     Function to backtest a strategy
     """

@@ -67,8 +67,8 @@ def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
     rsi_overbought = 70
     rsi_oversold = 30
 
-    data['RSI_Crossover']  = np.where ( ( ( data['RSI_14'].shift(1) < rsi_oversold )   & ( data['RSI_14'] > rsi_oversold ) ),   1, 0 )
-    data['RSI_Crossunder'] = np.where ( ( ( data['RSI_14'].shift(1) > rsi_overbought ) & ( data['RSI_14'] < rsi_overbought ) ), 1, 0 )
+    data['RSI_Crossover']  = np.where ( ( ( data['RSI_{}'.format ( window )].shift(1) < rsi_oversold )   & ( data['RSI_{}'.format ( window )] > rsi_oversold ) ),   1, 0 )
+    data['RSI_Crossunder'] = np.where ( ( ( data['RSI_{}'.format ( window )].shift(1) > rsi_overbought ) & ( data['RSI_{}'.format ( window )] < rsi_overbought ) ), 1, 0 )
 
 
     # 2 = LONG, -2 = SHORT

@@ -1,5 +1,5 @@
 
-def backtest_strategy(stock, start_date, logfile):
+def backtest_strategy(stock, start_date ):
     """
     Function to backtest a strategy
     """

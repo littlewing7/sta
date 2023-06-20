@@ -15,27 +15,11 @@ def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
-def __AO ( data, window1=5, window2=34 ):
-    """
-    Calculates the Awesome Oscillator for a given DataFrame containing historical stock data.
+def __EMA ( data, n=9 ):
+    #ema = data['Adj Close'].ewm(span = period ,adjust = False).mean()
+    #return ( ema )
 
-    Parameters:
-        data (pandas.DataFrame): DataFrame containing the historical stock data.
-        window1 (int): Window size for the first simple moving average (default is 5).
-        window2 (int): Window size for the second simple moving average (default is 34).
-
-    Returns:
-        data (pandas.DataFrame): DataFrame with an additional column containing the Awesome Oscillator.
-    """
-    # Calculate the Awesome Oscillator (AO)
-    high = data["High"]
-    low = data["Low"]
-    median_price = (high + low) / 2
-    ao = median_price.rolling(window=window1).mean() - median_price.rolling(window=window2).mean()
-
-    # Add the AO to the DataFrame
-    data["AO"] = ao
-
+    data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
     return data
 
 
@@ -58,8 +42,8 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate indicators
-    data = __AO ( data, 5, 34 )
+    # Calculate Stochastic RSI
+    data = __EMA (data, 20)
 
     # Set initial conditions
     position = 0
@@ -69,15 +53,14 @@ def backtest_strategy(stock, start_date, logfile):
 
     # Loop through data
     for i in range(len(data)):
-
         # Buy signal
-        if  ( position == 0 ) and ( ( data['AO'].iloc[i - 3] <= 0 ) and ( data['AO'].iloc[i - 2] >= 0 ) and ( data['AO'].iloc[i - 1] > data['AO'].iloc[i - 2] ) and ( data['AO'].iloc[i] > data['AO'].iloc[i - 1] ) ):
+        if ( position == 0 ) and ( ( data['Low'][i - 1] <= data['EMA_20'][i - 1] and data['EMA_20'][i - 1] <= data['High'][i - 1]) & ( data['Adj Close'][i] > data['Adj Close'][i - 1])):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( ( data['AO'].iloc[i - 3]  >= 0 ) and ( data['AO'].iloc[i - 2] <= 0 ) and ( data['AO'].iloc[i - 1] < data['AO'].iloc[i - 2] ) and ( data['AO'].iloc[i] < data['AO'].iloc[i - 1] ) ):
+        elif ( position == 1 ) and ( ( data['Low'].iloc[i - 1] <= data['EMA_20'].iloc[i - 1] and data['EMA_20'].iloc[i - 1] <= data['High'].iloc[i - 1]) & (data['Adj Close'].iloc[i] < data['Adj Close'].iloc[i - 1])):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
