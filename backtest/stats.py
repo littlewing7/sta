@@ -1,13 +1,14 @@
 import glob
 
 # Create a list to store all the file paths
-file_paths = glob.glob('backtest/results/*')  # Replace 'path/to/files/' with the actual path to your files
+file_paths = glob.glob('./results/X*')  # Replace 'path/to/files/' with the actual path to your files
 
 results = {}  # Dictionary to store the results
 
 # Process each file
 for file_path in file_paths:
     with open(file_path, 'r') as file:
+        #lines = file.readlines()[:20]  # Read the first 20 lines from the file
         lines = file.readlines()  # Read all lines from the file
         for line in lines:
             # Split the line by multiple spaces

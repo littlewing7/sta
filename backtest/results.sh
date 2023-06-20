@@ -9,7 +9,7 @@ NORMAL=$(tput sgr0)
 for i in SPY NVDA TSLA XLE MSFT AAPL XLK INTC XLI XLV XLU XLC XLY XRT XTN XME XHB XLF
 do
     rm -f results/$i
-    for x in `ls -1 *py | egrep -v X`
+    for x in `ls -1 *py | egrep -vE "(X|stats)"`
     do
         echo
         echo " --->>>  Exec [${GREEN}$x -t $i -l results/$i${NORMAL}]"
