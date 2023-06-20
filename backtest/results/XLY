@@ -1,7 +1,7 @@
 tsi_cross.py                XLY    59 %
+tema30_close_cross.py       XLY    57 %
 ema_tema.py                 XLY    51 %
 sma_13_close_cross.py       XLY    49 %
-tema30_close_cross.py       XLY    47 %
 wsma_20_close.py            XLY    44 %
 macd_cross_wr_14.py         XLY    44 %
 dwma_20_close_cross.py      XLY    43 %
@@ -27,7 +27,8 @@ dwma_9_21_cross.py          XLY    27 %
 ema_20_50_cross.py          XLY    25 %
 bolinger_rsi_sma.py         XLY    25 %
 tsi2.py                     XLY    24 %
-close_4_days_down.py        XLY    24 %
+ema_6_9_12_21_macd_rsi_cross.py   XLY    24 %
+close_4_days_down.py        XLY    23 %
 ao_saucer.py                XLY    23 %
 sma_13_34.py                XLY    22 %
 sma_13_20.py                XLY    20 %
@@ -61,4 +62,5 @@ dwma_20_50_cross.py         XLY   -13 %
 cci_wr.py                   XLY   -14 %
 cci_mfi_rsi_sto_wr.py       XLY   -15 %
 bolinger_rsi2.py            XLY   -15 %
+ema_6_12_rsi_14.py          XLY   -19 %
 cci_sma.py                  XLY   -20 %

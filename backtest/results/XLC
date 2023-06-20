@@ -52,12 +52,14 @@ sma_9_21.py                 XLC    -2 %
 macd_cross_wr_20.py         XLC    -3 %
 cci_14.py                   XLC    -3 %
 kc_stochastic.py            XLC    -5 %
+ema_6_9_12_21_macd_rsi_cross.py   XLC    -6 %
 bolinger_4_days_down.py     XLC    -6 %
 bolinger_rsi2.py            XLC    -8 %
 sma_13_20.py                XLC   -10 %
+rsi_5_20_cross.py           XLC   -12 %
 tsi2.py                     XLC   -13 %
-rsi_5_20_cross.py           XLC   -13 %
 emav_20_50.py               XLC   -20 %
+ema_6_12_rsi_14.py          XLC   -21 %
 bolinger_rsi1.py            XLC   -22 %
 rsi_14.py                   XLC   -25 %
 cci_wr.py                   XLC   -28 %

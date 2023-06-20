@@ -1,10 +1,10 @@
 cci_wr.py                   XTN   105 %
+rsi_14.py                   XTN    75 %
+tema30_close_cross.py       XTN    70 %
 macd_cross_wr_14.py         XTN    70 %
 sma_13_48_cross.py          XTN    65 %
-rsi_14.py                   XTN    64 %
 tema_close.py               XTN    63 %
 ao_macd.py                  XTN    63 %
-tema30_close_cross.py       XTN    62 %
 sma_13_34.py                XTN    57 %
 macd.py                     XTN    50 %
 cci_20.py                   XTN    50 %
@@ -18,7 +18,7 @@ macd_cross_cci_20.py        XTN    36 %
 sma_9_21.py                 XTN    35 %
 rsi_20.py                   XTN    35 %
 tsi_cross.py                XTN    34 %
-close_4_days_down.py        XTN    33 %
+close_4_days_down.py        XTN    32 %
 sma_20_close_cross.py       XTN    30 %
 bolinger_rsi2.py            XTN    30 %
 bolinger_up.py              XTN    28 %
@@ -29,6 +29,7 @@ ema_tema.py                 XTN    24 %
 ao_saucer.py                XTN    23 %
 adx.py                      XTN    23 %
 sma_19_close_cross.py       XTN    22 %
+ema_6_12_rsi_14.py          XTN    22 %
 dwma_20_close_cross.py      XTN    22 %
 ema_20_50_cross.py          XTN    19 %
 dwma.py                     XTN    15 %
@@ -37,7 +38,9 @@ srsi_1.py                   XTN    13 %
 ema_8_21_cross.py           XTN    13 %
 kc_stochastic.py            XTN    11 %
 emav_20_50.py               XTN    11 %
+rsi_5_20_cross.py           XTN    10 %
 ema_50_200_cross.py         XTN    10 %
+ema_6_9_12_21_macd_rsi_cross.py   XTN     9 %
 ema_9_21_cross.py           XTN     8 %
 dwma_9_21_cross.py          XTN     8 %
 bolinger_kc_rsi.py          XTN     8 %
@@ -46,7 +49,6 @@ ema_144_169_sma_5.py        XTN     6 %
 ema_20_close_cross.py       XTN     4 %
 cci_sma.py                  XTN     3 %
 sma_13_close_cross.py       XTN     2 %
-rsi_5_20_cross.py           XTN     2 %
 elder_ray2.py               XTN     2 %
 cci_mfi_rsi_sto_wr.py       XTN    -0 %
 srsi_2.py                   XTN    -1 %

@@ -10,8 +10,9 @@ close_4_days_down.py       NVDA   169 %
 tsi_cross.py               NVDA   165 %
 sma_13_close_cross.py      NVDA   163 %
 sma_19_close_cross.py      NVDA   161 %
+ema_6_9_12_21_macd_rsi_cross.py  NVDA   160 %
 dwma.py                    NVDA   156 %
-srsi_2.py                  NVDA   151 %
+srsi_2.py                  NVDA   152 %
 wsma_20_close.py           NVDA   148 %
 tsi2.py                    NVDA   143 %
 rsi_5_20_cross.py          NVDA   139 %
@@ -54,6 +55,7 @@ bolinger_4_days_down.py    NVDA    39 %
 emav_20_50.py              NVDA    31 %
 macd_cross_cci_20.py       NVDA    28 %
 macd_cross_wr_20.py        NVDA    24 %
+ema_6_12_rsi_14.py         NVDA     6 %
 rsi_20.py                  NVDA     3 %
 dwma_20_50_cross.py        NVDA     2 %
 sma_50_200.py              NVDA     0 %

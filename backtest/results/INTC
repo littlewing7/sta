@@ -30,6 +30,8 @@ bolinger_rsi_sma.py        INTC   -24 %
 tsi_cross.py               INTC   -25 %
 macd_cross_wr_14.py        INTC   -27 %
 ao_macd.py                 INTC   -27 %
+ema_6_9_12_21_macd_rsi_cross.py  INTC   -28 %
+ema_6_12_rsi_14.py         INTC   -29 %
 macd.py                    INTC   -30 %
 sma_13_34.py               INTC   -37 %
 mfi.py                     INTC   -39 %
