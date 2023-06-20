@@ -55,7 +55,6 @@ macd_cross_wr_20.py        NVDA    24 %
 rsi_20.py                  NVDA     3 %
 dwma_20_50_cross.py        NVDA     2 %
 sma_50_200.py              NVDA     0 %
-bb_sto.py                  NVDA     0 %
 cci_mfi_rsi_sto_wr.py      NVDA   -14 %
 mfi.py                     NVDA   -20 %
 rsi_14.py                  NVDA   -27 %

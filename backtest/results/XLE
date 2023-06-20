@@ -27,6 +27,7 @@ ema_9_21_cross.py           XLE    67 %
 ema_8_21_cross.py           XLE    65 %
 dwma.py                     XLE    65 %
 elder_ray2.py               XLE    64 %
+ao_macd.py                  XLE    63 %
 ao.py                       XLE    63 %
 adx.py                      XLE    57 %
 wsma_20_close.py            XLE    51 %
@@ -51,7 +52,6 @@ macd_cross_cci_20.py        XLE     7 %
 kc_stochastic.py            XLE     0 %
 ema_144_169_sma_5.py        XLE     0 %
 cci_mfi_rsi_sto_wr.py       XLE     0 %
-bb_sto.py                   XLE     0 %
 cci_wr.py                   XLE    -1 %
 ema_50_200_cross.py         XLE    -2 %
 cci_14.py                   XLE   -11 %

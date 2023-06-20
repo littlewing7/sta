@@ -52,7 +52,6 @@ sma_20_close_cross.py      MSFT     1 %
 sma_50_200.py              MSFT     0 %
 bolinger_rsi2.py           MSFT     0 %
 bolinger_rsi1.py           MSFT     0 %
-bb_sto.py                  MSFT     0 %
 sma_13_48_cross.py         MSFT    -1 %
 sma_19_close_cross.py      MSFT    -2 %
 macd_cross_cci_20.py       MSFT    -3 %
