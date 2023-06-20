@@ -50,6 +50,7 @@ tsi2.py                     SPY     9 %
 adx_rsi.py                  SPY     9 %
 bolinger_rsi2.py            SPY     6 %
 adx.py                      SPY     6 %
+tema9_close_cross.py        SPY     5 %
 sma_13_20.py                SPY     5 %
 rsi_14.py                   SPY     3 %
 uo.py                       SPY     0 %

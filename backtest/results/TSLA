@@ -2,6 +2,7 @@ uo.py                      TSLA  1357 %
 ao_macd.py                 TSLA  1163 %
 ao.py                      TSLA  1146 %
 ema_50_200_cross.py        TSLA   929 %
+tema9_close_cross.py       TSLA   882 %
 rsi_5_20_cross.py          TSLA   867 %
 ema_144_169_sma_5.py       TSLA   835 %
 tema30_close_cross.py      TSLA   807 %

@@ -55,6 +55,7 @@ emav_20_50.py              AAPL    14 %
 cci_wr.py                  AAPL    11 %
 bolinger_mid.py            AAPL    11 %
 dwma_20_50_cross.py        AAPL     9 %
+tema9_close_cross.py       AAPL     7 %
 rsi_20.py                  AAPL     4 %
 kc_stochastic.py           AAPL     4 %
 sma_50_200.py              AAPL    -7 %

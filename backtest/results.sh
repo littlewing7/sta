@@ -14,7 +14,7 @@ do
         echo
         echo " --->>>  Exec [${GREEN}$x -t $i -l results/$i${NORMAL}]"
         python3 $x -t $i -l results/$i
-        sleep 1
+        #sleep 1
     done
     cat results/$i | sort -nr -k 3 | tee results/$i.tmp
     mv -f results/$i.tmp results/$i

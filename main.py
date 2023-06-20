@@ -356,11 +356,11 @@ while True:
 
         # Current price, percentage from the previous day
 
-        current_price = data["Close"][-1]
+        current_price = data["Adj Close"][-1]
         current_price = round ( current_price, 2 )
 
         # Get the price change percentage from the previous day
-        previous_close_price = data["Close"][-2]
+        previous_close_price = data["Adj Close"][-2]
 
         price_change_percentage = ((current_price - previous_close_price) / previous_close_price) * 100
         price_change_percentage = round(price_change_percentage, 2)  # Round to 2 decimal places
@@ -406,15 +406,15 @@ while True:
         print ()
 
 
-        data['Fibonacci_0.236'] = data['Close'].shift(0) * 0.236
-        data['Fibonacci_0.382'] = data['Close'].shift(0) * 0.382
-        data['Fibonacci_0.50']  = data['Close'].shift(0) * 0.50
-        data['Fibonacci_0.618'] = data['Close'].shift(0) * 0.618
-        data['Fibonacci_1.00']  = data['Close'].shift(0) * 1.00
-        data['Fibonacci_1.27']  = data['Close'].shift(0) * 1.27
-        data['Fibonacci_1.618'] = data['Close'].shift(0) * 1.618
+        data['Fibonacci_0.236'] = data['Adj Close'].shift(0) * 0.236
+        data['Fibonacci_0.382'] = data['Adj Close'].shift(0) * 0.382
+        data['Fibonacci_0.50']  = data['Adj Close'].shift(0) * 0.50
+        data['Fibonacci_0.618'] = data['Adj Close'].shift(0) * 0.618
+        data['Fibonacci_1.00']  = data['Adj Close'].shift(0) * 1.00
+        data['Fibonacci_1.27']  = data['Adj Close'].shift(0) * 1.27
+        data['Fibonacci_1.618'] = data['Adj Close'].shift(0) * 1.618
 
-        data['candle_size'] = ( data['Close'] - data['Open'] ) * ( data['Close'] - data['Open'] ) / 2
+        data['candle_size'] = ( data['Adj Close'] - data['Open'] ) * ( data['Adj Close'] - data['Open'] ) / 2
 
         data = hammer ( data )
 
@@ -435,11 +435,11 @@ while True:
 
 
         # Trend indicator
-        #data['Trend_20'] = data['Close'] / data['Close'].rolling(20).mean()
-        data['Trend_20']  = data['Close'] / data['SMA_20']
-        data['Trend_50']  = data['Close'] / data['SMA_50']
-        data['Trend_100'] = data['Close'] / data['SMA_100']
-        data['Trend_200'] = data['Close'] / data['SMA_200']
+        #data['Trend_20'] = data['Adj Close'] / data['Close'].rolling(20).mean()
+        data['Trend_20']  = data['Adj Close'] / data['SMA_20']
+        data['Trend_50']  = data['Adj Close'] / data['SMA_50']
+        data['Trend_100'] = data['Adj Close'] / data['SMA_100']
+        data['Trend_200'] = data['Adj Close'] / data['SMA_200']
 
         #########  EMA 9, 21  #####
         for i in [ 5, 8, 9, 20, 21, 50, 100, 200]:
@@ -478,7 +478,7 @@ while True:
 
         data            = __RSI ( data, window=rsi_window )
 
-        #data['Trend_20']   = data['Close'] / data['Close'].rolling(20).mean()
+        #data['Trend_20']   = data['Adj Close'] / data['Adj Close'].rolling(20).mean()
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['RSI_Signal'] = np.select(
@@ -513,7 +513,7 @@ while True:
 
         data                 = __STOCHASTIC (data, sto_k, 3)
 
-        #data['Trend_20'] = data['Close'] / data['Close'].rolling(20).mean()
+        #data['Trend_20'] = data['Adj Close'] / data['Close'].rolling(20).mean()
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['STO_Signal'] = np.select(
@@ -563,13 +563,13 @@ while True:
         # Calculate the Bollinger Bands for the stock data
         data = __BB ( data, bb_window )
 
-        data['BB_percent'] = ( data['Close']    - data['BB_lower'] ) / ( data['BB_upper'] - data['BB_lower'] ) * 100
+        data['BB_percent'] = ( data['Adj Close']    - data['BB_lower'] ) / ( data['BB_upper'] - data['BB_lower'] ) * 100
         data['BB_sharp']   = ( data['BB_upper'] - data['BB_lower'] ) / ( data['BB_middle'] )
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['BB_Signal'] = np.select(
-            [ ( data['Close'] < data['BB_lower'] ) & ( data['Close'].shift(1) > data['BB_lower'].shift(1)),
-            (   data['Close'] > data['BB_upper'] ) & ( data['Close'].shift(1) < data['BB_upper'].shift(1))],
+            [ ( data['Adj Close'] < data['BB_lower'] ) & ( data['Adj Close'].shift(1) > data['BB_lower'].shift(1)),
+            (   data['Adj Close'] > data['BB_upper'] ) & ( data['Adj Close'].shift(1) < data['BB_upper'].shift(1))],
             [2, -2])
 
         #########  MACD  #####
