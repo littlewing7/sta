@@ -15,60 +15,43 @@ def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
-
-
-def __KC(dataframe, period=20, multiplier=2):
+def __AO ( data, window1=5, window2=34 ):
     """
-    Calculates the Keltner Channels for a given DataFrame.
+    Calculates the Awesome Oscillator for a given DataFrame containing historical stock data.
 
     Parameters:
-    dataframe (pd.DataFrame): DataFrame containing the OHLC data of the asset.
-    period (int): Period to calculate the Keltner Channels (default: 20).
-    multiplier (float): Multiplier for the Average True Range (ATR) (default: 2).
+        data (pandas.DataFrame): DataFrame containing the historical stock data.
+        window1 (int): Window size for the first simple moving average (default is 5).
+        window2 (int): Window size for the second simple moving average (default is 34).
 
     Returns:
-    pd.DataFrame: A new DataFrame containing the Keltner Channels for the given OHLC data.
+        data (pandas.DataFrame): DataFrame with an additional column containing the Awesome Oscillator.
     """
+    # Calculate the Awesome Oscillator (AO)
+    high = data["High"]
+    low = data["Low"]
+    median_price = (high + low) / 2
+    ao = median_price.rolling(window=window1).mean() - median_price.rolling(window=window2).mean()
 
-    atr_lookback = 10
+    # Add the AO to the DataFrame
+    data["AO"] = ao
 
-    tr = pd.DataFrame()
-    tr['h_l'] = dataframe['High'] - dataframe['Low']
-    tr['h_pc'] = abs(dataframe['High'] - dataframe['Adj Close'].shift())
-    tr['l_pc'] = abs(dataframe['Low'] - dataframe['Adj Close'].shift())
-    tr['tr'] = tr[['h_l', 'h_pc', 'l_pc']].max(axis=1)
+    return data
 
-    atr = tr['tr'].rolling(atr_lookback).mean()
-    #atr = tr['tr'].ewm(alpha = 1/atr_lookback).mean()
+def __MACD (data, m=12, n=26, p=9, pc='Adj Close'):
 
-    kc_middle = dataframe['Adj Close'].rolling(period).mean()
-    kc_upper = kc_middle + multiplier * atr
-    kc_lower = kc_middle - multiplier * atr
+    data = data.copy()
+    data['EMA_s'] = data[pc].ewm(span=m, adjust=False).mean()
+    data['EMA_l'] = data[pc].ewm(span=n, adjust=False).mean()
 
-    dataframe['KC_upper'] = kc_upper
-    dataframe['KC_middle'] = kc_middle
-    dataframe['KC_lower'] = kc_lower
-    return dataframe
+    data['MACD']  = data['EMA_s'] - data['EMA_l']
+    data['MACD_SIGNAL'] = data['MACD'].ewm(span=p, adjust=False).mean()
+    data['MACD_HIST']   = (data['MACD'] - data['MACD_SIGNAL'])
 
-def __STOCHASTIC (df, k, d):
+    data.drop(['EMA_s', 'EMA_l'], axis=1, inplace=True)
 
-     temp_df = df.copy()
-     # Set minimum low and maximum high of the k stoch
-     low_min = temp_df["Low"].rolling(window=k).min()
-     high_max = temp_df["High"].rolling(window=k).max()
+    return data
 
-     # Fast Stochastic
-     temp_df['k_fast'] = 100 * (temp_df["Close"] - low_min)/(high_max - low_min)
-     temp_df['d_fast'] = temp_df['k_fast'].rolling(window=d).mean()
-
-     # Slow Stochastic
-     temp_df['STO_K'] = temp_df["d_fast"]
-     temp_df['STO_D'] = temp_df['STO_K'].rolling(window=d).mean()
-
-     temp_df = temp_df.drop(['k_fast'], axis=1)
-     temp_df = temp_df.drop(['d_fast'], axis=1)
-
-     return temp_df
 
 def backtest_strategy(stock, start_date, logfile):
     """
@@ -90,7 +73,8 @@ def backtest_strategy(stock, start_date, logfile):
         data.to_csv ( csv_file )
 
     # Calculate indicators
-    data = __KC ( data, 20, 2 )
+    data = __AO ( data, 5, 34 )
+    data = __MACD ( data )
 
     # Set initial conditions
     position = 0
@@ -102,13 +86,13 @@ def backtest_strategy(stock, start_date, logfile):
     for i in range(len(data)):
 
         # Buy signal
-        if ( position ==0 ) and ( data['Adj Close'].iloc[i] < data['KC_lower'].iloc[i] ):
+        if ( position == 0 ) and ( data["MACD"][i] > 0 ) and ( data['AO'][i] > 0 ) and ( data['AO'][i - 1] < 0 ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( data['Adj Close'].iloc[i] > data['KC_upper'].iloc[i] ):
+        elif ( position == 1 ) and ( data["MACD"][i] < 0 ) and ( data['AO'][i] < 0 ) and ( data['AO'][i - 1] > 0 ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")

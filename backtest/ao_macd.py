@@ -15,39 +15,42 @@ def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
-def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
+def __AO ( data, window1=5, window2=34 ):
+    """
+    Calculates the Awesome Oscillator for a given DataFrame containing historical stock data.
+
+    Parameters:
+        data (pandas.DataFrame): DataFrame containing the historical stock data.
+        window1 (int): Window size for the first simple moving average (default is 5).
+        window2 (int): Window size for the second simple moving average (default is 34).
+
+    Returns:
+        data (pandas.DataFrame): DataFrame with an additional column containing the Awesome Oscillator.
+    """
+    # Calculate the Awesome Oscillator (AO)
+    high = data["High"]
+    low = data["Low"]
+    median_price = (high + low) / 2
+    ao = median_price.rolling(window=window1).mean() - median_price.rolling(window=window2).mean()
+
+    # Add the AO to the DataFrame
+    data["AO"] = ao
+
     return data
 
-def __BB (data, window=20):
-    std = data['Adj Close'].rolling(window).std()
-    data = __SMA ( data, window )
-    data['BB_upper']   = data["SMA_20"] + std * 2
-    data['BB_lower']   = data["SMA_20"] - std * 2
-    data['BB_middle']  = data["SMA_20"]
+def __MACD (data, m=12, n=26, p=9, pc='Adj Close'):
+
+    data = data.copy()
+    data['EMA_s'] = data[pc].ewm(span=m, adjust=False).mean()
+    data['EMA_l'] = data[pc].ewm(span=n, adjust=False).mean()
+
+    data['MACD']  = data['EMA_s'] - data['EMA_l']
+    data['MACD_SIGNAL'] = data['MACD'].ewm(span=p, adjust=False).mean()
+    data['MACD_HIST']   = (data['MACD'] - data['MACD_SIGNAL'])
+
+    data.drop(['EMA_s', 'EMA_l'], axis=1, inplace=True)
 
     return data
-
-def __STO (df, k, d):
-
-     temp_df = df.copy()
-     low_min = temp_df["Low"].rolling(window=k).min()
-     high_max = temp_df["High"].rolling(window=k).max()
-
-     # Fast Stochastic
-     temp_df['k_fast'] = 100 * (temp_df["Adj Close"] - low_min)/(high_max - low_min)
-     temp_df['d_fast'] = temp_df['k_fast'].rolling(window=d).mean()
-
-     # Slow Stochastic
-     temp_df['%k'] = temp_df["d_fast"]
-     temp_df['%d'] = temp_df['%k'].rolling(window=d).mean()
-
-     temp_df = temp_df.drop(['k_fast'], axis=1)
-     temp_df = temp_df.drop(['d_fast'], axis=1)
-
-     return temp_df
-
-
 
 
 def backtest_strategy(stock, start_date, logfile):
@@ -69,10 +72,9 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    data = __STO ( data, 14, 3 )
-    data = __SMA ( data, 20 )
-    data = __BB ( data, 20 )
-
+    # Calculate indicators
+    data = __AO ( data, 5, 34 )
+    data = __MACD ( data )
 
     # Set initial conditions
     position = 0
@@ -84,13 +86,13 @@ def backtest_strategy(stock, start_date, logfile):
     for i in range(len(data)):
 
         # Buy signal
-        if position == 0 and data["%k"][i-1] > 30 and data["%d"][i-1] > 30 and data["%k"][i] < 30 and data["%d"][i] < 30 and data["Adj Close"][i] < data["BB_lower"][i]:
+        if ( position == 0 ) and ( data["MACD"][i] > 0 ) and ( data['AO'][i] > 0 ) and ( data['AO'][i - 1] < 0 ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif position == 1 and data["%k"][i-1] < 70 and data["%d"][i-1] < 70 and data["%k"][i] > 70 and data["%d"][i] > 70 and data["Adj Close"][i] > data["BB_upper"][i]:
+        elif ( position == 1 ) and ( data["MACD"][i] < 0 ) and ( data['AO'][i] < 0 ) and ( data['AO'][i - 1] > 0 ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
