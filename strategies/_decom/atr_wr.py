@@ -17,7 +17,7 @@ data['ATR_14']  = __ATR ( data, 14 )
 
 _vol      = data["Volume"].iloc[-1]
 _open     = data["Open"].iloc[-1]
-_close    = data["Close"].iloc[-1]
+_close    = data["Adj Close"].iloc[-1]
 
 ema_9     = data["EMA_9"].iloc[-1]
 atr_14    = data['ATR_14'].iloc[-1]

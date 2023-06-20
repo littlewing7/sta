@@ -15,29 +15,45 @@ def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
-def __AO ( data, window1=5, window2=34 ):
+# https://stackoverflow.com/questions/40256338/calculating-average-true-range-atr-on-ohlc-data-with-python
+def wwma(values, n):
     """
-    Calculates the Awesome Oscillator for a given DataFrame containing historical stock data.
-
-    Parameters:
-        data (pandas.DataFrame): DataFrame containing the historical stock data.
-        window1 (int): Window size for the first simple moving average (default is 5).
-        window2 (int): Window size for the second simple moving average (default is 34).
-
-    Returns:
-        data (pandas.DataFrame): DataFrame with an additional column containing the Awesome Oscillator.
+     J. Welles Wilder's EMA
     """
-    # Calculate the Awesome Oscillator (AO)
-    high = data["High"]
-    low = data["Low"]
-    median_price = (high + low) / 2
-    ao = median_price.rolling(window=window1).mean() - median_price.rolling(window=window2).mean()
+    return values.ewm(alpha=1/n, adjust=False).mean()
 
-    # Add the AO to the DataFrame
-    data["AO"] = ao
+def __SMA ( data, n ):
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
+    return data
+
+def __EMA ( data, n=9 ):
+    #ema = data['Adj Close'].ewm(span = period ,adjust = False).mean()
+    #return ( ema )
+
+    data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
+    return data
+
+def __WR (data, t):
+    highh = data["High"].rolling(t).max()
+    lowl  = data["Low"].rolling(t).min()
+    close = data["Adj Close"]
+
+    data['WR_{}'.format(t)] = -100 * ((highh - close) / (highh - lowl))
 
     return data
 
+# https://stackoverflow.com/questions/40256338/calculating-average-true-range-atr-on-ohlc-data-with-python
+def __ATR (df, n=14):
+    data = df.copy()
+    high = data['High']
+    low = data['Low']
+    close = data['Adj Close']
+    data['tr0'] = abs(high - low)
+    data['tr1'] = abs(high - close.shift())
+    data['tr2'] = abs(low - close.shift())
+    tr = data[['tr0', 'tr1', 'tr2']].max(axis=1)
+    atr = wwma(tr, n)
+    return atr
 
 def backtest_strategy(stock, start_date, logfile):
     """
@@ -58,8 +74,22 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate indicators
-    data = __AO ( data, 5, 34 )
+    # Calculate
+    data            = __EMA ( data, 9 )
+    data            = __WR ( data, 20 )
+    data['ATR_14']  = __ATR ( data, 14 )
+
+    _vol      = data["Volume"].iloc[-1]
+    _open     = data["Open"].iloc[-1]
+    _close    = data["Adj Close"].iloc[-1]
+
+    ema_9     = data["EMA_9"].iloc[-1]
+    atr_14    = data['ATR_14'].iloc[-1]
+    atr_14_1  = data['ATR_14'].iloc[-2]
+
+    wr        = data["WR_20"].iloc[-1]
+    wr_1      = data["WR_20"].iloc[-2]
+
 
     # Set initial conditions
     position = 0
@@ -71,13 +101,13 @@ def backtest_strategy(stock, start_date, logfile):
     for i in range(len(data)):
 
         # Buy signal
-        if  ( position == 0 ) and ( ( data['AO'].iloc[i - 3] <= 0 ) and ( data['AO'].iloc[i - 2] >= 0 ) and ( data['AO'].iloc[i - 1] > data['AO'].iloc[i - 2] ) and ( data['AO'].iloc[i] > data['AO'].iloc[i - 1] ) ):
+        if (position == 0) and ( data["EMA_9"][i] - ( 2 *  data['ATR_14'][i] ) > data["Open"][i] ) and ( data["WR_20"][i] < -80) and ( data["WR_20"][i - 1] < -95 ) and ( data["Adj Close"][i] > data["Open"][i] ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( ( data['AO'].iloc[i - 3]  >= 0 ) and ( data['AO'].iloc[i - 2] <= 0 ) and ( data['AO'].iloc[i - 1] < data['AO'].iloc[i - 2] ) and ( data['AO'].iloc[i] < data['AO'].iloc[i - 1] ) ):
+        elif ( position == 1 ) and ( data["EMA_9"][i] + ( 2 * data['ATR_14'][i] ) < data["Adj Close"][i] ) and ( data["WR_20"][i] > -20 ) and ( data["WR_20"][i - 1] > -5 ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")

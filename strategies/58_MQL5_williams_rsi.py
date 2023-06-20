@@ -8,7 +8,7 @@ an 8 period rsi.
 """
 high = data['High']
 low = data['Low']
-close = data['Close']
+close = data['Adj Close']
 
 data = __RSI ( data, 8 )
 data = __WR ( data, 14 )

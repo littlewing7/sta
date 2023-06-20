@@ -10,9 +10,9 @@ Traders would place their open orders at this price level to take advantage of t
 data = __EMA ( data, 20 )
 
 # BUY if first candle stick touches ema and then next candle stick rebounds off it
-if ( ( data['Low'].iloc[-2] <= data['EMA_20'].iloc[-2] and data['EMA_20'].iloc[-2] <= data['High'].iloc[-2]) & (data['Close'].iloc[-1] > data['Close'].iloc[-2])):
+if ( ( data['Low'].iloc[-2] <= data['EMA_20'].iloc[-2] and data['EMA_20'].iloc[-2] <= data['High'].iloc[-2]) & (data['Adj Close'].iloc[-1] > data['Adj Close'].iloc[-2])):
     print_log ( '43_MQL5_BladeRunner.py', 'LONG', [ 'EMA_20' ] )
 
 # SELL if first candle stick touches ema and then next candle stick rebounds off it
-if ( ( data['Low'].iloc[-2] <= data['EMA_20'].iloc[-2] and data['EMA_20'].iloc[-2] <= data['High'].iloc[-2]) & (data['Close'].iloc[-1] < data['Close'].iloc[-2])):
+if ( ( data['Low'].iloc[-2] <= data['EMA_20'].iloc[-2] and data['EMA_20'].iloc[-2] <= data['High'].iloc[-2]) & (data['Adj Close'].iloc[-1] < data['Adj Close'].iloc[-2])):
     print_log ( '43_MQL5_BladeRunner.py', 'SHORT', [ 'EMA_20' ] )

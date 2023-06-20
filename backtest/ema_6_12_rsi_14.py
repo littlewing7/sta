@@ -15,29 +15,53 @@ def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
-def __AO ( data, window1=5, window2=34 ):
-    """
-    Calculates the Awesome Oscillator for a given DataFrame containing historical stock data.
+def __EMA ( data, n=9 ):
+    #ema = data['Adj Close'].ewm(span = period ,adjust = False).mean()
+    #return ( ema )
 
-    Parameters:
-        data (pandas.DataFrame): DataFrame containing the historical stock data.
-        window1 (int): Window size for the first simple moving average (default is 5).
-        window2 (int): Window size for the second simple moving average (default is 34).
-
-    Returns:
-        data (pandas.DataFrame): DataFrame with an additional column containing the Awesome Oscillator.
-    """
-    # Calculate the Awesome Oscillator (AO)
-    high = data["High"]
-    low = data["Low"]
-    median_price = (high + low) / 2
-    ao = median_price.rolling(window=window1).mean() - median_price.rolling(window=window2).mean()
-
-    # Add the AO to the DataFrame
-    data["AO"] = ao
-
+    data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
     return data
 
+# https://github.com/lukaszbinden/rsi_tradingview/blob/main/rsi.py
+def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
+    """ Implements the RSI indicator as defined by TradingView on March 15, 2021.
+        The TradingView code is as follows:
+        //@version=4
+        study(title="Relative Strength Index", shorttitle="RSI", format=format.price, precision=2, resolution="")
+        len = input(14, minval=1, title="Length")
+        src = input(close, "Source", type = input.source)
+        up = rma(max(change(src), 0), len)
+        down = rma(-min(change(src), 0), len)
+        rsi = down == 0 ? 100 : up == 0 ? 0 : 100 - (100 / (1 + up / down))
+        plot(rsi, "RSI", color=#8E1599)
+        band1 = hline(70, "Upper Band", color=#C0C0C0)
+        band0 = hline(30, "Lower Band", color=#C0C0C0)
+        fill(band1, band0, color=#9915FF, transp=90, title="Background")
+    :param data:
+    :param window:
+    :param round_rsi:
+    :return: an array with the RSI indicator values
+    """
+
+    delta = data["Adj Close"].diff()
+
+    up = delta.copy()
+    up[up < 0] = 0
+    up = pd.Series.ewm ( up, alpha =1 / window ).mean()
+
+    down = delta.copy()
+    down[down > 0] = 0
+    down *= -1
+    down = pd.Series.ewm(down, alpha = 1 / window ).mean()
+
+    rsi = np.where(up == 0, 0, np.where(down == 0, 100, 100 - (100 / (1 + up / down))))
+
+    if ( round_rsi ):
+        data['RSI_{}'.format ( window )] = np.round (rsi, 2)
+    else:
+        data['RSI_{}'.format( window )] = rsi
+
+    return data
 
 def backtest_strategy(stock, start_date, logfile):
     """
@@ -58,8 +82,10 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate indicators
-    data = __AO ( data, 5, 34 )
+    # Calculate Stochastic RSI
+    data = __EMA (data, 6)
+    data = __EMA (data, 12)
+    data = __RSI ( data, 14 )
 
     # Set initial conditions
     position = 0
@@ -69,15 +95,14 @@ def backtest_strategy(stock, start_date, logfile):
 
     # Loop through data
     for i in range(len(data)):
-
         # Buy signal
-        if  ( position == 0 ) and ( ( data['AO'].iloc[i - 3] <= 0 ) and ( data['AO'].iloc[i - 2] >= 0 ) and ( data['AO'].iloc[i - 1] > data['AO'].iloc[i - 2] ) and ( data['AO'].iloc[i] > data['AO'].iloc[i - 1] ) ):
+        if ( position == 0 ) and ( ( data["EMA_6"][i] > data["EMA_12"][i] ) and ( data["EMA_6"][i - 1] < data["EMA_12"][i - 1] ) and ( data["RSI_14"][i] > 50 ) and ( data["RSI_14"][i - 1] < 50) ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( ( data['AO'].iloc[i - 3]  >= 0 ) and ( data['AO'].iloc[i - 2] <= 0 ) and ( data['AO'].iloc[i - 1] < data['AO'].iloc[i - 2] ) and ( data['AO'].iloc[i] < data['AO'].iloc[i - 1] ) ):
+        elif ( position == 1 ) and ( ( data["EMA_6"][i] < data["EMA_12"][i] ) and ( data["EMA_6"][i - 1] > data["EMA_12"][i - 1] ) and ( data["RSI_14"][i] < 50 ) and ( data["RSI_14"][i - 1] > 50 ) ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")

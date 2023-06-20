@@ -11,7 +11,7 @@ data = __MACD ( data )
 ema9 = data['EMA_9']
 ema21 = data['EMA_21']
 histogram = data['MACD_HIST']
-close = data['Close']
+close = data['Adj Close']
 
 
 # BUY CRITERIA: 9EMA crosses above 21EMA followed by a MACD histogram crossover ito positives

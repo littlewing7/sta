@@ -5,7 +5,7 @@
 #def calculate_stochastic(df, k, d, slow):
 #    low = df['Low'].rolling(window=k).min()
 #    high = df['High'].rolling(window=k).max()
-#    df['K'] = (df['Close'] - low) / (high - low) * 100
+#    df['K'] = (df['Adj Close'] - low) / (high - low) * 100
 #    df['D'] = df['K'].rolling(window=d).mean()
 #    df['Slow'] = df['D'].rolling(window=slow).mean()
 #    return df
@@ -13,20 +13,20 @@
 # https://github.com/Dynami/py-shibumi/blob/master/utils/technical_analysis.py
 #Stochastic oscillator %K
 #def STOK(df):
-#    SOk = pd.Series((df['close'] - df['low']) / (df['high'] - df['low']), name = 'SO%k')
+#    SOk = pd.Series((df['Adj Close'] - df['Low']) / (df['High'] - df['Low']), name = 'SO%k')
 #    df = df.join(SOk)
 #    return df
 
 #Stochastic oscillator %D
 #def STO(df, n):
-#    SOk = pd.Series((df['close'] - df['low']) / (df['high'] - df['low']), name = 'SO%k')
+#    SOk = pd.Series((df['Adj Close'] - df['Low']) / (df['High'] - df['Low']), name = 'SO%k')
 #    SOd = pd.Series(pd.ewma(SOk, span = n, min_periods = n - 1), name = 'SO%d_' + str(n))
 #    df = df.join(SOd)
 #    return df
 
 ## Stochastic Oscillator, EMA smoothing, nS = slowing (1 if no slowing)
 #def STO(df,  nK, nD, nS=1):
-#    SOk = pd.Series((df['Close'] - df['Low'].rolling(nK).min()) / (df['High'].rolling(nK).max() - df['Low'].rolling(nK).min()), name = 'SO%k'+str(nK))
+#    SOk = pd.Series((df['Adj Close'] - df['Low'].rolling(nK).min()) / (df['High'].rolling(nK).max() - df['Low'].rolling(nK).min()), name = 'SO%k'+str(nK))
 #    SOd = pd.Series(SOk.ewm(ignore_na=False, span=nD, min_periods=nD-1, adjust=True).mean(), name = 'SO%d'+str(nD))
 #    SOk = SOk.ewm(ignore_na=False, span=nS, min_periods=nS-1, adjust=True).mean()
 #    SOd = SOd.ewm(ignore_na=False, span=nS, min_periods=nS-1, adjust=True).mean()
@@ -35,7 +35,7 @@
 #    return df
 ## Stochastic Oscillator, SMA smoothing, nS = slowing (1 if no slowing)
 #def STO(df, nK, nD,  nS=1):
-#    SOk = pd.Series((df['Close'] - df['Low'].rolling(nK).min()) / (df['High'].rolling(nK).max() - df['Low'].rolling(nK).min()), name = 'SO%k'+str(nK))
+#    SOk = pd.Series((df['Adj Close'] - df['Low'].rolling(nK).min()) / (df['High'].rolling(nK).max() - df['Low'].rolling(nK).min()), name = 'SO%k'+str(nK))
 #    SOd = pd.Series(SOk.rolling(window=nD, center=False).mean(), name = 'SO%d'+str(nD))
 #    SOk = SOk.rolling(window=nS, center=False).mean()
 #    SOd = SOd.rolling(window=nS, center=False).mean()
@@ -64,7 +64,7 @@ def __STOCHASTIC (df, k, d):
      high_max = temp_df["High"].rolling(window=k).max()
 
      # Fast Stochastic
-     temp_df['k_fast'] = 100 * (temp_df["Close"] - low_min)/(high_max - low_min)
+     temp_df['k_fast'] = 100 * (temp_df["Adj Close"] - low_min)/(high_max - low_min)
      temp_df['d_fast'] = temp_df['k_fast'].rolling(window=d).mean()
 
      # Slow Stochastic
@@ -74,7 +74,7 @@ def __STOCHASTIC (df, k, d):
      temp_df = temp_df.drop(['k_fast'], axis=1)
      temp_df = temp_df.drop(['d_fast'], axis=1)
 
-     #temp_df['Trend_20'] = df['Close'] / df['SMA 20']
+     #temp_df['Trend_20'] = df['Adj Close'] / df['SMA 20']
      #temp_df['STO_Signal'] = np.select(
      #   [ ( temp_df['Trend_20'] > 1) & ( ( temp_df['STO_D'] > 20 ) & ( temp_df['STO_D'].shift(1) < 20 ) ),
      #     ( temp_df['Trend_20'] < 1) & ( ( temp_df['STO_D'] < 80 ) & ( temp_df['STO_D'].shift(1) > 80 ) ) ],

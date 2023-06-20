@@ -22,7 +22,7 @@ if (  ( data["RSI_14"][-1]  >= 30 )
     & ( data['TEMA_9'][-1]  <= data['BB_middle'][-1] )
     & ( data['TEMA_9'][-1]  > data['TEMA_9'][-2] )
     & ( data["Volume"][-1]  > 0) ):
-    print_log ( '1_BB_RSI_TEMA', 'LONG', [ 'BB', 'RSI', 'TEMA' ] )
+    print_log ( 'bolinger_rsi_tema.py', 'LONG', [ 'BB', 'RSI', 'TEMA' ] )
 
 
 if (  ( data["RSI_14"][-1] >=70 )
@@ -30,5 +30,5 @@ if (  ( data["RSI_14"][-1] >=70 )
     & ( data['TEMA_9'][-1] > data['BB_middle'][-1] )
     & ( data['TEMA_9'][-1] < data['TEMA_9'][-2] )
     & ( data["Volume"][-1]  > 0) ):
-    print_log ( '1_BB_RSI_TEMA', 'LONG', [ 'BB', 'RSI', 'TEMA' ] )
+    print_log ( 'bolinger_rsi_tema.py', 'LONG', [ 'BB', 'RSI', 'TEMA' ] )
 

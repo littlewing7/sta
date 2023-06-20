@@ -17,7 +17,7 @@ sma_5       = data['SMA_5']
 macd_line   = data['MACD']
 macd_signal = data['MACD_SIGNAL']
 rsi         = data['RSI_14']
-close       = data['Close']
+close       = data['Adj Close']
 
 # buy if close price is higher than the moving average, rsi reads less than 30 and the macd line crosses up through macd signal line
 if (  sma_5.iloc[-1] < close.iloc[-1]) and (macd_line.iloc[-2] < macd_signal.iloc[-2]) and \

@@ -12,7 +12,7 @@ import numpy as np
 #    return talib.RSI ( close, timeperiod=t)
 
 def __RSI ( data, window):
-    delta = data['Close'].diff()
+    delta = data['Adj Close'].diff()
     gain = delta.where(delta > 0, 0)
     loss = -delta.where(delta < 0, 0)
     avg_gain = gain.rolling(window=window).mean()
