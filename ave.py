@@ -28,5 +28,5 @@ sorted_results = sorted(results.items())
 for name, percentages in sorted_results:
     average_percentage = sum(percentages) / len(percentages)
     average_percentage = int(average_percentage)
-    print(f"Name: {name} | Average Percentage: {average_percentage}")
+    print(f"Script: {name} | Average Percentage: {average_percentage}")
 

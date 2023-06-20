@@ -30,5 +30,5 @@ sorted_averages = sorted(averages.items(), key=lambda x: x[1], reverse=True)
 # Print the sorted results
 for name, average_percentage in sorted_averages:
     average_percentage = int(average_percentage)  # Convert average to an integer
-    print(f"Name: {name} | Average Percentage: {average_percentage}")
+    print(f"Script: {name} | Average Percentage: {average_percentage}")
 
