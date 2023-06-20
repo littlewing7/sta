@@ -44,6 +44,7 @@ cci_20.py                  NVDA    62 %
 cci_14.py                  NVDA    56 %
 macd_cross_wr_14.py        NVDA    50 %
 roc.py                     NVDA    49 %
+ao_macd.py                 NVDA    47 %
 kc_stochastic.py           NVDA    45 %
 bolinger_kc_rsi.py         NVDA    43 %
 cci_wr.py                  NVDA    42 %

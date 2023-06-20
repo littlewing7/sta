@@ -6,7 +6,7 @@ mkdir -p results
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
 
-for i in SPY NVDA TSLA XLE MSFT AAPL
+for i in SPY NVDA TSLA XLE MSFT AAPL XLK INTC XLI XLV XLU XLC XLY XRT XTN XME XHB XLF
 do
     rm -f results/$i
     for x in `ls -1 *py | egrep -v X`

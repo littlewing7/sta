@@ -27,7 +27,6 @@ ema_9_21_cross.py           XLE    67 %
 ema_8_21_cross.py           XLE    65 %
 dwma.py                     XLE    65 %
 elder_ray2.py               XLE    64 %
-ao_macd.py                  XLE    63 %
 ao.py                       XLE    63 %
 adx.py                      XLE    57 %
 wsma_20_close.py            XLE    51 %
@@ -37,6 +36,7 @@ sma_13_48_cross.py          XLE    46 %
 tsi2.py                     XLE    45 %
 rsi_5_20_cross.py           XLE    44 %
 bolinger_rsi1.py            XLE    42 %
+ao_macd.py                  XLE    41 %
 tema_close.py               XLE    38 %
 dwma_20_50_cross.py         XLE    33 %
 bolinger_rsi2.py            XLE    32 %
