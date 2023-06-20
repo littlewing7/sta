@@ -59,5 +59,5 @@ macd_cross_cci_20.py       MSFT    -3 %
 rsi_14.py                  MSFT    -4 %
 roc.py                     MSFT    -4 %
 cci_sma.py                 MSFT    -5 %
-bb_kc_rsi.py               MSFT    -5 %
+bolinger_kc_rsi.py         MSFT    -5 %
 rsi_5_20_cross.py          MSFT    -6 %

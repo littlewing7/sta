@@ -6,10 +6,10 @@ mkdir -p results
 GREEN=$(tput setaf 2)
 NORMAL=$(tput sgr0)
 
-for i in SPY NVDA TSLA XLE MSFT
+for i in SPY NVDA TSLA XLE MSFT AAPL U
 do
     rm -f results/$i
-    for x in `ls -1 *py`
+    for x in `ls -1 *py | egrep -v X`
     do
         echo
         echo " --->>>  Exec [${GREEN}$x -t $i -l results/$i${NORMAL}]"

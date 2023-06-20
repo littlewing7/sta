@@ -48,7 +48,7 @@ macd_cross_wr_20.py        AAPL    31 %
 rsi_5_20_cross.py          AAPL    25 %
 kc_close.py                AAPL    25 %
 bolinger.py                AAPL    21 %
-bb_kc_rsi.py               AAPL    20 %
+bolinger_kc_rsi.py         AAPL    20 %
 rsi_sma.py                 AAPL    18 %
 emav_20_50.py              AAPL    14 %
 cci_wr.py                  AAPL    11 %

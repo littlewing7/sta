@@ -8,7 +8,7 @@ import os, datetime
 
 
 def __EMA ( data, n=9 ):
-    data['EMA_{}'.format(n)] = data['Close'].ewm(span = n ,adjust = False).mean()
+    data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
     return data
 
 def backtest_strategy(stock, start_date):

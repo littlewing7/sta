@@ -15,28 +15,60 @@ def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
-def __CCI(df, ndays = 20):
-    df['TP'] = (df['High'] + df['Low'] + df['Adj Close']) / 3
-    df['sma'] = df['TP'].rolling(ndays).mean()
-    df['mad'] = df['TP'].rolling(ndays).apply(lambda x: np.abs(x - x.mean()).mean())
-
-    df['CCI_{}'.format(ndays)] = (df['TP'] - df['sma']) / (0.015 * df['mad'])
-
-    df['CCI_CrossOverBought'] = np.where ( ( df['CCI_14'].shift(1) < 100)  & ( df['CCI_14'] >= 100),  1, 0 )
-    df['CCI_CrossOverSold']   = np.where ( ( df['CCI_14'].shift(1) > -100) & ( df['CCI_14'] <= -100), 1, 0 )
-
-    # 2 = LONG, -2 = SHORT
-    #df['CCI_Signal'] = np.select(
-    #    [ ( df['CCI_20'] > -100 ) & ( df['CCI_20'].shift(1) < -100 ),
-    #      ( df['CCI_20'] <  100)  & ( df['CCI_20'].shift(1) >  100 ) ],
-    #    [2, -2])
 
 
-    df = df.drop('TP', axis=1)
-    df = df.drop('sma', axis=1)
-    df = df.drop('mad', axis=1)
+def __KC(dataframe, period=20, multiplier=2):
+    """
+    Calculates the Keltner Channels for a given DataFrame.
 
-    return df
+    Parameters:
+    dataframe (pd.DataFrame): DataFrame containing the OHLC data of the asset.
+    period (int): Period to calculate the Keltner Channels (default: 20).
+    multiplier (float): Multiplier for the Average True Range (ATR) (default: 2).
+
+    Returns:
+    pd.DataFrame: A new DataFrame containing the Keltner Channels for the given OHLC data.
+    """
+
+    atr_lookback = 10
+
+    tr = pd.DataFrame()
+    tr['h_l'] = dataframe['High'] - dataframe['Low']
+    tr['h_pc'] = abs(dataframe['High'] - dataframe['Adj Close'].shift())
+    tr['l_pc'] = abs(dataframe['Low'] - dataframe['Adj Close'].shift())
+    tr['tr'] = tr[['h_l', 'h_pc', 'l_pc']].max(axis=1)
+
+    atr = tr['tr'].rolling(atr_lookback).mean()
+    #atr = tr['tr'].ewm(alpha = 1/atr_lookback).mean()
+
+    kc_middle = dataframe['Adj Close'].rolling(period).mean()
+    kc_upper = kc_middle + multiplier * atr
+    kc_lower = kc_middle - multiplier * atr
+
+    dataframe['KC_upper'] = kc_upper
+    dataframe['KC_middle'] = kc_middle
+    dataframe['KC_lower'] = kc_lower
+    return dataframe
+
+def __STOCHASTIC (df, k, d):
+
+     temp_df = df.copy()
+     # Set minimum low and maximum high of the k stoch
+     low_min = temp_df["Low"].rolling(window=k).min()
+     high_max = temp_df["High"].rolling(window=k).max()
+
+     # Fast Stochastic
+     temp_df['k_fast'] = 100 * (temp_df["Adj Close"] - low_min)/(high_max - low_min)
+     temp_df['d_fast'] = temp_df['k_fast'].rolling(window=d).mean()
+
+     # Slow Stochastic
+     temp_df['STO_K'] = temp_df["d_fast"]
+     temp_df['STO_D'] = temp_df['STO_K'].rolling(window=d).mean()
+
+     temp_df = temp_df.drop(['k_fast'], axis=1)
+     temp_df = temp_df.drop(['d_fast'], axis=1)
+
+     return temp_df
 
 def backtest_strategy(stock, start_date, logfile):
     """
@@ -58,7 +90,8 @@ def backtest_strategy(stock, start_date, logfile):
         data.to_csv ( csv_file )
 
     # Calculate indicators
-    data = __CCI ( data, 14 )
+    data = __KC ( data, 20, 2 )
+    data = __STOCHASTIC (data, 14, 3)
 
     # Set initial conditions
     position = 0
@@ -70,13 +103,13 @@ def backtest_strategy(stock, start_date, logfile):
     for i in range(len(data)):
 
         # Buy signal
-        if ( data['CCI_14'][i-1] < -100 ) & ( data['CCI_14'][i] > -100 ) and position == 0:
+        if position ==0 and ( ( data['High'].iloc[i] < data['KC_lower'].iloc[i] ) and ( data['STO_K'].iloc[i] < 25 ) ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( data["CCI_14"][i-1] > 100 and data["CCI_14"][i] < 100 ) and position == 1:
+        elif ( position == 1 ) and ( ( data['Low'].iloc[i] > data['KC_upper'].iloc[i] ) and ( data['STO_K'].iloc[i] > 75 ) ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")

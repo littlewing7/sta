@@ -1,5 +1,5 @@
 kc_close.py                 XLE   247 %
-bb_kc_rsi.py                XLE   240 %
+bolinger_kc_rsi.py          XLE   240 %
 macd_cross_wr_14.py         XLE   205 %
 macd_cross_wr_20.py         XLE   168 %
 rsi_sma.py                  XLE   138 %
@@ -16,10 +16,10 @@ dwma_20_close_cross.py      XLE    92 %
 ao_saucer.py                XLE    88 %
 macd.py                     XLE    86 %
 bolinger_up.py              XLE    86 %
-sma_20_close_cross.py       XLE    85 %
 srsi_2.py                   XLE    83 %
 sma_13_close_cross.py       XLE    83 %
 sma_19_close_cross.py       XLE    82 %
+sma_20_close_cross.py       XLE    81 %
 cci_sma.py                  XLE    80 %
 ema_20_close_cross.py       XLE    74 %
 wsma_20_50_cross.py         XLE    68 %
@@ -43,7 +43,7 @@ sma_20_50_cross.py          XLE    31 %
 bolinger.py                 XLE    30 %
 bolinger_4_days_down.py     XLE    21 %
 rsi_14.py                   XLE    19 %
-bolinger_mid.py             XLE    16 %
+bolinger_mid.py             XLE    19 %
 bolinger_rsi_sma.py         XLE    15 %
 cci_20.py                   XLE    11 %
 uo.py                       XLE     8 %
