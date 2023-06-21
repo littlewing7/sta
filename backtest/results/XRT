@@ -1,4 +1,4 @@
-kc_stochastic.py            XRT   154 %
+bladerunner.py              XRT   166 %
 ema_13_48_cross.py          XRT   139 %
 macd_cross_wr_14.py         XRT   122 %
 ema_20_50_cross.py          XRT   117 %
@@ -7,6 +7,7 @@ wsma_20_50_cross.py         XRT   108 %
 kc_close.py                 XRT   102 %
 sma_13_34.py                XRT   101 %
 sma_13_48_cross.py          XRT    98 %
+ao_cross2.py                XRT    89 %
 ao.py                       XRT    89 %
 macd_cross_wr_20.py         XRT    79 %
 sma_20_50_cross.py          XRT    77 %
@@ -15,6 +16,7 @@ ema_9_21_cross.py           XRT    76 %
 ema_8_21_cross.py           XRT    74 %
 ema_50_200_cross.py         XRT    72 %
 rsi_sma.py                  XRT    67 %
+sma_8_21.py                 XRT    63 %
 bolinger_up.py              XRT    62 %
 sma_9_21.py                 XRT    59 %
 sma_20_close_cross.py       XRT    55 %
@@ -28,8 +30,8 @@ srsi_2.py                   XRT    46 %
 ema_20_close_cross.py       XRT    45 %
 tema_close.py               XRT    40 %
 dwma.py                     XRT    40 %
+tema30_close_cross.py       XRT    38 %
 sma_13_20.py                XRT    38 %
-tema30_close_cross.py       XRT    37 %
 dwma_20_close_cross.py      XRT    36 %
 elder_ray2.py               XRT    34 %
 tsi_cross.py                XRT    32 %
@@ -39,13 +41,16 @@ wsma_20_close.py            XRT    23 %
 close_4_days_down.py        XRT    23 %
 macd_cross_cci_20.py        XRT    21 %
 macd.py                     XRT    21 %
-rsi_5_20_cross.py           XRT    19 %
+rsi_5_20_cross.py           XRT    20 %
+williams_rsi.py             XRT    17 %
 bolinger_4_days_down.py     XRT    15 %
 sma_13_close_cross.py       XRT    12 %
 bolinger_mid.py             XRT    12 %
 bolinger.py                 XRT     5 %
 ema_tema.py                 XRT     4 %
 srsi_1.py                   XRT     1 %
+macd_rsi_sma.py             XRT     0 %
+ema_8_14_50_atr_sto.py      XRT     0 %
 tsi2.py                     XRT    -2 %
 uo.py                       XRT    -3 %
 bolinger_kc_rsi.py          XRT    -4 %
@@ -61,6 +66,6 @@ mfi.py                      XRT   -15 %
 roc.py                      XRT   -19 %
 rsi_14.py                   XRT   -21 %
 cci_14.py                   XRT   -27 %
-cci_wr.py                   XRT   -29 %
+cci_wr.py                   XRT   -28 %
 emav_20_50.py               XRT   -43 %
 dwma_20_50_cross.py         XRT   -43 %

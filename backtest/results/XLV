@@ -3,6 +3,7 @@ macd_cross_wr_14.py         XLV    71 %
 kc_close.py                 XLV    66 %
 rsi_14.py                   XLV    58 %
 adx_rsi.py                  XLV    51 %
+williams_rsi.py             XLV    48 %
 cci_mfi_rsi_sto_wr.py       XLV    48 %
 bolinger.py                 XLV    46 %
 tema30_close_cross.py       XLV    43 %
@@ -10,13 +11,15 @@ macd_cross_wr_20.py         XLV    43 %
 bolinger_rsi2.py            XLV    43 %
 bolinger_rsi1.py            XLV    43 %
 bolinger_4_days_down.py     XLV    42 %
-emav_20_50.py               XLV    38 %
+emav_20_50.py               XLV    37 %
 bolinger_up.py              XLV    35 %
 macd.py                     XLV    34 %
 ema_tema.py                 XLV    33 %
 cci_wr.py                   XLV    33 %
 rsi_sma.py                  XLV    31 %
+sma_8_21.py                 XLV    30 %
 ao.py                       XLV    30 %
+bladerunner.py              XLV    28 %
 mfi.py                      XLV    27 %
 dwma_9_21_cross.py          XLV    27 %
 tsi2.py                     XLV    26 %
@@ -30,6 +33,7 @@ dwma_20_close_cross.py      XLV    23 %
 wsma_20_close.py            XLV    22 %
 rsi_20.py                   XLV    21 %
 dwma.py                     XLV    19 %
+ao_cross2.py                XLV    19 %
 sma_13_close_cross.py       XLV    18 %
 macd_cross_cci_20.py        XLV    18 %
 ema_9_21_cross.py           XLV    18 %
@@ -42,7 +46,6 @@ cci_sma.py                  XLV    14 %
 tsi_cross.py                XLV    13 %
 srsi_2.py                   XLV    13 %
 rsi_5_20_cross.py           XLV    13 %
-kc_stochastic.py            XLV    13 %
 sma_13_20.py                XLV    11 %
 ema_144_169_sma_5.py        XLV    10 %
 cci_14.py                   XLV    10 %
@@ -58,6 +61,7 @@ cci_20.py                   XLV     5 %
 tema_close.py               XLV     2 %
 srsi_1.py                   XLV     1 %
 ema_50_200_cross.py         XLV     1 %
+ema_8_14_50_atr_sto.py      XLV     0 %
 adx.py                      XLV    -1 %
 roc.py                      XLV    -2 %
 ema_13_48_cross.py          XLV    -4 %
