@@ -4,21 +4,48 @@ import argparse
 import yfinance as yf
 import pandas as pd
 
+import numpy as np
+
 import os, datetime
+
+import warnings
+warnings.simplefilter ( action='ignore', category=Warning )
 
 def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
-def __EMA ( data, n=9 ):
-    #ema = data['Close'].ewm(span = period ,adjust = False).mean()
-    #return ( ema )
+def __CCI(df, ndays = 20):
+    df['TP'] = (df['High'] + df['Low'] + df['Adj Close']) / 3
+    df['sma'] = df['TP'].rolling(ndays).mean()
+    df['mad'] = df['TP'].rolling(ndays).apply(lambda x: np.abs(x - x.mean()).mean())
 
-    data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
+    df['CCI_{}'.format(ndays)] = (df['TP'] - df['sma']) / (0.015 * df['mad'])
+
+    df = df.drop('TP', axis=1)
+    df = df.drop('sma', axis=1)
+    df = df.drop('mad', axis=1)
+
+    return df
+
+
+def __MFI ( data, window=14):
+    # Calculate the Money Flow Index (MFI)
+    typical_price = ( data['High'] + data['Low'] + data['Adj Close']) / 3
+    money_flow = typical_price * data['Volume']
+    positive_money_flow = money_flow.where(typical_price > typical_price.shift(1), 0)
+    negative_money_flow = money_flow.where(typical_price < typical_price.shift(1), 0)
+    money_ratio = positive_money_flow.rolling(window=window).sum() / negative_money_flow.rolling(window=window).sum()
+    mfi = 100 - (100 / (1 + money_ratio))
+
+    data['MFI_{}'.format(window)] = mfi
+
     return data
 
-def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
+def __CMO (data, periods=14):
+    tp = (data['High'] + data['Low'] + data['Adj Close']) / 3
+    cmo = (tp - tp.shift(periods)) / (tp + tp.shift(periods)) * 100
+    data['CMO'] = cmo
     return data
 
 def backtest_strategy(stock, start_date, logfile):
@@ -40,14 +67,10 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate indicator
-    data = __EMA (data, 13)
-    data = __SMA (data, 5)
-
-    data['bull_power'] = data['High'] - data['EMA_13']
-    data['bear_power'] = data['Low'] - data['EMA_13']
-
-    ema_dist = data['Adj Close'].iloc[-1] - data['EMA_13'].iloc[-1]
+    # Calculate indicators
+    data = __CCI ( data, 20 )
+    data = __MFI ( data )
+    data = __CMO ( data )
 
 
     # Set initial conditions
@@ -58,19 +81,18 @@ def backtest_strategy(stock, start_date, logfile):
 
     # Loop through data
     for i in range(len(data)):
+
         # Buy signal
-        if position == 0 and data['bear_power'].iloc[i] < 0 and data['bear_power'].iloc[i] > data['bear_power'].iloc[i - 1] and data['bull_power'].iloc[i] > data['bull_power'].iloc[i - 1] and data['EMA_13'].iloc[i] > data['EMA_13'].iloc[i - 1] and data['Adj Close'].iloc[i] > data['SMA_5'].iloc[i]:
+        if ( position == 0 ) and ( (  data['MFI_14'][i] < 20) & ( data['CMO'][i]    < -50 ) ):
             position = 1
             buy_price = data["Adj Close"][i]
-            today = data.index[i]
-            #print(f"Buying {stock} at {buy_price} @ {today}")
+            #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif position == 1 and data['bull_power'].iloc[i] > 0 and data['bull_power'].iloc[i] < data['bull_power'].iloc[i - 1] and data['bear_power'].iloc[i] < data['bear_power'].iloc[i - 1] and data['EMA_13'].iloc[i] < data['EMA_13'].iloc[i - 1] and data['Adj Close'].iloc[i] < data['SMA_5'].iloc[i]:
+        elif ( position == 1 ) and ( ( data['MFI_14'][i]  > 80 ) & ( data['CMO'][i]     > 50 )):
             position = 0
             sell_price = data["Adj Close"][i]
-            today = data.index[i]
-            #print(f"Selling {stock} at {sell_price} @ {today}")
+            #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
             returns.append((sell_price - buy_price) / buy_price)

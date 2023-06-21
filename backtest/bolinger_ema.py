@@ -4,21 +4,35 @@ import argparse
 import yfinance as yf
 import pandas as pd
 
+import numpy as np
+
 import os, datetime
+
+import warnings
+warnings.simplefilter ( action='ignore', category=Warning )
 
 def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
+def __SMA ( data, n ):
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
+    return data
+
+def __BB (data, window=20):
+    std = data['Adj Close'].rolling(window).std()
+    data = __SMA ( data, window )
+    data['BB_upper']   = data["SMA_20"] + std * 2
+    data['BB_lower']   = data["SMA_20"] - std * 2
+    data['BB_middle']  = data["SMA_20"]
+
+    return data
+
 def __EMA ( data, n=9 ):
-    #ema = data['Close'].ewm(span = period ,adjust = False).mean()
+    #ema = data['Adj Close'].ewm(span = period ,adjust = False).mean()
     #return ( ema )
 
     data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
-    return data
-
-def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
     return data
 
 def backtest_strategy(stock, start_date, logfile):
@@ -40,14 +54,13 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate indicator
-    data = __EMA (data, 13)
-    data = __SMA (data, 5)
+    # Calculate Stochastic RSI
+    data = __BB ( data, 20 )
+    data = __EMA ( data, 100 )
 
-    data['bull_power'] = data['High'] - data['EMA_13']
-    data['bear_power'] = data['Low'] - data['EMA_13']
+    Vol_SMA_30 = data['Volume'].rolling(window=30).mean().shift(1) * 20
 
-    ema_dist = data['Adj Close'].iloc[-1] - data['EMA_13'].iloc[-1]
+    
 
 
     # Set initial conditions
@@ -58,19 +71,18 @@ def backtest_strategy(stock, start_date, logfile):
 
     # Loop through data
     for i in range(len(data)):
+
         # Buy signal
-        if position == 0 and data['bear_power'].iloc[i] < 0 and data['bear_power'].iloc[i] > data['bear_power'].iloc[i - 1] and data['bull_power'].iloc[i] > data['bull_power'].iloc[i - 1] and data['EMA_13'].iloc[i] > data['EMA_13'].iloc[i - 1] and data['Adj Close'].iloc[i] > data['SMA_5'].iloc[i]:
+        if (position == 0) and ( ( data['Adj Close'][i]   < data['EMA_100'][i] ) & ( data['Adj Close'][i]   < 0.985 * data['BB_lower'][i] ) & ( data['Volume'][i]  < Vol_SMA_30[i] ) ):
             position = 1
             buy_price = data["Adj Close"][i]
-            today = data.index[i]
-            #print(f"Buying {stock} at {buy_price} @ {today}")
+            #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif position == 1 and data['bull_power'].iloc[i] > 0 and data['bull_power'].iloc[i] < data['bull_power'].iloc[i - 1] and data['bear_power'].iloc[i] < data['bear_power'].iloc[i - 1] and data['EMA_13'].iloc[i] < data['EMA_13'].iloc[i - 1] and data['Adj Close'].iloc[i] < data['SMA_5'].iloc[i]:
+        elif ( position == 1 ) and ( data["Adj Close"][i-1] < data['BB_upper'][i-1] and data["Adj Close"][i] > data['BB_upper'][i] ):
             position = 0
             sell_price = data["Adj Close"][i]
-            today = data.index[i]
-            #print(f"Selling {stock} at {sell_price} @ {today}")
+            #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
             returns.append((sell_price - buy_price) / buy_price)

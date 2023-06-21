@@ -10,25 +10,23 @@ import pandas as pd
 # Optimal ticker interval for the strategy.
 timeframe = '5m'
 
-# RSI 14, Bolinger bands 20, TEMA 9
-data = __RSI  ( data, 14 )
-data = __BB   ( data )
-data = __TEMA ( data, 9 )
+# SMA 5, SMA 8
+data = __SMA  ( data, 5 )
+data = __SMA ( data, 8 )
+data = __BB  ( data )
 
-# github.com/superduong/ALIN/blob/main/freqtrade/templates/sample_.py
-# RSI crosses above 30, tema below BB middle, tema is raising, Volume is not 0
-if (  ( data["RSI_14"][-1]  >= 30 )
-    & ( data["RSI_14"][-2]  < 30 )
-    & ( data['TEMA_9'][-1]  <= data['BB_middle'][-1] )
-    & ( data['TEMA_9'][-1]  > data['TEMA_9'][-2] )
-    & ( data["Volume"][-1]  > 0) ):
-    print_log ( 'bolinger_rsi_tema.py', 'LONG', [ 'BB', 'RSI', 'TEMA' ] )
+_vol   = data["Volume"].iloc[-1]
+
+_rsi   = data["RSI_14"].iloc[-1]
+_rsi_1 = data["RSI_14"].iloc[-2]
 
 
-if (  ( data["RSI_14"][-1] >=70 )
-    & ( data["RSI_14"][-2] < 70 )
-    & ( data['TEMA_9'][-1] > data['BB_middle'][-1] )
-    & ( data['TEMA_9'][-1] < data['TEMA_9'][-2] )
-    & ( data["Volume"][-1]  > 0) ):
-    print_log ( 'bolinger_rsi_tema.py', 'LONG', [ 'BB', 'RSI', 'TEMA' ] )
+
+if ( _rsi >= 30 ) and ( _rsi_1 < 30 ) and ( data['TEMA_9'][-1] <= data['BB_middle'][-1] ) and ( data['TEMA_9'][-1] > data['TEMA_9'][-2] ) and ( _vol > 0):
+    print_log ( '3_SMA', 'LONG', [ 'BB', 'RSI_14', 'TEMA_9' ] )
+
+if ( _rsi >=70 ) and ( _rsi_1 < 70 ) and ( data['TEMA_9'][-1]  > data['BB_middle'][-1] )  and ( data['TEMA_9'][-1] < data['TEMA_9'][-2] ) and ( _vol > 0):
+    print_log ( '3_SMA', 'SHORT', [ 'BB', 'RSI_14', 'TEMA_9' ] )
+
+
 

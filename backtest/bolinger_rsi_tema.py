@@ -4,21 +4,61 @@ import argparse
 import yfinance as yf
 import pandas as pd
 
+import numpy as np
+
 import os, datetime
+
+import warnings
+warnings.simplefilter ( action='ignore', category=Warning )
 
 def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
-def __EMA ( data, n=9 ):
-    #ema = data['Close'].ewm(span = period ,adjust = False).mean()
-    #return ( ema )
-
-    data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
-    return data
-
 def __SMA ( data, n ):
     data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
+    return data
+
+def __BB (data, window=20):
+    std = data['Adj Close'].rolling(window).std()
+    data = __SMA ( data, window )
+    data['BB_upper']   = data["SMA_20"] + std * 2
+    data['BB_lower']   = data["SMA_20"] - std * 2
+    data['BB_middle']  = data["SMA_20"]
+
+    return data
+
+def __TEMA(data, n=30):
+    """
+    Triple Exponential Moving Average (TEMA)
+    """
+    ema1 = data['Adj Close'].ewm(span=n, adjust=False).mean()
+    ema2 = ema1.ewm(span=n, adjust=False).mean()
+    ema3 = ema2.ewm(span=n, adjust=False).mean()
+    tema = 3 * (ema1 - ema2) + ema3
+    data['TEMA_{}'.format(n)] = tema
+    return data
+
+def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
+
+    delta = data["Adj Close"].diff()
+
+    up = delta.copy()
+    up[up < 0] = 0
+    up = pd.Series.ewm ( up, alpha =1 / window ).mean()
+
+    down = delta.copy()
+    down[down > 0] = 0
+    down *= -1
+    down = pd.Series.ewm(down, alpha = 1 / window ).mean()
+
+    rsi = np.where(up == 0, 0, np.where(down == 0, 100, 100 - (100 / (1 + up / down))))
+
+    if ( round_rsi ):
+        data['RSI_{}'.format ( window )] = np.round (rsi, 2)
+    else:
+        data['RSI_{}'.format( window )] = rsi
+
     return data
 
 def backtest_strategy(stock, start_date, logfile):
@@ -40,15 +80,10 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate indicator
-    data = __EMA (data, 13)
-    data = __SMA (data, 5)
-
-    data['bull_power'] = data['High'] - data['EMA_13']
-    data['bear_power'] = data['Low'] - data['EMA_13']
-
-    ema_dist = data['Adj Close'].iloc[-1] - data['EMA_13'].iloc[-1]
-
+    # Calculate Stochastic RSI
+    data = __BB ( data, 20 )
+    data = __RSI ( data, 14 )
+    data = __TEMA ( data, 9 )
 
     # Set initial conditions
     position = 0
@@ -58,19 +93,18 @@ def backtest_strategy(stock, start_date, logfile):
 
     # Loop through data
     for i in range(len(data)):
+
         # Buy signal
-        if position == 0 and data['bear_power'].iloc[i] < 0 and data['bear_power'].iloc[i] > data['bear_power'].iloc[i - 1] and data['bull_power'].iloc[i] > data['bull_power'].iloc[i - 1] and data['EMA_13'].iloc[i] > data['EMA_13'].iloc[i - 1] and data['Adj Close'].iloc[i] > data['SMA_5'].iloc[i]:
+        if (position == 0) and ( ( data["RSI_14"][i] >= 30 ) and ( data["RSI_14"][i - 1] < 30 ) and ( data['TEMA_9'][i] <= data['BB_middle'][i] ) and ( data['TEMA_9'][i] > data['TEMA_9'][i - 1] ) ):
             position = 1
             buy_price = data["Adj Close"][i]
-            today = data.index[i]
-            #print(f"Buying {stock} at {buy_price} @ {today}")
+            #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif position == 1 and data['bull_power'].iloc[i] > 0 and data['bull_power'].iloc[i] < data['bull_power'].iloc[i - 1] and data['bear_power'].iloc[i] < data['bear_power'].iloc[i - 1] and data['EMA_13'].iloc[i] < data['EMA_13'].iloc[i - 1] and data['Adj Close'].iloc[i] < data['SMA_5'].iloc[i]:
+        elif ( position == 1 ) and ( ( data["RSI_14"][i] >=70 ) and ( data["RSI_14"][i - 1] < 70 ) and ( data['TEMA_9'][i]  > data['BB_middle'][i] )  and ( data['TEMA_9'][i] < data['TEMA_9'][i - 1] ) ):
             position = 0
             sell_price = data["Adj Close"][i]
-            today = data.index[i]
-            #print(f"Selling {stock} at {sell_price} @ {today}")
+            #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
             returns.append((sell_price - buy_price) / buy_price)
