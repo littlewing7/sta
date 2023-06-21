@@ -4,6 +4,7 @@ kc_close.py                 SPY    79 %
 macd_cross_wr_20.py         SPY    71 %
 williams_rsi.py             SPY    48 %
 bolinger_up.py              SPY    42 %
+wr_sto.py                   SPY    40 %
 bladerunner.py              SPY    39 %
 tema30_close_cross.py       SPY    37 %
 cci_mfi_rsi_sto_wr.py       SPY    37 %
@@ -14,6 +15,7 @@ dwma_20_close_cross.py      SPY    32 %
 sma_9_21.py                 SPY    31 %
 sma_13_34.py                SPY    31 %
 rsi_sma.py                  SPY    31 %
+macd_cross2.py              SPY    31 %
 bolinger.py                 SPY    31 %
 sma_8_21.py                 SPY    30 %
 tsi_cross.py                SPY    29 %

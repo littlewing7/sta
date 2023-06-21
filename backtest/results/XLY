@@ -20,6 +20,7 @@ macd.py                     XLY    34 %
 ema_9_21_cross.py           XLY    34 %
 ema_8_21_cross.py           XLY    34 %
 sma_20_50_cross.py          XLY    33 %
+macd_cross2.py              XLY    33 %
 ema_13_48_cross.py          XLY    33 %
 bolinger_up.py              XLY    33 %
 tema_close.py               XLY    32 %
@@ -42,6 +43,7 @@ bolinger_kc_rsi.py          XLY    19 %
 rsi_5_20_cross.py           XLY    18 %
 rsi_sma.py                  XLY    16 %
 ema_50_200_cross.py         XLY    16 %
+wr_sto.py                   XLY    11 %
 srsi_2.py                   XLY    11 %
 bolinger_rsi1.py            XLY    10 %
 bolinger_4_days_down.py     XLY    10 %

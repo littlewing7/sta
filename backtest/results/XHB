@@ -17,11 +17,13 @@ close_4_days_down.py        XHB    62 %
 macd_cross_cci_20.py        XHB    60 %
 sma_9_21.py                 XHB    58 %
 sma_13_20.py                XHB    55 %
+macd_cross2.py              XHB    48 %
 rsi_5_20_cross.py           XHB    46 %
 cci_mfi_rsi_sto_wr.py       XHB    45 %
 ao_saucer.py                XHB    45 %
 ema_6_9_12_21_macd_rsi_cross.py   XHB    44 %
 ema_50_200_cross.py         XHB    42 %
+wr_sto.py                   XHB    41 %
 bladerunner.py              XHB    41 %
 tema30_close_cross.py       XHB    40 %
 tsi2.py                     XHB    39 %

@@ -9,12 +9,13 @@ williams_rsi.py             XLF    50 %
 tema_close.py               XLF    49 %
 tema30_close_cross.py       XLF    48 %
 sma_20_50_cross.py          XLF    42 %
+sma_20_close_cross.py       XLF    41 %
 ao_saucer.py                XLF    41 %
-sma_20_close_cross.py       XLF    40 %
 tsi_cross.py                XLF    39 %
 sma_19_close_cross.py       XLF    37 %
 dwma_20_close_cross.py      XLF    35 %
 ao_macd.py                  XLF    35 %
+wr_sto.py                   XLF    34 %
 macd.py                     XLF    34 %
 adx.py                      XLF    34 %
 ema_20_50_cross.py          XLF    31 %
@@ -51,6 +52,7 @@ dwma_9_21_cross.py          XLF     8 %
 ema_9_21_cross.py           XLF     7 %
 cci_14.py                   XLF     7 %
 ema_8_21_cross.py           XLF     6 %
+macd_cross2.py              XLF     4 %
 rsi_20.py                   XLF     3 %
 ao_cross2.py                XLF     3 %
 adx_rsi.py                  XLF     3 %

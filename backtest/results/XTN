@@ -37,6 +37,7 @@ dwma_20_close_cross.py      XTN    22 %
 ema_20_50_cross.py          XTN    19 %
 dwma.py                     XTN    15 %
 cci_14.py                   XTN    15 %
+wr_sto.py                   XTN    14 %
 williams_rsi.py             XTN    14 %
 srsi_1.py                   XTN    13 %
 ema_8_21_cross.py           XTN    13 %
@@ -48,12 +49,12 @@ ema_9_21_cross.py           XTN     8 %
 dwma_9_21_cross.py          XTN     8 %
 bolinger_kc_rsi.py          XTN     8 %
 wsma_20_close.py            XTN     6 %
+macd_cross2.py              XTN     6 %
 ema_144_169_sma_5.py        XTN     6 %
 ema_20_close_cross.py       XTN     4 %
 cci_sma.py                  XTN     3 %
 sma_13_close_cross.py       XTN     2 %
 elder_ray2.py               XTN     2 %
-macd_rsi_sma.py             XTN     0 %
 ema_8_14_50_atr_sto.py      XTN     0 %
 cci_mfi_rsi_sto_wr.py       XTN    -0 %
 srsi_2.py                   XTN    -1 %

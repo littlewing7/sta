@@ -16,9 +16,11 @@ bolinger_up.py              XLV    35 %
 macd.py                     XLV    34 %
 ema_tema.py                 XLV    33 %
 cci_wr.py                   XLV    33 %
+macd_cross2.py              XLV    32 %
 rsi_sma.py                  XLV    31 %
 sma_8_21.py                 XLV    30 %
 ao.py                       XLV    30 %
+wr_sto.py                   XLV    29 %
 bladerunner.py              XLV    28 %
 mfi.py                      XLV    27 %
 dwma_9_21_cross.py          XLV    27 %

@@ -18,6 +18,7 @@ dwma_20_50_cross.py         XLC    24 %
 ema_20_close_cross.py       XLC    21 %
 tema30_close_cross.py       XLC    20 %
 mfi.py                      XLC    20 %
+wr_sto.py                   XLC    17 %
 sma_13_34.py                XLC    17 %
 macd_cross_wr_14.py         XLC    17 %
 close_4_days_down.py        XLC    17 %
@@ -30,6 +31,7 @@ sma_19_close_cross.py       XLC    12 %
 elder_ray2.py               XLC    11 %
 bolinger_rsi_sma.py         XLC    11 %
 adx.py                      XLC    11 %
+macd_cross2.py              XLC    10 %
 ema_8_21_cross.py           XLC    10 %
 srsi_2.py                   XLC     9 %
 bolinger_kc_rsi.py          XLC     9 %
@@ -52,7 +54,6 @@ ema_tema.py                 XLC     1 %
 ema_144_169_sma_5.py        XLC     1 %
 sma_50_200.py               XLC     0 %
 roc.py                      XLC     0 %
-macd_rsi_sma.py             XLC     0 %
 ema_8_14_50_atr_sto.py      XLC     0 %
 sma_9_21.py                 XLC    -2 %
 macd_cross_wr_20.py         XLC    -3 %

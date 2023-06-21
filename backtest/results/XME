@@ -5,6 +5,7 @@ bolinger_up.py              XME    96 %
 cci_wr.py                   XME    91 %
 ema_144_169_sma_5.py        XME    89 %
 sma_19_close_cross.py       XME    84 %
+wr_sto.py                   XME    82 %
 sma_20_close_cross.py       XME    80 %
 dwma_20_close_cross.py      XME    80 %
 tema9_close_cross.py        XME    79 %
@@ -63,6 +64,7 @@ rsi_5_20_cross.py           XME     2 %
 ema_8_14_50_atr_sto.py      XME     0 %
 uo.py                       XME    -4 %
 bolinger_rsi2.py            XME    -4 %
+macd_cross2.py              XME    -6 %
 sma_50_200.py               XME   -11 %
 close_4_days_down.py        XME   -16 %
 macd_cross_cci_20.py        XME   -20 %
