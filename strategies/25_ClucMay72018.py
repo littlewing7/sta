@@ -12,6 +12,6 @@ if  ( ( data['Adj Close'][-1]   < data['EMA_100'][-1] ) &
     (   data['Volume'][-1]  < Vol_SMA_30[-1] ) ):
     print_log ( '25_CLUCMAY72018', 'LONG', [ 'BB', 'EMA_100' ] )
 
-#if ( ( data['Close'][-1] > data['BB_middle'][-1] )):
+#if ( ( data['Adj Close'][-1] > data['BB_middle'][-1] )):
 #    print ( f"{ticker} {interval} ---> SHORT ::: 25_CLUCMAY72018 close > BB middle\n" )
 

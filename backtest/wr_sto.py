@@ -15,19 +15,35 @@ def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
-def __MACD (data, m=12, n=26, p=9, pc='Adj Close'):
 
-    data = data.copy()
-    data['EMA_s'] = data[pc].ewm(span=m, adjust=False).mean()
-    data['EMA_l'] = data[pc].ewm(span=n, adjust=False).mean()
+def __WR (data, t):
+    highh = data["High"].rolling(t).max()
+    lowl  = data["Low"].rolling(t).min()
+    close = data["Adj Close"]
 
-    data['MACD']  = data['EMA_s'] - data['EMA_l']
-    data['MACD_SIGNAL'] = data['MACD'].ewm(span=p, adjust=False).mean()
-    data['MACD_HIST']   = (data['MACD'] - data['MACD_SIGNAL'])
-
-    data.drop(['EMA_s', 'EMA_l'], axis=1, inplace=True)
+    data['WR_{}'.format(t)] = -100 * ((highh - close) / (highh - lowl))
 
     return data
+
+def __STOCHASTIC (df, k, d):
+
+     temp_df = df.copy()
+     # Set minimum low and maximum high of the k stoch
+     low_min = temp_df["Low"].rolling(window=k).min()
+     high_max = temp_df["High"].rolling(window=k).max()
+
+     # Fast Stochastic
+     temp_df['k_fast'] = 100 * (temp_df["Adj Close"] - low_min)/(high_max - low_min)
+     temp_df['d_fast'] = temp_df['k_fast'].rolling(window=d).mean()
+
+     # Slow Stochastic
+     temp_df['STO_K'] = temp_df["d_fast"]
+     temp_df['STO_D'] = temp_df['STO_K'].rolling(window=d).mean()
+
+     temp_df = temp_df.drop(['k_fast'], axis=1)
+     temp_df = temp_df.drop(['d_fast'], axis=1)
+
+     return temp_df
 
 def backtest_strategy(stock, start_date, logfile):
     """
@@ -49,7 +65,8 @@ def backtest_strategy(stock, start_date, logfile):
         data.to_csv ( csv_file )
 
     # Calculate indicators
-    data = __MACD (data)
+    data = __STOCHASTIC ( data, 14, 3 )
+    data = __WR ( data, 14 )
 
     # Set initial conditions
     position = 0
@@ -61,13 +78,15 @@ def backtest_strategy(stock, start_date, logfile):
     for i in range(len(data)):
 
         # Buy signal
-        if ( position == 0 ) and  ( (    data["MACD"].iloc[i] < 0 and data['MACD_SIGNAL'].iloc[i] < 0 and data["MACD"].iloc[i - 1] < 0 and data['MACD_SIGNAL'].iloc[i - 1] < 0 and data["MACD"].iloc[i - 2] < 0 and data['MACD_SIGNAL'].iloc[i - 2] < 0) and ( ( data["MACD"].iloc[i - 2] > data['MACD_SIGNAL'].iloc[i - 2] and data["MACD"].iloc[i] < data['MACD_SIGNAL'].iloc[i]) or ( data["MACD"].iloc[i - 2] < data['MACD_SIGNAL'].iloc[i - 2] and data["MACD"].iloc[i] > data['MACD_SIGNAL'].iloc[i]))  ):
+        if ( position == 0 ) and ( ( ( data['STO_D'][i] <= 35) | (data['STO_D'][i - 1] <= 35) | ( data['STO_D'][i - 2] <= 35) | (data['STO_D'][i - 3] <= 35) | (data['STO_D'][i - 4] <= 35) | ( data['STO_D'][i - 5] <= 35))
+    & (( data['WR_14'][i] < -65) | (data['WR_14'][i - 1] < -65) | ( data['WR_14'][i - 2] < -65) | (data['WR_14'][i - 3] < -65) | (data['WR_14'][i - 4] < -65) | ( data['WR_14'][i - 5] < -65))):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( (    data["MACD"].iloc[i] > 0 and data['MACD_SIGNAL'].iloc[i] > 0 and data["MACD"].iloc[i - 1] > 0 and data['MACD_SIGNAL'].iloc[i - 1] > 0 and data['MACD'].iloc[i - 2] > 0 and data['MACD_SIGNAL'].iloc[i - 2] > 0) and ( ( data["MACD"].iloc[i - 2] < data['MACD_SIGNAL'].iloc[i - 2] and data["MACD"].iloc[i] > data['MACD_SIGNAL'].iloc[i] ) or ( data["MACD"].iloc[i - 2] > data['MACD_SIGNAL'].iloc[i - 2] and data["MACD"].iloc[i] < data['MACD_SIGNAL'].iloc[i]))  ):
+        elif ( position == 1 ) and ( ( ( data['STO_D'][i] >= 65) | (data['STO_D'][i - 1] >= 65) | ( data['STO_D'][i -2] >= 65) | (data['STO_D'][i -3] >= 65) | (data['STO_D'][i - 4] >= 65) | ( data['STO_D'][i - 5] >= 65))
+    & (( data['WR_14'][i] > -35) | (data['WR_14'][i - 1] > -35) | ( data['WR_14'][i - 2] > -35) | (data['WR_14'][i - 3] > -35) | (data['WR_14'][i - 4] > -35) | ( data['WR_14'][i - 5] > -35))):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
@@ -86,7 +105,6 @@ def backtest_strategy(stock, start_date, logfile):
     print(f"---------------------------------------------")
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
-
 
     tot = ((total_returns - 100000) / 100000) * 100
     tot = (f"{tot:.0f}")

@@ -12,7 +12,7 @@ data = __EMA ( data, 21 )
 data['bull_power'] = data['High'] - data['EMA_21']
 data['bear_power'] = data['Low'] - data['EMA_21']
 
-ema_dist = data['Close'].iloc[-1] - data['EMA_21'].iloc[-1]
+ema_dist = data['Adj Close'].iloc[-1] - data['EMA_21'].iloc[-1]
 
 # BUY CRITERIA: Bear power’s value is negative but increasing, Bull power’s value is increasing and 21 EMA is increasing.
 if data['bear_power'].iloc[-1] < 0 and data['bear_power'].iloc[-1] > data['bear_power'].iloc[-2] \

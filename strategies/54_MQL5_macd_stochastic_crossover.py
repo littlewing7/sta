@@ -5,7 +5,7 @@ This strategy uses the MACD crossovers and Stochastic crossovers. The stochastic
 https://www.dailyfx.com/forex/education/trading_tips/daily_trading_lesson/2020/02/11/macd-vs-stochastic.html
 """
 
-#close = data['Close']
+#close = data['Adj Close']
 #high = data['High']
 #low = data['Low']
 

@@ -15,6 +15,51 @@ def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
+def __SMA ( data, n ):
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
+    return data
+
+# https://github.com/lukaszbinden/rsi_tradingview/blob/main/rsi.py
+def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
+    """ Implements the RSI indicator as defined by TradingView on March 15, 2021.
+        The TradingView code is as follows:
+        //@version=4
+        study(title="Relative Strength Index", shorttitle="RSI", format=format.price, precision=2, resolution="")
+        len = input(14, minval=1, title="Length")
+        src = input(close, "Source", type = input.source)
+        up = rma(max(change(src), 0), len)
+        down = rma(-min(change(src), 0), len)
+        rsi = down == 0 ? 100 : up == 0 ? 0 : 100 - (100 / (1 + up / down))
+        plot(rsi, "RSI", color=#8E1599)
+        band1 = hline(70, "Upper Band", color=#C0C0C0)
+        band0 = hline(30, "Lower Band", color=#C0C0C0)
+        fill(band1, band0, color=#9915FF, transp=90, title="Background")
+    :param data:
+    :param window:
+    :param round_rsi:
+    :return: an array with the RSI indicator values
+    """
+
+    delta = data["Adj Close"].diff()
+
+    up = delta.copy()
+    up[up < 0] = 0
+    up = pd.Series.ewm ( up, alpha =1 / window ).mean()
+
+    down = delta.copy()
+    down[down > 0] = 0
+    down *= -1
+    down = pd.Series.ewm(down, alpha = 1 / window ).mean()
+
+    rsi = np.where(up == 0, 0, np.where(down == 0, 100, 100 - (100 / (1 + up / down))))
+
+    if ( round_rsi ):
+        data['RSI_{}'.format ( window )] = np.round (rsi, 2)
+    else:
+        data['RSI_{}'.format( window )] = rsi
+
+    return data
+
 def __MACD (data, m=12, n=26, p=9, pc='Adj Close'):
 
     data = data.copy()
@@ -24,6 +69,7 @@ def __MACD (data, m=12, n=26, p=9, pc='Adj Close'):
     data['MACD']  = data['EMA_s'] - data['EMA_l']
     data['MACD_SIGNAL'] = data['MACD'].ewm(span=p, adjust=False).mean()
     data['MACD_HIST']   = (data['MACD'] - data['MACD_SIGNAL'])
+
 
     data.drop(['EMA_s', 'EMA_l'], axis=1, inplace=True)
 
@@ -49,7 +95,9 @@ def backtest_strategy(stock, start_date, logfile):
         data.to_csv ( csv_file )
 
     # Calculate indicators
-    data = __MACD (data)
+    data = __SMA ( data, 5 )
+    data = __MACD ( data )
+    data = __RSI ( data, 14 )
 
     # Set initial conditions
     position = 0
@@ -61,13 +109,13 @@ def backtest_strategy(stock, start_date, logfile):
     for i in range(len(data)):
 
         # Buy signal
-        if ( position == 0 ) and  ( (    data["MACD"].iloc[i] < 0 and data['MACD_SIGNAL'].iloc[i] < 0 and data["MACD"].iloc[i - 1] < 0 and data['MACD_SIGNAL'].iloc[i - 1] < 0 and data["MACD"].iloc[i - 2] < 0 and data['MACD_SIGNAL'].iloc[i - 2] < 0) and ( ( data["MACD"].iloc[i - 2] > data['MACD_SIGNAL'].iloc[i - 2] and data["MACD"].iloc[i] < data['MACD_SIGNAL'].iloc[i]) or ( data["MACD"].iloc[i - 2] < data['MACD_SIGNAL'].iloc[i - 2] and data["MACD"].iloc[i] > data['MACD_SIGNAL'].iloc[i]))  ):
+        if ( position == 0 ) and (  data["SMA_5"].iloc[i] < data["Adj Close"].iloc[i] ) and ( data["MACD"].iloc[i - 1] < data["MACD_SIGNAL"].iloc[i - 1]) and ( data["MACD"].iloc[i] > data["MACD_SIGNAL"].iloc[i]) and ( data["MACD"].iloc[i] < 0 and data["RSI_14"].iloc[i] < 30):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( (    data["MACD"].iloc[i] > 0 and data['MACD_SIGNAL'].iloc[i] > 0 and data["MACD"].iloc[i - 1] > 0 and data['MACD_SIGNAL'].iloc[i - 1] > 0 and data['MACD'].iloc[i - 2] > 0 and data['MACD_SIGNAL'].iloc[i - 2] > 0) and ( ( data["MACD"].iloc[i - 2] < data['MACD_SIGNAL'].iloc[i - 2] and data["MACD"].iloc[i] > data['MACD_SIGNAL'].iloc[i] ) or ( data["MACD"].iloc[i - 2] > data['MACD_SIGNAL'].iloc[i - 2] and data["MACD"].iloc[i] < data['MACD_SIGNAL'].iloc[i]))  ):
+        elif ( position == 1 ) and ( data["Adj Close"].iloc[i] < data["SMA_5"].iloc[i] ) and ( data["MACD"].iloc[i] > 0 and data["RSI_14"].iloc[i] > 70) and ( data["MACD"].iloc[i - 1] > data["MACD_SIGNAL"].iloc[i - 1]) and ( data["MACD"].iloc[i] < data["MACD_SIGNAL"].iloc[i]):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
@@ -86,7 +134,6 @@ def backtest_strategy(stock, start_date, logfile):
     print(f"---------------------------------------------")
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
-
 
     tot = ((total_returns - 100000) / 100000) * 100
     tot = (f"{tot:.0f}")

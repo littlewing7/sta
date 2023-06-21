@@ -51,7 +51,7 @@ def backtest_strategy(stock, start_date):
             #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
-        elif ( position == 1 ) and ( ( data["Close"][i] < data["DWMA_14"][i] ) and ( data["Close"][i - 1] > data["DWMA_14"][i - 1] ) ):
+        elif ( position == 1 ) and ( ( data["Adj Close"][i] < data["DWMA_14"][i] ) and ( data["Close"][i - 1] > data["DWMA_14"][i - 1] ) ):
             position = 0
             sell_price = data["Adj Close"][i]
             today = data.index[i]
@@ -71,7 +71,7 @@ def backtest_strategy(stock, start_date):
 if ( data["Adj Close"][-1] > data["DWMA_14"][-1] ) and ( data["Adj Close"][-2] < data["DWMA_14"][-2] ):
     print_log ( 'dwma_9_21_cross.py', 'LONG', [ 'DWMA_9', 'DWMA_21', 'DWMA_9_21_cross' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
-if ( ( data["Close"][-1] < data["DWMA_14"][-1] ) and ( data["Close"][-2] > data["DWMA_14"][-2] ) ):
+if ( ( data["Adj Close"][-1] < data["DWMA_14"][-1] ) and ( data["Adj Close"][-2] > data["DWMA_14"][-2] ) ):
     print_log ( 'dwma_9_21_cross.py', 'SHORT', [ 'DWMA_9', 'DWMA_21', 'DWMA_9_21_cross' ], backtest_strategy ( ticker , '2020-01-01' ) )
 
 
