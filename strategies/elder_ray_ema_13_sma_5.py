@@ -71,9 +71,9 @@ ema_dist = data['Adj Close'].iloc[-1] - data['EMA_13'].iloc[-1]
 
 # BUY CRITERIA: Bear power’s value is negative but increasing, Bull power’s value is increasing and 13 EMA is increasing. AND price is greater than 5 sma
 if  data['bear_power'].iloc[-1] < 0 and data['bear_power'].iloc[-1] > data['bear_power'].iloc[-2] and data['bull_power'].iloc[-1] > data['bull_power'].iloc[-2] and data['EMA_13'].iloc[-1] > data['EMA_13'].iloc[-2] and data['Adj Close'].iloc[-1] > data['SMA_5'].iloc[-1]:
-    print_log ( 'elder_ray3.py', 'LONG', [ 'SMA_5', 'EMA_13', 'bull_power' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( 'elder_ray_ema_13_sma_5.py', 'LONG', [ 'SMA_5', 'EMA_13', 'bull_power' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
 # SELL CRITERIA: Bull power’s value is positive but decreasing,  Bear power’s value is decreasing and 13 EMA is decreasing. AND price is less than 5 sma
 if data['bull_power'].iloc[-1] > 0 and data['bull_power'].iloc[-1] < data['bull_power'].iloc[-2] and data['bear_power'].iloc[-1] < data['bear_power'].iloc[-2] and data['EMA_13'].iloc[-1] < data['EMA_13'].iloc[-2] and data['Adj Close'].iloc[-1] < data['SMA_5'].iloc[-1]:
-    print_log ( 'elder_ray3.py', 'SHORT', [ 'SMA_5', 'EMA_13', 'bear_power' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( 'elder_ray_ema_13_sma_5.py', 'SHORT', [ 'SMA_5', 'EMA_13', 'bear_power' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 

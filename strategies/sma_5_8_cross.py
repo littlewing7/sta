@@ -11,8 +11,8 @@
 timeframe = '5m'
 
 # SMA 5, SMA 8
-data = __SMA  ( data, 9 )
-data = __SMA ( data, 21 )
+data = __SMA  ( data, 5 )
+data = __SMA ( data, 8 )
 
 def backtest_strategy(stock, start_date):
     """
@@ -34,8 +34,8 @@ def backtest_strategy(stock, start_date):
         data.to_csv ( csv_file )
 
     # Calculate Stochastic RSI
-    data = __SMA (data, 9)
-    data = __SMA (data, 21)
+    data = __SMA (data, 5)
+    data = __SMA (data, 8)
     #print ( data.tail(2) )
 
     # Set initial conditions

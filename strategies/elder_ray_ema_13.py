@@ -28,12 +28,11 @@ def backtest_strategy(stock, start_date ):
 
     # Calculate indicator
     data = __EMA (data, 13)
-    data = __EMA (data, 21)
 
-    data['bull_power'] = data['High'] - data['EMA_21']
-    data['bear_power'] = data['Low'] - data['EMA_21']
+    data['bull_power'] = data['High'] - data['EMA_13']
+    data['bear_power'] = data['Low'] - data['EMA_13']
 
-    ema_dist = data['Adj Close'].iloc[-1] - data['EMA_21'].iloc[-1]
+    ema_dist = data['Adj Close'].iloc[-1] - data['EMA_13'].iloc[-1]
 
 
     # Set initial conditions
@@ -70,18 +69,17 @@ def backtest_strategy(stock, start_date ):
 
 
 data = __EMA ( data, 13 )
-data = __EMA ( data, 21 )
 
-data['bull_power'] = data['High'] - data['EMA_21']
-data['bear_power'] = data['Low']  - data['EMA_21']
-ema_dist = data['Adj Close'].iloc[-1] - data['EMA_21'].iloc[-1]
+data['bull_power'] = data['High'] - data['EMA_13']
+data['bear_power'] = data['Low']  - data['EMA_13']
+ema_dist = data['Adj Close'].iloc[-1] - data['EMA_13'].iloc[-1]
 
 
 
 # BUY CRITERIA: price is above 13-EMA and both EMA and Bear Power is increasing
 if data['Adj Close'].iloc[-1] > data['EMA_13'].iloc[-1] and data['EMA_13'].iloc[-1] > data['EMA_13'].iloc[-2] and data['bear_power'].iloc[-1] > data['bear_power'].iloc[-2]:
-    print_log ( 'elder_ray2.py', 'LONG-TREND', [ 'EMA_13', 'bull_power' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( 'elder_ray_ema_13.py', 'LONG-TREND', [ 'EMA_13', 'bull_power' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
 # SELL CRITERIA: price is below 13-EMA and both EMA and Bull Power is decreasing
 if data['Adj Close'].iloc[-1] < data['EMA_13'].iloc[-1] and data['EMA_13'].iloc[-1] < data['EMA_13'].iloc[-2] and data['bull_power'].iloc[-1] < data['bull_power'].iloc[-2]:
-    print_log ( 'elder_ray2.py', 'SHORT-TREND', [ 'EMA_13', 'bear_power' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+    print_log ( 'elder_ray_ema_13.py', 'SHORT-TREND', [ 'EMA_13', 'bear_power' ] , backtest_strategy ( ticker , '2020-01-01' ) )

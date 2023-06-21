@@ -39,12 +39,11 @@ def backtest_strategy(stock, start_date, logfile):
 
     # Calculate indicator
     data = __EMA (data, 13)
-    data = __EMA (data, 21)
 
-    data['bull_power'] = data['High'] - data['EMA_21']
-    data['bear_power'] = data['Low'] - data['EMA_21']
+    data['bull_power'] = data['High'] - data['EMA_13']
+    data['bear_power'] = data['Low'] - data['EMA_13']
 
-    ema_dist = data['Adj Close'].iloc[-1] - data['EMA_21'].iloc[-1]
+    ema_dist = data['Adj Close'].iloc[-1] - data['EMA_13'].iloc[-1]
 
 
     # Set initial conditions
