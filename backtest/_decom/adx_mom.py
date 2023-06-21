@@ -1,18 +1,27 @@
 #!/usr/bin/env python3
+# RETURN 53%
 
-import argparse
 import yfinance as yf
 import pandas as pd
+import argparse
+import numpy as np
 
 import os, datetime
+
+import warnings
+warnings.simplefilter ( action='ignore', category=Warning )
 
 def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
+#Momentum
+def __MOM(data, window=14):
+    mom = pd.Series(data['Adj Close'].diff(window), name = 'MOM_' + str(window))
 
-def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
+    data['MOM_{}'.format(window)] = mom
+
+    #data = data.join(M)
     return data
 
 def __ADX ( data, lookback):
@@ -46,7 +55,8 @@ def __ADX ( data, lookback):
     data['ADX_{}'.format(lookback)] = adx_smooth
     return data
 
-def backtest_strategy(stock, start_date, logfile):
+
+def backtest_strategy(stock, start_date, logfile ):
     """
     Function to backtest a strategy
     """
@@ -65,12 +75,9 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate Stochastic RSI
+    # Calculate indicator
     data = __ADX ( data, 14 )
-    data = __SMA ( data, 3 )
-    data = __SMA ( data, 6 )
-
-    #print ( data.tail(2) )
+    data = __MOM ( data, 14 )
 
     # Set initial conditions
     position = 0
@@ -80,19 +87,18 @@ def backtest_strategy(stock, start_date, logfile):
 
     # Loop through data
     for i in range(len(data)):
+
         # Buy signal
-        if ( position == 0 ) and ( (    data['ADX_14'][i] > 25) & ( ( data["SMA_3"][i]  > data["SMA_6"][i] ) & ( data["SMA_3"][i - 1] < data["SMA_6"][i - 1] ) ) ):
+        if ( position == 0 ) and (  ( data['ADX_14'][i] > 25) & ( data['MOM_14'][i]         > 0) & ( data['ADX_14_plus_di'][i] > 25) & ( data['ADX_14_plus_di'][i] > data['ADX_14_minus_di'][i] ) ):
             position = 1
             buy_price = data["Adj Close"][i]
-            today = data.index[i]
-            #print(f"Buying {stock} at {buy_price} @ {today}")
+            #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( (    data['ADX_14'][i] < 25 ) & ( ( data["SMA_6"][i]  > data["SMA_3"][i] ) & ( data["SMA_6"][i - 1] < data["SMA_3"][i - 1] ) ) ):
+        elif ( position == 1 ) and (  ( data['ADX_14'][i]  > 25) & ( data['MOM_14'][i]  < 0)  & ( data['ADX_14_minus_di'][i] > 25) & ( data['ADX_14_plus_di'][i]  < data['ADX_14_minus_di'][i]) ):
             position = 0
             sell_price = data["Adj Close"][i]
-            today = data.index[i]
-            #print(f"Selling {stock} at {sell_price} @ {today}")
+            #print(f"Selling {stock} at {sell_price}")
 
             # Calculate returns
             returns.append((sell_price - buy_price) / buy_price)
