@@ -1,48 +1,17 @@
-#!/usr/bin/env python3
-
-import argparse
-import yfinance as yf
-import pandas as pd
-
-import numpy as np
-
-import os, datetime
-
-import warnings
-warnings.simplefilter ( action='ignore', category=Warning )
-
-def append_to_log(logfile, line):
-    with open(logfile, 'a') as file:
-        file.write(line + '\n')
-
-def __EMA ( data, n=9 ):
-    #ema = data['Adj Close'].ewm(span = period ,adjust = False).mean()
-    #return ( ema )
-
-    data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
-    return data
+# EMA, MACD
+"""
+@author: vita
+This strategy uses the crossover between 9EMA and 21EMA with MACD histogram as confirmation to avoid false signals
+http://www.forexfunction.com/trading-strategy-of-ema-crossover-with-macd
+"""
 
 
-def __MACD (data, m=12, n=26, p=9, pc='Adj Close'):
-
-    data = data.copy()
-    data['EMA_s'] = data[pc].ewm(span=m, adjust=False).mean()
-    data['EMA_l'] = data[pc].ewm(span=n, adjust=False).mean()
-
-    data['MACD']  = data['EMA_s'] - data['EMA_l']
-    data['MACD_SIGNAL'] = data['MACD'].ewm(span=p, adjust=False).mean()
-    data['MACD_HIST']   = (data['MACD'] - data['MACD_SIGNAL'])
-
-    data.drop(['EMA_s', 'EMA_l'], axis=1, inplace=True)
-
-    return data
-
-def backtest_strategy(stock, start_date, logfile):
+def backtest_strategy(stock, start_date ):
     """
     Function to backtest a strategy
     """
 
-    csv_file = "../data/{}_1d.csv".format( stock )
+    csv_file = "./data/{}_1d.csv".format( stock )
 
     # Get today's date
     today = datetime.datetime.now().date()
@@ -88,31 +57,24 @@ def backtest_strategy(stock, start_date, logfile):
 
     # Calculate total returns
     total_returns = (1 + sum(returns)) * 100000
+    percentage = ( ( (total_returns - 100000) / 100000) * 100)
+    percentage = "{:.0f}".format ( percentage )
 
-    import sys
-    name = sys.argv[0]
+    return percentage + '%'
 
-    # Print results
-    print(f"\n{name} ::: {stock} Backtest Results ({start_date} - today)")
-    print(f"---------------------------------------------")
-    print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
-    print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
 
-    tot = ((total_returns - 100000) / 100000) * 100
-    tot = (f"{tot:.0f}")
-    line = (f"{name:<25}{stock:>6}{tot:>6} %")
-    append_to_log ( logfile, line)
+data = __EMA ( data, 9 )
+data = __EMA ( data, 21 )
+data = __MACD ( data )
 
-if __name__ == '__main__':
+histogram = data['MACD_HIST']
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--ticker', nargs='+', required=True,  type=str, help='ticker')
-    parser.add_argument('-l', '--logfile',  required=True, type=str, help='ticker')
 
-    args = parser.parse_args()
-    start_date = "2020-01-01"
+# BUY CRITERIA: 9EMA crosses above 21EMA followed by a MACD histogram crossover ito positives
+if ( data["EMA_9"].iloc[-2] > data["EMA_21"].iloc[-2] and data["EMA_9"].iloc[-3] < data["EMA_21"].iloc[-3]) and ( (histogram.iloc[-1] > 0 and histogram.iloc[-2] < 0) or (histogram.iloc[-1] < 0 and histogram.iloc[-2] > 0)):
+    print_log ( 'ema_9_21_macd.py', 'LONG', [ 'EMA_9', 'EMA_21', 'MACD' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
-    for symbol in args.ticker:
-
-        backtest_strategy(symbol, start_date, args.logfile )
+# SELL CRITERIA: 9EMA crosses below 21EMA followed by a MACD histogram crossover into negatives
+if ( data["EMA_9"].iloc[-2] < data["EMA_21"].iloc[-2] and data["EMA_9"].iloc[-3] > data["EMA_21"].iloc[-3]) and ( ( histogram.iloc[-1] < 0 and histogram.iloc[-2] > 0) or (histogram.iloc[-1] > 0 and histogram.iloc[-2] < 0)):
+    print_log ( 'ema_9_21_macd.py', 'SHORT', [ 'EMA_9', 'EMA_21', 'MACD' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 

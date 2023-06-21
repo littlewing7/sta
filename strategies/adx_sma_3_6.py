@@ -1,8 +1,5 @@
 
-data = __RSI ( data, 14 )
-data = __ADX ( data, 14 )
-
-def backtest_strategy (stock, start_date):
+def backtest_strategy(stock, start_date ):
     """
     Function to backtest a strategy
     """
@@ -21,9 +18,12 @@ def backtest_strategy (stock, start_date):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate indicator
+    # Calculate Stochastic RSI
     data = __ADX ( data, 14 )
-    data = __RSI ( data, 14 )
+    data = __SMA ( data, 3 )
+    data = __SMA ( data, 6 )
+
+    #print ( data.tail(2) )
 
     # Set initial conditions
     position = 0
@@ -33,18 +33,19 @@ def backtest_strategy (stock, start_date):
 
     # Loop through data
     for i in range(len(data)):
-
         # Buy signal
-        if position == 0 and data["ADX_14"][i] > 35 and data["ADX_14_plus_di"][i] < data["ADX_14_minus_di"][i] and data["RSI_14"][i] < 50:
+        if ( position == 0 ) and ( (    data['ADX_14'][i] > 25) & ( ( data["SMA_3"][i]  > data["SMA_6"][i] ) & ( data["SMA_3"][i - 1] < data["SMA_6"][i - 1] ) ) ):
             position = 1
             buy_price = data["Adj Close"][i]
-            #print(f"Buying {stock} at {buy_price}")
+            today = data.index[i]
+            #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
-        elif position == 1 and data["ADX_14"][i] > 35 and data["ADX_14_plus_di"][i] > data["ADX_14_minus_di"][i] and data["RSI_14"][i] > 50:
+        elif ( position == 1 ) and ( (    data['ADX_14'][i] < 25 ) & ( ( data["SMA_6"][i]  > data["SMA_3"][i] ) & ( data["SMA_6"][i - 1] < data["SMA_3"][i - 1] ) ) ):
             position = 0
             sell_price = data["Adj Close"][i]
-            #print(f"Selling {stock} at {sell_price}")
+            today = data.index[i]
+            #print(f"Selling {stock} at {sell_price} @ {today}")
 
             # Calculate returns
             returns.append((sell_price - buy_price) / buy_price)
@@ -57,10 +58,13 @@ def backtest_strategy (stock, start_date):
     return percentage + '%'
 
 
+data = __ADX ( data, 14 )
+data = __SMA ( data, 3 )
+data = __SMA ( data, 6 )
 
-if data["ADX_14"][-1] > 35 and data["ADX_14_plus_di"][-1] < data["ADX_14_minus_di"][-1] and data["RSI_14"][-1] < 50:
+if ( (    data['ADX_14'][-1] > 25) & ( ( data["SMA_3"][-1]  > data["SMA_6"][-1] ) & ( data["SMA_3"][-2] < data["SMA_6"][-2] ) ) ):
    print_log ( 'adx_rsy.py', 'LONG', [ 'ADX', 'RSI' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
-if data["ADX_14"][-1] > 35 and data["ADX_14_plus_di"][-1] > data["ADX_14_minus_di"][-1] and data["RSI_14"][-1] > 50:
-   print_log ( 'adx_rsi', 'SHORT', [ 'ADX', 'RSI' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+if ( (    data['ADX_14'][-1] < 25 ) & ( ( data["SMA_6"][-1]  > data["SMA_3"][-1] ) & ( data["SMA_6"][-2] < data["SMA_3"][-2] ) ) ):
+    print_log ( 'adx_rsi', 'SHORT', [ 'ADX', 'RSI' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
+# RETURN 53%
 
-import argparse
 import yfinance as yf
 import pandas as pd
-
+import argparse
 import numpy as np
 
 import os, datetime
@@ -22,22 +22,39 @@ def __EMA ( data, n=9 ):
     data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
     return data
 
+def __ADX ( data, lookback):
+    high = data["High"]
+    low = data["Low"]
+    close = data["Adj Close"]
+    open = data["Open"]
 
-def __MACD (data, m=12, n=26, p=9, pc='Adj Close'):
+    plus_dm = high.diff()
+    minus_dm = low.diff()
+    plus_dm[plus_dm < 0] = 0
+    minus_dm[minus_dm > 0] = 0
 
-    data = data.copy()
-    data['EMA_s'] = data[pc].ewm(span=m, adjust=False).mean()
-    data['EMA_l'] = data[pc].ewm(span=n, adjust=False).mean()
+    tr1 = pd.DataFrame(high - low)
+    tr2 = pd.DataFrame(abs(high - close.shift(1)))
+    tr3 = pd.DataFrame(abs(low - close.shift(1)))
+    frames = [tr1, tr2, tr3]
+    tr = pd.concat(frames, axis = 1, join = 'inner').max(axis = 1)
+    atr = tr.rolling(lookback).mean()
 
-    data['MACD']  = data['EMA_s'] - data['EMA_l']
-    data['MACD_SIGNAL'] = data['MACD'].ewm(span=p, adjust=False).mean()
-    data['MACD_HIST']   = (data['MACD'] - data['MACD_SIGNAL'])
+    plus_di = 100 * (plus_dm.ewm(alpha = 1/lookback).mean() / atr)
+    minus_di = abs(100 * (minus_dm.ewm(alpha = 1/lookback).mean() / atr))
+    dx = (abs(plus_di - minus_di) / abs(plus_di + minus_di)) * 100
+    adx = ((dx.shift(1) * (lookback - 1)) + dx) / lookback
+    adx_smooth = adx.ewm(alpha = 1/lookback).mean()
 
-    data.drop(['EMA_s', 'EMA_l'], axis=1, inplace=True)
-
+    data['ADX_{}_plus_di'.format(lookback)] = plus_di
+    data['ADX_{}_minus_di'.format(lookback)] = minus_di
+    #data['ADX_smooth'.format(lookback)] = adx_smooth
+    #data["ADX"] = adx_smooth
+    data['ADX_{}'.format(lookback)] = adx_smooth
     return data
 
-def backtest_strategy(stock, start_date, logfile):
+
+def backtest_strategy(stock, start_date, logfile ):
     """
     Function to backtest a strategy
     """
@@ -56,12 +73,10 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate Stochastic RSI
-    data = __EMA (data, 9)
-    data = __EMA (data, 21)
-    data = __MACD ( data )
+    # Calculate indicator
+    data = __ADX ( data, 14 )
+    data = __EMA ( data, 14 )
 
-    histogram = data['MACD_HIST']
 
     # Set initial conditions
     position = 0
@@ -71,14 +86,15 @@ def backtest_strategy(stock, start_date, logfile):
 
     # Loop through data
     for i in range(len(data)):
+
         # Buy signal
-        if ( position == 0 ) and ( data["EMA_9"].iloc[i - 1] > data["EMA_21"].iloc[i - 1] and data["EMA_9"].iloc[i - 2] < data["EMA_21"].iloc[i - 2]) and ( (histogram.iloc[i] > 0 and histogram.iloc[i - 1] < 0) or ( histogram.iloc[i] < 0 and histogram.iloc[i - 1] > 0) ):
+        if ( position == 0 ) and (data['Adj Close'].iloc[i] > data["Open"].iloc[i]) and ( data['Adj Close'].iloc[i] > data["EMA_14"].iloc[i]) and ( data["ADX_14"].iloc[i - 1] < 25 and data["ADX_14"].iloc[i] > 25):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( position == 1 ) and ( data["EMA_9"].iloc[i - 1] < data["EMA_21"].iloc[i - 1] and data["EMA_9"].iloc[i - 2] > data["EMA_21"].iloc[i - 2]) and ( ( histogram.iloc[i] < 0 and histogram.iloc[i - 1] > 0) or (histogram.iloc[i] > 0 and histogram.iloc[i - 1] < 0)):
+        elif  ( position == 1 ) and ( data["Open"].iloc[i] > data['Adj Close'].iloc[i]) and ( data['Adj Close'].iloc[i] < data["EMA_14"].iloc[i]) and ( data["ADX_14"].iloc[i - 1] < 25 and data["ADX_14"].iloc[i] > 25):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
