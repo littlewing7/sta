@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import glob
 
 # Create a list to store all the file paths
