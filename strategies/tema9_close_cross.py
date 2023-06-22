@@ -40,7 +40,7 @@ def backtest_strategy (stock, start_date):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if (   data["Adj Close"][i] > data["TEMA_9"][i] ) and ( data["Adj Close"][i - 1] < data["TEMA_9"][i - 1] ) and (position == 0):
+        if ( position == 0 ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
@@ -69,15 +69,10 @@ timeframe = '5m'
 # TEMA 9
 data = __TEMA ( data, 9 )
 
-close     = data["Adj Close"].iloc[-1]
-close_y   = data["Adj Close"].iloc[-2]
 
-tema30    = data['TEMA_9'].iloc[-1]
-tema30_y  = data['TEMA_9'].iloc[-2]
-
-if ( close > tema30 ) and ( close_y < tema30_y ):
+if ( data["Adj Close"][-2] <  data["TEMA_9"][-2] ) and (data["Adj Close"][-1] > data["TEMA_9"][-1] ) and ( data["TEMA_9"][-1] > data["TEMA_9"][-2] ) and ( data["Adj Close"][-1] > data["Adj Close"][-2] ):
     print_log ( 'tema9_close_cross.py', 'LONG', [ 'close', 'TEMA_9', 'tema9_Close_cross' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
-if ( close < tema30 ) and ( close_y > tema30_y ):
+if ( data["Adj Close"][-2] >  data["TEMA_9"][-2] ) and (data["Adj Close"][-1] < data["TEMA_9"][-1] ) and ( data["TEMA_9"][-1] < data["TEMA_9"][-2] ) and ( data["Adj Close"][-1] < data["Adj Close"][-2] ):
     print_log ( 'tema9_close_cross.py', 'SHORT', [ 'close', 'TEMA_9', 'tema9_close_cross' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
