@@ -1,5 +1,5 @@
 wr_sto.py                  MSFT    93 %
-close_4_days_down.py       MSFT    93 %
+Close_4_days_down.py       MSFT    92 %
 cci_mfi_rsi_sto_wr.py      MSFT    84 %
 adx_rsi.py                 MSFT    66 %
 bolinger_up.py             MSFT    64 %
@@ -13,12 +13,11 @@ srsi_1.py                  MSFT    56 %
 macd_cross_wr_20.py        MSFT    56 %
 kc_close.py                MSFT    56 %
 ema_6_12_rsi_14.py         MSFT    52 %
-tema30_close_cross.py      MSFT    50 %
 ema_50_200_cross.py        MSFT    50 %
 macd_cross_wr_14.py        MSFT    48 %
 tsi2.py                    MSFT    46 %
 sma_13_close_cross.py      MSFT    46 %
-emav_20_50.py              MSFT    43 %
+emav_20_50.py              MSFT    41 %
 elder_ray_ema_13.py        MSFT    41 %
 cci_20.py                  MSFT    40 %
 bolinger.py                MSFT    40 %
@@ -29,7 +28,7 @@ williams_rsi.py            MSFT    37 %
 bolinger_rsi_sma.py        MSFT    37 %
 sma_13_34_cross.py         MSFT    36 %
 sma_13_20_cross.py         MSFT    33 %
-wsma_20_close.py           MSFT    29 %
+wsma_20_Close.py           MSFT    29 %
 ema_20_50_cross.py         MSFT    29 %
 ao_cross2.py               MSFT    29 %
 ema_20_close_cross.py      MSFT    28 %
@@ -63,7 +62,7 @@ wsma_20_50_cross.py        MSFT     4 %
 rsi_20.py                  MSFT     4 %
 ema_9_21_cross.py          MSFT     4 %
 sma_20_50_cross.py         MSFT     2 %
-sma_20_close_cross.py      MSFT     1 %
+sma_20_Close_cross.py      MSFT     1 %
 sma_50_200_cross.py        MSFT     0 %
 psar.py                    MSFT     0 %
 ema_8_14_50_atr_sto.py     MSFT     0 %
@@ -71,7 +70,7 @@ bolinger_rsi_tema.py       MSFT     0 %
 bolinger_rsi2.py           MSFT     0 %
 bolinger_rsi1.py           MSFT     0 %
 sma_13_48_cross.py         MSFT    -1 %
-sma_19_close_cross.py      MSFT    -2 %
+sma_19_Close_cross.py      MSFT    -2 %
 macd_cross_cci_20.py       MSFT    -3 %
 rsi_14.py                  MSFT    -4 %
 roc.py                     MSFT    -4 %

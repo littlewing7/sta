@@ -6,10 +6,9 @@ williams_rsi.py             SPY    48 %
 bolinger_up.py              SPY    42 %
 wr_sto.py                   SPY    40 %
 bladerunner.py              SPY    39 %
-tema30_close_cross.py       SPY    37 %
 cci_mfi_rsi_sto_wr.py       SPY    37 %
 bolinger_rsi_sma.py         SPY    36 %
-close_4_days_down.py        SPY    34 %
+Close_4_days_down.py        SPY    34 %
 bolinger_macd.py            SPY    33 %
 wsma_20_50_cross.py         SPY    32 %
 dwma_20_close_cross.py      SPY    32 %
@@ -20,7 +19,7 @@ macd_cross2.py              SPY    31 %
 bolinger.py                 SPY    31 %
 sma_8_21_cross.py           SPY    30 %
 tsi_cross.py                SPY    29 %
-sma_20_close_cross.py       SPY    29 %
+sma_20_Close_cross.py       SPY    29 %
 ao_saucer.py                SPY    29 %
 mfi.py                      SPY    28 %
 ema_9_21_cross.py           SPY    28 %
@@ -36,7 +35,7 @@ sma_13_48_cross.py          SPY    23 %
 tema_close.py               SPY    22 %
 rsi_14.py                   SPY    22 %
 ema_13_48_cross.py          SPY    21 %
-sma_19_close_cross.py       SPY    20 %
+sma_19_Close_cross.py       SPY    20 %
 sma_13_close_cross.py       SPY    20 %
 bolinger_rsi1.py            SPY    20 %
 bolinger_4_days_down.py     SPY    20 %
@@ -52,7 +51,7 @@ cci_20.py                   SPY    17 %
 dwma.py                     SPY    16 %
 rsi_20.py                   SPY    14 %
 ema_tema.py                 SPY    14 %
-wsma_20_close.py            SPY    13 %
+wsma_20_Close.py            SPY    13 %
 ema_20_close_cross.py       SPY    13 %
 bolinger_mid.py             SPY    12 %
 ao_cross2.py                SPY    12 %

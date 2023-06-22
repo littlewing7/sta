@@ -2,8 +2,8 @@ adx_rsi.py                  XLK   111 %
 cci_mfi_rsi_sto_wr.py       XLK    79 %
 sma_8_21_cross.py           XLK    73 %
 sma_9_21_cross.py           XLK    72 %
-close_4_days_down.py        XLK    71 %
 dwma_9_21_cross.py          XLK    70 %
+Close_4_days_down.py        XLK    70 %
 bolinger_up.py              XLK    60 %
 wr_sto.py                   XLK    59 %
 macd_cross2.py              XLK    57 %
@@ -16,10 +16,12 @@ sma_20_tema_30_cross.py     XLK    51 %
 bolinger_rsi_sma.py         XLK    50 %
 tsi2.py                     XLK    49 %
 ema_20_50_cross.py          XLK    49 %
+macd.py                     XLK    46 %
+tsi_cross.py                XLK    45 %
 ema_6_9_12_21_macd_rsi_cross.py   XLK    44 %
 williams_rsi.py             XLK    41 %
-sma_19_close_cross.py       XLK    41 %
-sma_20_close_cross.py       XLK    40 %
+sma_19_Close_cross.py       XLK    41 %
+sma_20_Close_cross.py       XLK    40 %
 sma_13_20_cross.py          XLK    40 %
 kc_close.py                 XLK    39 %
 cci_sma.py                  XLK    39 %
@@ -27,10 +29,8 @@ macd_cross_wr_14.py         XLK    38 %
 bladerunner.py              XLK    37 %
 dwma_20_close_cross.py      XLK    36 %
 bolinger.py                 XLK    36 %
-macd.py                     XLK    34 %
 ao_cross2.py                XLK    34 %
 ema_8_21_cross.py           XLK    33 %
-tsi_cross.py                XLK    32 %
 rsi_sma.py                  XLK    32 %
 ema_9_21_cross.py           XLK    32 %
 ema_tema.py                 XLK    31 %
@@ -40,9 +40,8 @@ ao.py                       XLK    30 %
 macd_cross_wr_20.py         XLK    28 %
 ema_50_200_cross.py         XLK    27 %
 dwma.py                     XLK    26 %
-wsma_20_close.py            XLK    25 %
+wsma_20_Close.py            XLK    25 %
 ao_macd.py                  XLK    22 %
-tema30_close_cross.py       XLK    20 %
 adx.py                      XLK    20 %
 cci_wr.py                   XLK    19 %
 macd_cross_cci_20.py        XLK    17 %
