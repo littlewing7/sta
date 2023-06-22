@@ -40,13 +40,13 @@ def backtest_strategy ( stock, start_date ):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if (   data["Adj Close"][i] > data["TEMA_30"][i] ) and ( data["Adj Close"][i - 1] < data["TEMA_30"][i - 1] ) and ( data["TEMA_30"][i] > data["TEMA_30"][i - 1] ) and ( data["Adj Close"][i] > data["Adj Close"][i - 1] ) and (position == 0):
+        if (   data["Adj Close"][i] > data["TEMA_30"][i] ) and ( data["Adj Close"][i - 1] < data["TEMA_30"][i - 1] ) and ( data["TEMA_30"][i] > data["TEMA_30"][i - 1] ) and ( position == 0 ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif ( data["Adj Close"][i] < data["TEMA_30"][i] ) and ( data["Adj Close"][i - 1] > data["TEMA_30"][i - 1] ) and ( data["TEMA_30"][i] < data["TEMA_30"][i - 1] ) and ( data["Adj Close"][i] < data["Adj Close"][i - 1])  and position == 1:
+        elif ( data["Adj Close"][i] < data["TEMA_30"][i] ) and ( data["Adj Close"][i - 1] > data["TEMA_30"][i - 1] ) and ( data["TEMA_30"][i] < data["TEMA_30"][i - 1] ) and ( position == 1 ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
