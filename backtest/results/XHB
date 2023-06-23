@@ -13,9 +13,9 @@ cci_wr.py                   XHB    67 %
 sma_20_tema_30_cross.py     XHB    65 %
 ao_cross2.py                XHB    65 %
 ao.py                       XHB    65 %
-Close_4_days_down.py        XHB    64 %
 bolinger_up.py              XHB    63 %
 ema_8_21_cross.py           XHB    62 %
+close_4_days_down.py        XHB    62 %
 macd_cross_cci_20.py        XHB    60 %
 sma_9_21_cross.py           XHB    58 %
 sma_13_20_cross.py          XHB    55 %
@@ -48,6 +48,7 @@ ema_20_close_cross.py       XHB    24 %
 dwma.py                     XHB    24 %
 bladerunner.py              XHB    24 %
 wsma_20_Close.py            XHB    23 %
+bolinger_ema_5_12_vol.py    XHB    19 %
 bolinger.py                 XHB    19 %
 emav_20_50.py               XHB    18 %
 ema_6_12_rsi_14.py          XHB    16 %
@@ -76,5 +77,5 @@ dwma_20_50_cross.py         XHB   -13 %
 williams_rsi.py             XHB   -15 %
 bolinger_kc_rsi.py          XHB   -17 %
 roc.py                      XHB   -23 %
-srsi_1.py                   XHB   -36 %
+srsi_1.py                   XHB   -30 %
 kc_close.py                 XHB   -41 %

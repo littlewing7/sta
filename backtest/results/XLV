@@ -4,6 +4,7 @@ macd_cross_wr_14.py         XLV    77 %
 rsi_14.py                   XLV    58 %
 cci_mfi_rsi_sto_wr.py       XLV    51 %
 adx_rsi.py                  XLV    51 %
+bolinger_ema_5_12_vol.py    XLV    48 %
 bolinger_macd.py            XLV    46 %
 bolinger.py                 XLV    46 %
 bolinger_rsi2.py            XLV    43 %
@@ -44,10 +45,10 @@ ema_9_21_cross.py           XLV    18 %
 ema_6_12_rsi_14.py          XLV    17 %
 ao_saucer.py                XLV    17 %
 ao_macd.py                  XLV    17 %
+close_4_days_down.py        XLV    16 %
 sma_5_8_cross.py            XLV    14 %
 sma_19_Close_cross.py       XLV    14 %
 cci_sma.py                  XLV    14 %
-Close_4_days_down.py        XLV    14 %
 tsi_cross.py                XLV    13 %
 srsi_2.py                   XLV    13 %
 rsi_5_20_cross.py           XLV    13 %

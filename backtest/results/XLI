@@ -24,11 +24,12 @@ dwma_20_close_cross.py      XLI    26 %
 sma_13_34_cross.py          XLI    25 %
 ema_20_50_cross.py          XLI    25 %
 ema_13_48_cross.py          XLI    25 %
+srsi_2.py                   XLI    24 %
 bolinger_4_days_down.py     XLI    24 %
 ema_9_21_macd.py            XLI    21 %
+close_4_days_down.py        XLI    21 %
 bolinger_up.py              XLI    21 %
-Close_4_days_down.py        XLI    21 %
-srsi_2.py                   XLI    20 %
+bolinger_ema_5_12_vol.py    XLI    20 %
 emav_20_50.py               XLI    19 %
 cci_14.py                   XLI    18 %
 williams_rsi.py             XLI    17 %

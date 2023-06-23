@@ -9,10 +9,11 @@ bolinger_up.py             NVDA   182 %
 sma_8_21_cross.py          NVDA   179 %
 bladerunner.py             NVDA   177 %
 sma_13_20_cross.py         NVDA   169 %
-Close_4_days_down.py       NVDA   169 %
+close_4_days_down.py       NVDA   169 %
 tsi_cross.py               NVDA   165 %
 sma_13_close_cross.py      NVDA   163 %
 sma_19_Close_cross.py      NVDA   161 %
+macd.py                    NVDA   160 %
 ema_6_9_12_21_macd_rsi_cross.py  NVDA   160 %
 dwma.py                    NVDA   156 %
 bolinger_macd.py           NVDA   155 %
@@ -28,12 +29,12 @@ adx.py                     NVDA   133 %
 bolinger_rsi_sma.py        NVDA   128 %
 ema_9_21_macd.py           NVDA   126 %
 tema_close.py              NVDA   114 %
-macd.py                    NVDA   113 %
 wsma_20_50_cross.py        NVDA   112 %
 ao.py                      NVDA   112 %
 sma_20_tema_30_cross.py    NVDA   110 %
 ema_9_21_cross.py          NVDA   108 %
 ema_13_48_cross.py         NVDA   107 %
+bolinger_ema_5_12_vol.py   NVDA   107 %
 bolinger.py                NVDA   107 %
 srsi_1.py                  NVDA   106 %
 sma_13_48_cross.py         NVDA   104 %

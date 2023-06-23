@@ -1,5 +1,5 @@
+close_4_days_down.py       MSFT    94 %
 wr_sto.py                  MSFT    93 %
-Close_4_days_down.py       MSFT    92 %
 cci_mfi_rsi_sto_wr.py      MSFT    84 %
 adx_rsi.py                 MSFT    66 %
 bolinger_up.py             MSFT    64 %
@@ -17,9 +17,10 @@ ema_50_200_cross.py        MSFT    50 %
 macd_cross_wr_14.py        MSFT    48 %
 tsi2.py                    MSFT    46 %
 sma_13_close_cross.py      MSFT    46 %
-emav_20_50.py              MSFT    41 %
+emav_20_50.py              MSFT    42 %
 elder_ray_ema_13.py        MSFT    41 %
 cci_20.py                  MSFT    40 %
+bolinger_ema_5_12_vol.py   MSFT    40 %
 bolinger.py                MSFT    40 %
 bolinger_4_days_down.py    MSFT    38 %
 bladerunner.py             MSFT    38 %
@@ -77,4 +78,4 @@ roc.py                     MSFT    -4 %
 cci_sma.py                 MSFT    -5 %
 bolinger_kc_rsi.py         MSFT    -5 %
 rsi_5_20_cross.py          MSFT    -6 %
-tema9_close_cross.py       MSFT   -16 %
+tema9_close_cross.py       MSFT   -17 %

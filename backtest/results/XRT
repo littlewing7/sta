@@ -22,9 +22,9 @@ sma_8_21_cross.py           XRT    63 %
 bolinger_up.py              XRT    62 %
 sma_9_21_cross.py           XRT    59 %
 sma_20_Close_cross.py       XRT    55 %
-srsi_2.py                   XRT    53 %
 ema_6_9_12_21_macd_rsi_cross.py   XRT    53 %
 ao_macd.py                  XRT    53 %
+srsi_2.py                   XRT    52 %
 sma_19_Close_cross.py       XRT    50 %
 cci_sma.py                  XRT    50 %
 adx.py                      XRT    50 %
@@ -41,7 +41,7 @@ williams_rsi.py             XRT    35 %
 tsi_cross.py                XRT    32 %
 bolinger_rsi_sma.py         XRT    30 %
 adx_rsi.py                  XRT    30 %
-Close_4_days_down.py        XRT    24 %
+close_4_days_down.py        XRT    24 %
 wsma_20_Close.py            XRT    23 %
 macd_cross_cci_20.py        XRT    21 %
 macd.py                     XRT    21 %
@@ -52,6 +52,7 @@ bolinger_4_days_down.py     XRT    15 %
 sma_13_close_cross.py       XRT    12 %
 bolinger_mid.py             XRT    12 %
 srsi_1.py                   XRT     6 %
+bolinger_ema_5_12_vol.py    XRT     5 %
 bolinger.py                 XRT     5 %
 ema_tema.py                 XRT     4 %
 elder_ray_ema_13_sma_5.py   XRT     2 %
