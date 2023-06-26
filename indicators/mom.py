@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-#######################
-#####  ATR BANDS  #####
-#######################
+import argparse
 
 import os,sys
 import yfinance as yf
@@ -20,19 +18,22 @@ sys.path.append("..")
 ################################
 from util.mom  import __MOM
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Define the ticker and download the historical data
-ticker = 'AAPL'
-data = yf.download(ticker, start='2020-01-01', progress=False)
-data = data.drop(['Adj Close'], axis=1).dropna()
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-window_mom = 14
+for symbol in args.ticker:
 
 
-# Calculate the MOM indicator and print the current value
-data = __MOM ( data , window_mom )
-current_mom = data["MOM_14"].iloc[-1]
+    data = yf.download ( symbol, start=start_date, progress=False)
+    window_mom = 14
 
-print("Current MOM value for", ticker, "is:", current_mom)
+    # Calculate the MOM indicator and print the current value
+    data = __MOM ( data , window_mom )
+    current_mom = data["MOM_14"].iloc[-1]
+
+    print("Current MOM value for", symbol, "is:", current_mom)
 
 

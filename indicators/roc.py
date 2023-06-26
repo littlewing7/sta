@@ -4,6 +4,8 @@
 #####  ATR BANDS  #####
 #######################
 
+import argparse
+
 import os,sys
 import yfinance as yf
 import numpy as np
@@ -20,24 +22,27 @@ sys.path.append("..")
 ################################
 from util.roc  import __ROC
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Define the ticker and download the historical data
-ticker = 'AAPL'
-data = yf.download(ticker, period='5y')
-data = data.drop(['Adj Close'], axis=1).dropna()
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-
-# Calculate the MOM indicator and print the current value
-data = __ROC ( data , 12, 6 )
-
-print ( data.tail(2))
+for symbol in args.ticker:
 
 
-current_roc = data["ROC"].iloc[-1]
-current_rocma = data["ROCMA"].iloc[-1]
+    data = yf.download ( symbol, start=start_date, progress=False)
 
-print("Current ROC value for", ticker, "is:", current_roc)
-print("Current ROCMA value for", ticker, "is:", current_rocma)
+    # Calculate the MOM indicator and print the current value
+    data = __ROC ( data , 12, 6 )
+
+    print ( data.tail(2))
+
+    current_roc = data["ROC"].iloc[-1]
+    current_rocma = data["ROCMA"].iloc[-1]
+
+    print("Current ROC value for", symbol, "is:", current_roc)
+    print("Current ROCMA value for", symbol, "is:", current_rocma)
 
 
 

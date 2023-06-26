@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import pandas as pd
 import yfinance as yf
 
@@ -12,14 +14,21 @@ def WMA(df, window):
     df["WMA"] = wma
     return df
 
-# Download stock data
-data = yf.download("AAPL", start="2020-01-01", progress=False)
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-window = 14
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-# Calculate Double WMA with window size of 10
-data = WMA(data, window)
+for symbol in args.ticker:
 
-# Print first 10 rows of updated dataframe
-print ( data.tail(3) )
+
+    data = yf.download ( symbol, start=start_date, progress=False)
+    window = 14
+
+    # Calculate Double WMA with window size of 10
+    data = WMA(data, window)
+
+    # Print first 10 rows of updated dataframe
+    print ( data.tail(3) )
 

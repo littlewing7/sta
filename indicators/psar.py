@@ -4,6 +4,8 @@
 #####  PSAR  #####
 ##################
 
+import argparse
+
 import os,sys
 import yfinance as yf
 import numpy as np
@@ -20,14 +22,21 @@ sys.path.append("..")
 ################################
 from util.psar  import __PSAR
 
-# Define the stock symbol and timeframe
-symbol = "AAPL"
 
-data = yf.download(symbol, period="5y")
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Calculate the PSAR indicator and print the current value
-data = __PSAR ( data )
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-print ( data.tail(2))
+for symbol in args.ticker:
+
+
+    data = yf.download ( symbol, start=start_date, progress=False)
+
+    # Calculate the PSAR indicator and print the current value
+    data = __PSAR ( data )
+
+    print ( data.tail(2))
 
 

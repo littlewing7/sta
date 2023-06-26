@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import os,sys
 import yfinance as yf
 import numpy as np
@@ -15,12 +17,19 @@ sys.path.append("..")
 from util.wma   import WMA
 
 
-# Download stock data
-data = yf.download("AAPL", start="2020-01-01", progress=False)
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Calculate WMA with window size of 10
-data = WMA(data, 14)
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-# Print first 10 rows of updated dataframe
-print ( data.tail (3) )
+for symbol in args.ticker:
+
+
+    data = yf.download ( symbol, start=start_date, progress=False)
+    # Calculate WMA with window size of 10
+    data = WMA(data, 14)
+
+    # Print first 10 rows of updated dataframe
+    print ( data.tail (3) )
 

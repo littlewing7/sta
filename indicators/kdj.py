@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import os,sys
 import yfinance as yf
 import numpy as np
@@ -19,31 +21,37 @@ sys.path.append("..")
 from util.kdj   import __KDJ
 
 
-# Set the ticker symbol and date range
-symbol = "AAPL"
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Retrieve the daily price data
-data = yf.download(symbol, period='5y')
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-data = data.drop(['Adj Close'], axis=1).dropna()
-
-# Calculate the KDJ indicator using the function
-data = __KDJ (data)
-
-# Check for overbought and oversold conditions
-if data['KDJ_Overbought'].tail(1).values[0] == 1:
-    print(f"{symbol} is currently overbought.")
-if data['KDJ_Oversold'].tail(1).values[0] == 1:
-    print(f"{symbol} is currently oversold.")
-
-# Check for buy or sell signal today
-today = data.index[-1]
-if data.loc[today, 'KDJ_LONG_Signal'] == 1:
-    print(f"Buy signal detected for {symbol} on {today.date()}")
-
-if data.loc[today, 'KDJ_SHORT_Signal'] == 1:
-    print(f"Sell signal detected for {symbol} on {today.date()}")
+for symbol in args.ticker:
 
 
-# Print the data
-print(data.tail(10))
+    data = yf.download ( symbol, start=start_date, progress=False)
+
+    # Calculate the KDJ indicator using the function
+    data = __KDJ (data)
+
+    # Check for overbought and oversold conditions
+    if data['KDJ_Overbought'].tail(1).values[0] == 1:
+        print(f"{symbol} is currently overbought.")
+    if data['KDJ_Oversold'].tail(1).values[0] == 1:
+        print(f"{symbol} is currently oversold.")
+
+    data['KDJ_LONG_Signal']  = np.where  ( (data['KDJ_K'] > data['KDJ_D']) & (data['KDJ_K'].shift(1) < data['KDJ_D'].shift(1)), 1, 0)
+    data['KDJ_SHORT_Signal'] = np.where ( (data['KDJ_K'] < data['KDJ_D']) & (data['KDJ_K'].shift(1) > data['KDJ_D'].shift(1)), 1, 0)
+
+    # Check for buy or sell signal today
+    today = data.index[-1]
+    if data.loc[today, 'KDJ_LONG_Signal'] == 1:
+        print(f"Buy signal detected for {symbol} on {today.date()}")
+
+    if data.loc[today, 'KDJ_SHORT_Signal'] == 1:
+        print(f"Sell signal detected for {symbol} on {today.date()}")
+
+
+    # Print the data
+    print(data.tail(10))

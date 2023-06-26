@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import os,sys
 import yfinance as yf
 import pandas as pd
@@ -27,28 +29,33 @@ def _crossunder(a, b):
 ##### SMA 5, 8  #####
 #####################
 
-# Define the tickers and time period to retrieve data for
-ticker = 'AAPL'
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Retrieve the data using yfinance
-data = yf.download(ticker, period='5y', interval='1d')
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-# Calculate the df['SMA_5'] and df['SMA_8']
-data = __SMA ( data, 5 )
-data = __SMA ( data, 8 )
+for symbol in args.ticker:
 
-r_data = data.tail(2)
 
-if ( _crossover ( data["SMA_5"], data["SMA_8"] ) ):
-    print ("CrossOver\n")
+    data = yf.download ( symbol, start=start_date, progress=False)
 
-# SMA5, SMA8 crossover
-if data.iloc[-1]['SMA_5'] > data.iloc[-1]['SMA_8'] and data.iloc[-2]['SMA_5'] < data.iloc[-2]['SMA_8']:
-    print('BUY :: SMA_5 crossed above SMA_8')
+    # Calculate the df['SMA_5'] and df['SMA_8']
+    data = __SMA ( data, 5 )
+    data = __SMA ( data, 8 )
 
-# SMA_5, SMA_8 crossunder
-if data.iloc[-1]['SMA_5'] < data.iloc[-1]['SMA_8'] and data.iloc[-2]['SMA_5'] > data.iloc[-2]['SMA_8']:
-    print('SELL :: SMA_5 crossed below SMA_8')
+    r_data = data.tail(2)
 
-print ( data.tail(5) )
+    if ( _crossover ( data["SMA_5"], data["SMA_8"] ) ):
+        print ("CrossOver\n")
+
+    # SMA5, SMA8 crossover
+    if data.iloc[-1]['SMA_5'] > data.iloc[-1]['SMA_8'] and data.iloc[-2]['SMA_5'] < data.iloc[-2]['SMA_8']:
+        print('BUY :: SMA_5 crossed above SMA_8')
+
+    # SMA_5, SMA_8 crossunder
+    if data.iloc[-1]['SMA_5'] < data.iloc[-1]['SMA_8'] and data.iloc[-2]['SMA_5'] > data.iloc[-2]['SMA_8']:
+        print('SELL :: SMA_5 crossed below SMA_8')
+
+    print ( data.tail(5) )
 

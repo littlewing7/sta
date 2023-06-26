@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import os,sys
 import yfinance as yf
 import pandas as pd
@@ -20,28 +22,34 @@ from util.macd   import __MACD
 import yfinance as yf
 import numpy as np
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Download historical data for a stock
-symbol = "CP"
-data = yf.download(symbol, period='3y')
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-# Calculate the MACD and signal lines using the calculate_macd function
-data = __MACD (data)
+for symbol in args.ticker:
 
-## Find the MACD crossover and crossunder
-#macd_crossover = (macd > signal) & (macd.shift(1) < signal.shift(1))
-#macd_crossunder = (macd < signal) & (macd.shift(1) > signal.shift(1))
 
-# Get the most recent day and the previous day in the dataframe
-today_data = data.iloc[-1]
-yesterday_data = data.iloc[-2]
+    data = yf.download ( symbol, start=start_date, progress=False)
 
-# Check if the MACD line crossed above or below the signal line on the most recent day
-if today_data["MACD"] > today_data["MACD_SIGNAL"] and yesterday_data["MACD"] <= yesterday_data["MACD_SIGNAL"]:
-    print("BUY :: MACD crossed above signal on", today_data.name)
-elif today_data["MACD"] < today_data["MACD_SIGNAL"] and yesterday_data["MACD"] >= yesterday_data["MACD_SIGNAL"]:
-    print("SELL :: MACD crossed below signal on", today_data.name)
+    # Calculate the MACD and signal lines using the calculate_macd function
+    data = __MACD (data)
 
-# Print the full dataframe with MACD and signal lines
-print(data.tail(5))
+    ## Find the MACD crossover and crossunder
+    #macd_crossover = (macd > signal) & (macd.shift(1) < signal.shift(1))
+    #macd_crossunder = (macd < signal) & (macd.shift(1) > signal.shift(1))
+
+    # Get the most recent day and the previous day in the dataframe
+    today_data = data.iloc[-1]
+    yesterday_data = data.iloc[-2]
+
+    # Check if the MACD line crossed above or below the signal line on the most recent day
+    if today_data["MACD"] > today_data["MACD_SIGNAL"] and yesterday_data["MACD"] <= yesterday_data["MACD_SIGNAL"]:
+        print("BUY :: MACD crossed above signal on", today_data.name)
+    elif today_data["MACD"] < today_data["MACD_SIGNAL"] and yesterday_data["MACD"] >= yesterday_data["MACD_SIGNAL"]:
+        print("SELL :: MACD crossed below signal on", today_data.name)
+
+    # Print the full dataframe with MACD and signal lines
+    print(data.tail(5))
 

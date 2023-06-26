@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import os,sys
 import yfinance as yf
 import numpy as np
@@ -15,27 +17,33 @@ sys.path.append("..")
 from util.stochastic_rsi   import __STOCHASTIC_RSI
 
 
-ticker = 'AAPL'
-data = yf.download(ticker, period='5y')
-data = data.drop(['Adj Close'], axis=1).dropna()
-
 # Define the overbought and oversold levels
 srsi_overbought = 80
 srsi_oversold = 20
 
-data = __STOCHASTIC_RSI ( data, period=14, SmoothD=3, SmoothK=3 )
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Apply indicator conditions
-if data['SRSI_K'][-1] > srsi_oversold and data['SRSI_K'][-2] < srsi_oversold:
-    print(f"Weak BUY :: Stochastic RSI crossed over oversold level from above, current SRSI_K value: {data['SRSI_K'][-1]:.2f}")
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-if data['SRSI_K'][-1] > srsi_oversold and data['SRSI_K'][-2] < srsi_oversold:
-    print(f"STRONG BUY, current SRSI_K value: {data['SRSI_K'][-1]:.2f}")
+for symbol in args.ticker:
 
-if data['SRSI_K'][-2] < srsi_overbought and data['SRSI_K'][-1] > srsi_overbought:
-    print(f"Weak SELL :: Stochastic RSI crossed over overbought level from below, current SRSI_K value: {data['SRSI_K'][-1]:.2f}")
 
-if data['SRSI_K'][-2] > srsi_overbought and data['SRSI_K'][-1] < srsi_overbought:
-    print(f"STRONG SELL, current SRSI_K value: {data['SRSI_K'][-1]:.2f}")
+    data = yf.download ( symbol, start=start_date, progress=False)
+    data = __STOCHASTIC_RSI ( data, period=14, SmoothD=3, SmoothK=3 )
 
-print (data.tail (5) )
+    # Apply indicator conditions
+    if data['SRSI_K'][-1] > srsi_oversold and data['SRSI_K'][-2] < srsi_oversold:
+        print(f"Weak BUY :: Stochastic RSI crossed over oversold level from above, current SRSI_K value: {data['SRSI_K'][-1]:.2f}")
+
+    if data['SRSI_K'][-1] > srsi_oversold and data['SRSI_K'][-2] < srsi_oversold:
+        print(f"STRONG BUY, current SRSI_K value: {data['SRSI_K'][-1]:.2f}")
+
+    if data['SRSI_K'][-2] < srsi_overbought and data['SRSI_K'][-1] > srsi_overbought:
+        print(f"Weak SELL :: Stochastic RSI crossed over overbought level from below, current SRSI_K value: {data['SRSI_K'][-1]:.2f}")
+
+    if data['SRSI_K'][-2] > srsi_overbought and data['SRSI_K'][-1] < srsi_overbought:
+        print(f"STRONG SELL, current SRSI_K value: {data['SRSI_K'][-1]:.2f}")
+
+    print (data.tail (5) )
