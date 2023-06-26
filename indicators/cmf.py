@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import os,sys
 import yfinance as yf
 import pandas as pd
@@ -18,13 +20,19 @@ sys.path.append("..")
 from util.cmf   import __CMF
 
 
-# Download historical data for the past 5 years
-symbol = 'AAPL'
-tickerDf = yf.download(symbol, period='5y')
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Calculate the CMO indicator using the function
-tickerDf = __CMF (tickerDf, period=14)
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-# Print the DataFrame with the CMO column added
-print(tickerDf)
+for symbol in args.ticker:
+
+
+    data = yf.download ( symbol, start=start_date, progress=False)
+    # Calculate the CMO indicator using the function
+    data = __CMF ( data, 14)
+
+    # Print the DataFrame with the CMO column added
+    print(data)
 

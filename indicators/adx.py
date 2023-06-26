@@ -3,6 +3,7 @@
 #######################
 #####  ATR BANDS  #####
 #######################
+import argparse
 
 import os,sys
 import yfinance as yf
@@ -20,15 +21,19 @@ sys.path.append("..")
 ################################
 from util.adx        import __ADX
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Define the ticker and download the historical data
-ticker = 'AAPL'
-data = yf.download(ticker, period='5y')
-data = data.drop(['Adj Close'], axis=1).dropna()
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-data = __ADX ( data, 14 )
+for symbol in args.ticker:
+    data = yf.download ( symbol, start=start_date)
+    #data = data.drop(['Adj Close'], axis=1).dropna()
 
-print ( data.tail(5) )
+    data = __ADX ( data, 14 )
+
+    print ( data.tail(5) )
 
 
 

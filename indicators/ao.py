@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import os,sys
 import yfinance as yf
 import numpy as np
@@ -17,11 +19,17 @@ sys.path.append("..")
 from util.sma import __SMA
 from util.ao  import __AO
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-data = yf.download("AAPL", period="5y")
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-data = __AO ( data, 5, 34)
-data = data.dropna()
-print ( data.tail() )
+for symbol in args.ticker:
+    data = yf.download ( symbol, start=start_date)
+    data = data.dropna()
+
+    data = __AO ( data, 5, 34)
+    print ( data.tail() )
 
 
