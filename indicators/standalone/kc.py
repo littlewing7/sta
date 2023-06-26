@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import os,sys
 import yfinance as yf
 import pandas as pd
@@ -24,11 +26,11 @@ def __KC (dataframe, period=20, multiplier=2):
     """
     tr = pd.DataFrame()
     tr['h_l'] = dataframe['High'] - dataframe['Low']
-    tr['h_pc'] = abs(dataframe['High'] - dataframe['Close'].shift())
-    tr['l_pc'] = abs(dataframe['Low'] - dataframe['Close'].shift())
+    tr['h_pc'] = abs(dataframe['High'] - dataframe['Adj Close'].shift())
+    tr['l_pc'] = abs(dataframe['Low'] - dataframe['Adj Close'].shift())
     tr['tr'] = tr[['h_l', 'h_pc', 'l_pc']].max(axis=1)
     atr = tr['tr'].rolling(period).mean()
-    kc_middle = dataframe['Close'].rolling(period).mean()
+    kc_middle = dataframe['Adj Close'].rolling(period).mean()
     kc_upper = kc_middle + multiplier * atr
     kc_lower = kc_middle - multiplier * atr
     kc_df = pd.concat([kc_middle, kc_upper, kc_lower], axis=1)
@@ -36,25 +38,32 @@ def __KC (dataframe, period=20, multiplier=2):
     return kc_df
 
 
-# Get the stock data for Coca-Cola (symbol: KO)
-df = yf.download("AAPL", period="5y")
-#df = stock.history(period="1y")
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Calculate the Keltner Channels using the function
-kc_df = __KC (df)
+args = parser.parse_args()
+start_date = "2020-01-01"
+
+for symbol in args.ticker:
 
 
-# Loop through each row in the DataFrame and check if the Close price touches the Upper or Lower Keltner Channel
-#for i, row in kc_df.iterrows():
-#    if df['Close'][i] >= row['KC Upper']:
-#        print("Price touched the Upper Keltner Channel on", i.date())
-#    elif df['Close'][i] <= row['KC Lower']:
-#        print("Price touched the Lower Keltner Channel on", i.date())
+    data = yf.download ( symbol, start=start_date, progress=False)
 
-# Check yesterday's close price and send a BUY or SELL message if it touches the KC Upper or Lower band
-yesterday_close = df.iloc[-2]['Close']
-if kc_df.iloc[-2]['KC_lower'] * 1.01 <= yesterday_close < kc_df.iloc[-1]['KC_lower'] and df.iloc[-1]['Close'] > yesterday_close:
-    print("BUY message")
-elif kc_df.iloc[-2]['KC_upper'] * 0.99 >= yesterday_close > kc_df.iloc[-1]['KC_upper'] and df.iloc[-1]['Close'] < yesterday_close:
-    print("SELL message")
+    # Calculate the Keltner Channels using the function
+    kc_df = __KC (data)
+
+
+    # Loop through each row in the DataFrame and check if the Close price touches the Upper or Lower Keltner Channel
+    #for i, row in kc_df.iterrows():
+    #    if df['Adj Close'][i] >= row['KC Upper']:
+    #        print("Price touched the Upper Keltner Channel on", i.date())
+    #    elif df['Adj Close'][i] <= row['KC Lower']:
+    #        print("Price touched the Lower Keltner Channel on", i.date())
+
+    # Check yesterday's close price and send a BUY or SELL message if it touches the KC Upper or Lower band
+    yesterday_close = df.iloc[-2]['Adj Close']
+    if kc_df.iloc[-2]['KC_lower'] * 1.01 <= yesterday_close < kc_df.iloc[-1]['KC_lower'] and df.iloc[-1]['Adj Close'] > yesterday_close:
+        print("BUY message")
+    elif kc_df.iloc[-2]['KC_upper'] * 0.99 >= yesterday_close > kc_df.iloc[-1]['KC_upper'] and df.iloc[-1]['Adj Close'] < yesterday_close:
+        print("SELL message")
 

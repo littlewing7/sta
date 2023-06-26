@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -8,8 +10,8 @@ warnings.filterwarnings("ignore")
 import yfinance as yf
 
 def __UO ( data ):
-    data['Prior_Close'] = data['Close'].shift()
-    data['BP']          = data['Close'] - data[['Low','Prior_Close']].min(axis=1)
+    data['Prior_Close'] = data['Adj Close'].shift()
+    data['BP']          = data['Adj Close'] - data[['Low','Prior_Close']].min(axis=1)
     data['TR']          = data[['High','Prior_Close']].max(axis=1) - data[['Low','Prior_Close']].min(axis=1)
 
     data['Average7']  = data['BP'].rolling(7).sum()/data['TR'].rolling(7).sum()
@@ -21,13 +23,15 @@ def __UO ( data ):
 
     return data
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-symbol = 'AAPL'
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-# Read data 
-data = yf.download(symbol,start='2020-01-01')
-data = __UO ( data )
+for symbol in args.ticker:
 
-
-print ( data.tail(3))
+    data = yf.download ( symbol, start=start_date, progress=False)
+    data = __UO ( data )
+    print ( data.tail(3))
 

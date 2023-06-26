@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import pandas as pd
 import yfinance as yf
 import numpy as np
 
 """
 def __RSI ( data, window):
-    delta = data['Close'].diff()
+    delta = data['Adj Close'].diff()
     gain = delta.where(delta > 0, 0)
     loss = -delta.where(delta < 0, 0)
     avg_gain = gain.rolling(window=window).mean()
@@ -38,7 +40,7 @@ def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
     :return: an array with the RSI indicator values
     """
 
-    delta = data["Close"].diff()
+    delta = data["Adj Close"].diff()
 
     up = delta.copy()
     up[up < 0] = 0
@@ -58,25 +60,32 @@ def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
 
     return data
 
-symbol = "AAPL"
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Fetch stock data from Yahoo Finance API
-stock_data = yf.download(symbol, period="5y")
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-# Calculate RSI using a window of 14 days
-rsi_window = 14
-stock_data = __RSI ( stock_data, rsi_window )
+for symbol in args.ticker:
 
-data['RSI_Crossover']  = np.where ( ( ( data['RSI_14'].shift(1) < 30 ) & ( data['RSI_14'] > 30 ) ), 1, 0 )
-data['RSI_Crossunder'] = np.where ( ( ( data['RSI_14'].shift(1) > 70 ) & ( data['RSI_14'] < 70 ) ), 1, 0 )
 
-# Output the results
-print(stock_data.tail())
+    data = yf.download ( symbol, start=start_date, progress=False)
 
-if data['RSI_Crossover'].iloc[-1] == 1:
-    print("RSI :: SELL :: Stock has crossed over")
-elif data['RSI_Crossunder'].iloc[-1] == 1:
-    print("RSI :: SELL :: Stock has crossed under")
-else:
-    print("No conditions are met")
+
+    # Calculate RSI using a window of 14 days
+    rsi_window = 14
+    data = __RSI ( data, rsi_window )
+
+    data['RSI_Crossover']  = np.where ( ( ( data['RSI_14'].shift(1) < 30 ) & ( data['RSI_14'] > 30 ) ), 1, 0 )
+    data['RSI_Crossunder'] = np.where ( ( ( data['RSI_14'].shift(1) > 70 ) & ( data['RSI_14'] < 70 ) ), 1, 0 )
+
+    # Output the results
+    print(data.tail())
+
+    if data['RSI_Crossover'].iloc[-1] == 1:
+        print("RSI :: SELL :: Stock has crossed over")
+    elif data['RSI_Crossunder'].iloc[-1] == 1:
+        print("RSI :: SELL :: Stock has crossed under")
+    else:
+        print("No conditions are met")
 

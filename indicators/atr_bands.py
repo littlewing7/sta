@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
-#######################
-#####  ATR BANDS  #####
-#######################
+import argparse
 
-import os,sys
+import os,sys,datetime
 import yfinance as yf
 import numpy as np
 import pandas as pd
@@ -21,32 +19,45 @@ sys.path.append("..")
 from util.atr        import __ATR
 from util.atr_bands  import __ATR_BANDS
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-# Define the ticker and download the historical data
-ticker = 'AAPL'
-data = yf.download(ticker, period='5y')
-data = data.drop(['Adj Close'], axis=1).dropna()
+args = parser.parse_args()
+start_date = "2020-01-01"
 
-#atr_lower_band, atr_upper_band, atr_middle_band = __ATR_bands ( data, 14 )
-data = __ATR_BANDS ( data, 14 )
+for symbol in args.ticker:
+    csv_file = "../data/{}_1d.csv".format( symbol )
 
-print ( data.tail(5))
-# Get the latest price and check if it's within the ATR bands
-latest_price = data.iloc[-1]['Close']
+    # Get today's date
+    today = datetime.datetime.now().date()
 
-atr_bands_upper = data['ATR_BANDS_UPPER'][-1]
-atr_bands_lower = data['ATR_BANDS_LOWER'][-1]
+    # if the file was downloaded today, read from it
+    if os.path.exists(csv_file) and (lambda file_path: datetime.datetime.now() - datetime.datetime.fromtimestamp(os.path.getmtime(file_path)) < datetime.timedelta(minutes=60))(csv_file):
+        data = pd.read_csv ( csv_file, index_col='Date' )
+    else:
+        # Download data
+        data = yf.download(symbol, start=start_date, progress=False)
+        data.to_csv ( csv_file )
+
+    data = __ATR_BANDS ( data, 14 )
+
+    print ( data.tail(5))
+    # Get the latest price and check if it's within the ATR bands
+    latest_price = data.iloc[-1]['Close']
+
+    atr_bands_upper = data['ATR_BANDS_UPPER'][-1]
+    atr_bands_lower = data['ATR_BANDS_LOWER'][-1]
 
 
-if latest_price > atr_bands_upper:
-    print(f"SELL signal for {ticker} at {latest_price}, above the upper ATR band of {atr_bands_upper}")
-elif latest_price < atr_bands_lower:
-    print(f"BUY signal for {ticker} at {latest_price}, below the lower ATR band of {atr_bands_lower}")
-elif latest_price > 0.98 * atr_bands_upper:
-    print(f"Warning for {ticker}: the price is within 2% of touching the upper ATR band of {atr_bands_upper}")
-elif latest_price < 1.02* atr_bands_lower:
-    print(f"Warning for {ticker}: the price is within 2% of touching the lower ATR band of {atr_bands_lower}")
-else:
-    print(f"No signal or warning for {ticker} at {latest_price}")
+    if latest_price > atr_bands_upper:
+        print(f"SELL signal for {symbol} at {latest_price}, above the upper ATR band of {atr_bands_upper}")
+    elif latest_price < atr_bands_lower:
+        print(f"BUY signal for {symbol} at {latest_price}, below the lower ATR band of {atr_bands_lower}")
+    elif latest_price > 0.98 * atr_bands_upper:
+        print(f"Warning for {symbol}: the price is within 2% of touching the upper ATR band of {atr_bands_upper}")
+    elif latest_price < 1.02* atr_bands_lower:
+        print(f"Warning for {symbol}: the price is within 2% of touching the lower ATR band of {atr_bands_lower}")
+    else:
+        print(f"No signal or warning for {symbol} at {latest_price}")
 
-print (data.tail(5))
+    print (data.tail(5))

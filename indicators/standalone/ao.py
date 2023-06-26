@@ -1,3 +1,6 @@
+
+import argparse
+
 import yfinance as yf
 import pandas as pd
 
@@ -24,11 +27,19 @@ def __AO ( data, window1=5, window2=34 ):
 
     return data
 
-# Download data for a particular stock
-stock = yf.Ticker("AAPL")
-data = stock.history(period="5y")
 
-# Calculate the Awesome Oscillator and print the last few rows
-data = __AO (data, 5, 34)
-print(data.tail())
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
+
+args = parser.parse_args()
+start_date = "2020-01-01"
+
+for symbol in args.ticker:
+
+
+    data = yf.download ( symbol, start=start_date, progress=False)
+
+    # Calculate the Awesome Oscillator and print the last few rows
+    data = __AO (data, 5, 34)
+    print(data.tail())
 

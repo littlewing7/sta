@@ -2,7 +2,7 @@
 
 import argparse
 
-import os,sys
+import os,sys,datetime
 import yfinance as yf
 import matplotlib.pyplot as plt
 import numpy as np
@@ -32,8 +32,18 @@ start_date = "2020-01-01"
 
 for symbol in args.ticker:
 
-    # Get the stock data for the past 5 years
-    data = yf.download (symbol, start=start_date )
+    csv_file = "../data/{}_1d.csv".format( symbol )
+
+    # Get today's date
+    today = datetime.datetime.now().date()
+
+    # if the file was downloaded today, read from it
+    if os.path.exists(csv_file) and (lambda file_path: datetime.datetime.now() - datetime.datetime.fromtimestamp(os.path.getmtime(file_path)) < datetime.timedelta(minutes=60))(csv_file):
+        data = pd.read_csv ( csv_file, index_col='Date' )
+    else:
+        # Download data
+        data = yf.download(symbol, start=start_date, progress=False)
+        data.to_csv ( csv_file )
 
     bb_window = 20
 

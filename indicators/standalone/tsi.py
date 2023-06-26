@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import argparse
+
 import os,sys
 import yfinance as yf
 import numpy as np
@@ -15,7 +17,7 @@ sys.path.append("..")
 #from util.tsi   import __TSI
 
 def __TSI ( data, long, short, signal):
-    close = data["Close"]
+    close = data["Adj Close"]
     diff = close - close.shift(1)
     abs_diff = abs(diff)
 
@@ -32,12 +34,19 @@ def __TSI ( data, long, short, signal):
     data['TSI_signal'] = signal
     return data
 
-ticker = 'AAPL'
-data = yf.download(ticker, period='5y')
-data = data.drop(['Adj Close'], axis=1).dropna()
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-data = __TSI ( data, 25, 13, 12)
-print ( data.tail(2) )
+args = parser.parse_args()
+start_date = "2020-01-01"
+
+for symbol in args.ticker:
+
+
+    data = yf.download ( symbol, start=start_date, progress=False)
+
+    data = __TSI ( data, 25, 13, 12)
+    print ( data.tail(2) )
 
 
 

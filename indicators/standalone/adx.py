@@ -1,5 +1,7 @@
 # IMPORTING PACKAGES
 
+import argparse
+
 import numpy as np
 import pandas as pd
 import numpy as np
@@ -13,7 +15,7 @@ warnings.simplefilter ( action='ignore', category=Warning )
 def __ADX ( data, lookback):
     high = data["High"]
     low = data["Low"]
-    close = data["Close"]
+    close = data["Adj Close"]
     open = data["Open"]
 
     plus_dm = high.diff()
@@ -41,10 +43,20 @@ def __ADX ( data, lookback):
     data['ADX_{}'.format(lookback)] = adx_smooth
     return data
 
-data = yf.download("AAPL", period="5y")
-data = __ADX ( data, 14 )
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
 
-print ( data.tail(5) )
+args = parser.parse_args()
+start_date = "2020-01-01"
+
+for symbol in args.ticker:
+
+
+    data = yf.download ( symbol, start=start_date, progress=False)
+
+    data = __ADX ( data, 14 )
+
+    print ( data.tail(5) )
 
 
 
