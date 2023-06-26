@@ -2,6 +2,8 @@
 
 import argparse
 
+import os,sys,datetime
+
 import yfinance as yf
 import pandas as pd
 
@@ -25,8 +27,19 @@ start_date = "2020-01-01"
 
 for symbol in args.ticker:
 
+    csv_file = "../../data/{}_1d.csv".format( symbol )
 
-    data = yf.download ( symbol, start=start_date, progress=False)
+    # Get today's date
+    today = datetime.datetime.now().date()
+
+    # if the file was downloaded today, read from it
+    if os.path.exists(csv_file) and (lambda file_path: datetime.datetime.now() - datetime.datetime.fromtimestamp(os.path.getmtime(file_path)) < datetime.timedelta(minutes=60))(csv_file):
+        data = pd.read_csv ( csv_file, index_col='Date' )
+    else:
+        # Download data
+        data = yf.download(symbol, start=start_date, progress=False)
+        data.to_csv ( csv_file )
+
     data = __TEMA ( data, 30 )
 
     # Check if price crosses above/below the TEMA
@@ -38,12 +51,8 @@ for symbol in args.ticker:
 
 
     if yesterday_close < yesterday_tema and today_close > today_tema:
-        print(f"{symbol} price crossed above the TEMA on {data.index[-1].strftime('%Y-%m-%d')}")
-    elif yesterday_close > yesterday_tema and today_close < today_tema:
-        print(f"{symbol} price crossed below the TEMA on {data.index[-1].strftime('%Y-%m-%d')}")
-    else:
-        if today_close > today_tema:
-            print(f"{symbol} price closed above the TEMA on {data.index[-1].strftime('%Y-%m-%d')}")
-        else:
-            print(f"{symbol} price closed below the TEMA on {data.index[-1].strftime('%Y-%m-%d')}")
+        print(f"{symbol} price crossed above the TEMA")
+
+    if yesterday_close > yesterday_tema and today_close < today_tema:
+        print(f"{symbol} price crossed below the TEMA")
 

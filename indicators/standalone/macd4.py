@@ -2,13 +2,17 @@
 
 import argparse
 
+import os,sys,datetime
+
+import numpy as np
 import pandas as pd
+
 import yfinance as yf
 
-def calculate_macd(stock_data):
+def calculate_macd(data):
     # Calculate the MACD line and signal line
-    ema12 = stock_data['Adj Close'].ewm(span=12, adjust=False).mean()
-    ema26 = stock_data['Adj Close'].ewm(span=26, adjust=False).mean()
+    ema12 = data['Adj Close'].ewm(span=12, adjust=False).mean()
+    ema26 = data['Adj Close'].ewm(span=26, adjust=False).mean()
     macd = ema12 - ema26
     signal = macd.ewm(span=9, adjust=False).mean()
 
@@ -26,11 +30,21 @@ start_date = "2020-01-01"
 
 for symbol in args.ticker:
 
+    csv_file = "../../data/{}_1d.csv".format( symbol )
 
-    stock_data = yf.download ( symbol, start=start_date, progress=False)
-        
+    # Get today's date
+    today = datetime.datetime.now().date()
+
+    # if the file was downloaded today, read from it
+    if os.path.exists(csv_file) and (lambda file_path: datetime.datetime.now() - datetime.datetime.fromtimestamp(os.path.getmtime(file_path)) < datetime.timedelta(minutes=60))(csv_file):
+        data = pd.read_csv ( csv_file, index_col='Date' )
+    else:
+        # Download data
+        data = yf.download(symbol, start=start_date, progress=False)
+        data.to_csv ( csv_file )
+
     # Calculate the MACD
-    macd, signal, macd_crossover, macd_crossunder = calculate_macd(stock_data)
+    macd, signal, macd_crossover, macd_crossunder = calculate_macd(data)
 
     # Check if the lines intersected above 0
     intersected_above_0 = (macd_crossover & (macd > 0)).any()
