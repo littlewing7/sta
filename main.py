@@ -336,6 +336,8 @@ while True:
     # Use the list of stocks and integer value in the script
     for ticker in args.tickers:
 
+        list_of_signals = []
+
         #my_list = list ( set ( strategies[ticker] ))
         discord_message = ''
 
@@ -427,6 +429,8 @@ while True:
             [ ( data['SMA_5'] > data['SMA_8'] ) & ( data['SMA_5'].shift(1) < data['SMA_8'].shift(1) ),
             (   data['SMA_5'] < data['SMA_8'] ) & ( data['SMA_5'].shift(1) > data['SMA_8'].shift(1) )],
             [2, -2])
+
+        #if ( data['SMA_5_8_Signal'] 
 
         data['SMA_20_50_Signal'] = np.select(
             [ ( data['SMA_20'] > data['SMA_50'] ) & ( data['SMA_20'].shift(1) < data['SMA_20'].shift(1) ),

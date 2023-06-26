@@ -48,7 +48,7 @@ for symbol in args.ticker:
     today = datetime.datetime.now().date()
 
     # if the file was downloaded today, read from it
-    if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os.path.getmtime ( csv_file ) ).date() == today ) ):
+    if os.path.exists(csv_file) and (lambda file_path: datetime.datetime.now() - datetime.datetime.fromtimestamp(os.path.getmtime(file_path)) < datetime.timedelta(minutes=60))(csv_file):
         data = pd.read_csv ( csv_file, index_col='Date' )
     else:
         # Download data
@@ -68,11 +68,11 @@ for symbol in args.ticker:
     # Buy/sell signals for  SMA crosses
     data["TEMA_30_Close_Signal"] = 0.0
     data['TEMA_30_Close_Signal'] = np.select(
-        [ ( data['TEMA_30'].shift(1) <  data['Close'].shift(1) ) & ( data['TEMA_30'] >  data['Close'] ) ,
-          ( data['TEMA_30'].shift(1) >  data['Close'].shift(1) ) & ( data['TEMA_30'] <  data['Close'] ) ],
+        [ ( data['TEMA_30'].shift(1) <  data['Adj Close'].shift(1) ) & ( data['TEMA_30'] >  data['Adj Close'] ) ,
+          ( data['TEMA_30'].shift(1) >  data['Adj Close'].shift(1) ) & ( data['TEMA_30'] <  data['Adj Close'] ) ],
         [-2, 2])
 
-    plt.plot ( data['Close'],  alpha = 0.3, linewidth = 2,                  label = symbol + ' Price'  )
+    plt.plot ( data['Adj Close'],  alpha = 0.3, linewidth = 2,                  label = symbol + ' Price'  )
     plt.plot ( data["TEMA_30"], alpha = 0.6, linewidth = 2, color='#FF006E', label = 'TEMA_30' )
 
     plt.plot ( data.loc[data["TEMA_30_Close_Signal"] ==  2.0].index, data["TEMA_30"][data["TEMA_30_Close_Signal"] ==  2.0], "^", markersize=10, color="g", label = 'BUY SIGNAL')
