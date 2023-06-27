@@ -346,7 +346,6 @@ while True:
 
 
         # Get stock data from Yahoo Finance
-        #data = yf.download(ticker, period="5y")
         data = yf.download(ticker, period=period, interval = interval, progress=False, threads=True )
 
         # We need to fetch daily data in order to get strategy return numbers
@@ -430,12 +429,22 @@ while True:
             (   data['SMA_5'] < data['SMA_8'] ) & ( data['SMA_5'].shift(1) > data['SMA_8'].shift(1) )],
             [2, -2])
 
-        #if ( data['SMA_5_8_Signal'] 
+        if ( data['SMA_5_8_Signal'][-1] == 2 ):
+            list_of_signals.append ( 'SMA_5_8_Signal:BULL' )
+        if ( data['SMA_5_8_Signal'][-1] == -2 ):
+            list_of_signals.append ( 'SMA_5_8_Signal:BEAR' )
+
+
 
         data['SMA_20_50_Signal'] = np.select(
             [ ( data['SMA_20'] > data['SMA_50'] ) & ( data['SMA_20'].shift(1) < data['SMA_20'].shift(1) ),
             (   data['SMA_20'] < data['SMA_50'] ) & ( data['SMA_20'].shift(1) > data['SMA_50'].shift(1) )],
             [2, -2])
+        
+        if ( data['SMA_20_50_Signal'][-1] == 2 ):
+            list_of_signals.append ( 'SMA_20_50_Signal:BULL' )
+        if ( data['SMA_20_50_Signal'][-1] == -2 ):
+            list_of_signals.append ( 'SMA_20_50_Signal:BEAR' )
 
 
         # Trend indicator
@@ -455,12 +464,23 @@ while True:
               ( data['EMA_20'] < data['EMA_50'] ) & ( data['EMA_20'].shift(1) > data['EMA_50'].shift(1) ) ],
             [2, -2])
 
+        if ( data['EMA_20_50_Signal'][-1] == 2 ):
+            list_of_signals.append ( 'EMA_20_50_Signal:BULL' )
+        if ( data['SMA_20_50_Signal'][-1] == -2 ):
+            list_of_signals.append ( 'SMA_20_50_Signal:BEAR' )
+
+
         data['EMA_9_21_Signal'] = np.select(
             [ ( data['EMA_9'] > data['EMA_21'] ) & ( data['EMA_9'].shift(1) < data['EMA_21'].shift(1) ) ,
               ( data['EMA_9'] < data['EMA_21'] ) & ( data['EMA_9'].shift(1) > data['EMA_21'].shift(1) ) ],
             [2, -2])
 
-
+        if ( data['EMA_9_21_Signal'][-1] == 2 ):
+            list_of_signals.append ( 'SMA_9_21_Signal:BULL' )
+        if ( data['EMA_9_21_Signal'][-1] == -2 ):
+            list_of_signals.append ( 'SMA_9_21_Signal:BEAR' )
+            
+            
         #########  Weighted SMA 20, 50  #####
         for i in [ 20, 50 ]:
             data = __WSMA ( data, i )
@@ -670,6 +690,7 @@ while True:
 
         data.to_csv('data/{}_{}.csv'.format (ticker, interval) )
 
+        print ( list_of_signals )
         print ("\n")
         time.sleep(1)
 
