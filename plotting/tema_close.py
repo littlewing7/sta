@@ -22,7 +22,7 @@ def __TEMA(data, n=30):
     """
     Triple Exponential Moving Average (TEMA)
     """
-    ema1 = data['Close'].ewm(span=n, adjust=False).mean()
+    ema1 = data['Adj Close'].ewm(span=n, adjust=False).mean()
     ema2 = ema1.ewm(span=n, adjust=False).mean()
     ema3 = ema2.ewm(span=n, adjust=False).mean()
     tema = 3 * (ema1 - ema2) + ema3

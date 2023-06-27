@@ -336,8 +336,6 @@ while True:
     # Use the list of stocks and integer value in the script
     for ticker in args.tickers:
 
-        list_of_signals = []
-
         #my_list = list ( set ( strategies[ticker] ))
         discord_message = ''
 
@@ -429,24 +427,11 @@ while True:
             (   data['SMA_5'] < data['SMA_8'] ) & ( data['SMA_5'].shift(1) > data['SMA_8'].shift(1) )],
             [2, -2])
 
-        if ( data['SMA_5_8_Signal'][-1] == 2 ):
-            list_of_signals.append ( 'SMA_5_8_Signal:BULL' )
-        if ( data['SMA_5_8_Signal'][-1] == -2 ):
-            list_of_signals.append ( 'SMA_5_8_Signal:BEAR' )
-
-
-
         data['SMA_20_50_Signal'] = np.select(
             [ ( data['SMA_20'] > data['SMA_50'] ) & ( data['SMA_20'].shift(1) < data['SMA_20'].shift(1) ),
             (   data['SMA_20'] < data['SMA_50'] ) & ( data['SMA_20'].shift(1) > data['SMA_50'].shift(1) )],
             [2, -2])
         
-        if ( data['SMA_20_50_Signal'][-1] == 2 ):
-            list_of_signals.append ( 'SMA_20_50_Signal:BULL' )
-        if ( data['SMA_20_50_Signal'][-1] == -2 ):
-            list_of_signals.append ( 'SMA_20_50_Signal:BEAR' )
-
-
         # Trend indicator
         #data['Trend_20'] = data['Adj Close'] / data['Close'].rolling(20).mean()
         data['Trend_20']  = data['Adj Close'] / data['SMA_20']
@@ -464,22 +449,11 @@ while True:
               ( data['EMA_20'] < data['EMA_50'] ) & ( data['EMA_20'].shift(1) > data['EMA_50'].shift(1) ) ],
             [2, -2])
 
-        if ( data['EMA_20_50_Signal'][-1] == 2 ):
-            list_of_signals.append ( 'EMA_20_50_Signal:BULL' )
-        if ( data['SMA_20_50_Signal'][-1] == -2 ):
-            list_of_signals.append ( 'SMA_20_50_Signal:BEAR' )
-
-
         data['EMA_9_21_Signal'] = np.select(
             [ ( data['EMA_9'] > data['EMA_21'] ) & ( data['EMA_9'].shift(1) < data['EMA_21'].shift(1) ) ,
               ( data['EMA_9'] < data['EMA_21'] ) & ( data['EMA_9'].shift(1) > data['EMA_21'].shift(1) ) ],
             [2, -2])
 
-        if ( data['EMA_9_21_Signal'][-1] == 2 ):
-            list_of_signals.append ( 'SMA_9_21_Signal:BULL' )
-        if ( data['EMA_9_21_Signal'][-1] == -2 ):
-            list_of_signals.append ( 'SMA_9_21_Signal:BEAR' )
-            
             
         #########  Weighted SMA 20, 50  #####
         for i in [ 20, 50 ]:
@@ -690,10 +664,31 @@ while True:
 
         data.to_csv('data/{}_{}.csv'.format (ticker, interval) )
 
-        print ( list_of_signals )
         print ("\n")
         time.sleep(1)
+        
+        
+        # check pandas dataframe columns for signals #
+        sig_bull = []
+        sig_bear = []
+        # Iterate over the columns
+        for column in data.columns:
+            if column.endswith('_Signal'):
+                signal_values = data[column]
+                last_value = signal_values.iloc[-1]
+                if last_value == 2:
+                    bull = (f"{column}:BULL")
+                    sig_bull.append(bull)
+                elif last_value == -2:
+                    bear = (f"{column}:BEAR")
+                    sig_bear.append(bear)
 
+        if ( len ( sig_bull ) > 0 ):
+            print ( "Bull signals: \n" + '\n'.join ( sig_bull ) )
+
+        if ( len ( sig_bear ) > 0 ):
+            print ( "Bear signals: \n" + '\n'.join ( sig_bear ) )
+                
 
     #print ( strategies )
     #print ( indicators )        
