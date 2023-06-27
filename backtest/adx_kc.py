@@ -46,35 +46,38 @@ def __ADX ( data, lookback):
     data['ADX_{}'.format(lookback)] = adx_smooth
     return data
 
+def __KC(dataframe, period=20, multiplier=2):
+    """
+    Calculates the Keltner Channels for a given DataFrame.
 
-def __EMA ( data, n=9 ):
-    #ema = data['Adj Close'].ewm(span = period ,adjust = False).mean()
-    #return ( ema )
+    Parameters:
+    dataframe (pd.DataFrame): DataFrame containing the OHLC data of the asset.
+    period (int): Period to calculate the Keltner Channels (default: 20).
+    multiplier (float): Multiplier for the Average True Range (ATR) (default: 2).
 
-    data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
-    return data
+    Returns:
+    pd.DataFrame: A new DataFrame containing the Keltner Channels for the given OHLC data.
+    """
 
-# https://github.com/lukaszbinden/rsi_tradingview/blob/main/rsi.py
-def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
-    delta = data["Adj Close"].diff()
+    atr_lookback = 10
 
-    up = delta.copy()
-    up[up < 0] = 0
-    up = pd.Series.ewm ( up, alpha =1 / window ).mean()
+    tr = pd.DataFrame()
+    tr['h_l'] = dataframe['High'] - dataframe['Low']
+    tr['h_pc'] = abs(dataframe['High'] - dataframe['Adj Close'].shift())
+    tr['l_pc'] = abs(dataframe['Low'] - dataframe['Adj Close'].shift())
+    tr['tr'] = tr[['h_l', 'h_pc', 'l_pc']].max(axis=1)
 
-    down = delta.copy()
-    down[down > 0] = 0
-    down *= -1
-    down = pd.Series.ewm(down, alpha = 1 / window ).mean()
+    atr = tr['tr'].rolling(atr_lookback).mean()
+    #atr = tr['tr'].ewm(alpha = 1/atr_lookback).mean()
 
-    rsi = np.where(up == 0, 0, np.where(down == 0, 100, 100 - (100 / (1 + up / down))))
+    kc_middle = dataframe['Adj Close'].rolling(period).mean()
+    kc_upper = kc_middle + multiplier * atr
+    kc_lower = kc_middle - multiplier * atr
 
-    if ( round_rsi ):
-        data['RSI_{}'.format ( window )] = np.round (rsi, 2)
-    else:
-        data['RSI_{}'.format( window )] = rsi
-
-    return data
+    dataframe['KC_upper'] = kc_upper
+    dataframe['KC_middle'] = kc_middle
+    dataframe['KC_lower'] = kc_lower
+    return dataframe
 
 
 def backtest_strategy(stock, start_date, logfile):
@@ -96,10 +99,8 @@ def backtest_strategy(stock, start_date, logfile):
         data = yf.download(stock, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate indicator
-    data = __RSI ( data, 10 )
-    data = __EMA ( data, 5 )
-    data = __EMA ( data, 10 )
+    # Calculate indicators
+    data = __KC ( data, 20, 2 )
     data = __ADX ( data, 14 )
 
     # Set initial conditions
@@ -112,13 +113,13 @@ def backtest_strategy(stock, start_date, logfile):
     for i in range(len(data)):
 
         # Buy signal
-        if position == 0 and (  ( ( data["RSI_10"][i]  > 50 ) & ( data["RSI_10"][i - 1] < 50 ) ) & ( ( data["EMA_5"][i]   > data["EMA_10"][i] ) & ( data["EMA_5"][i - 1]  < data["EMA_10"][i - 1] ) ) & ( data['ADX_14'][i]  > 25) & (   data['Volume'][i]  > 0) ):
+        if ( position ==0 ) and ( ( data['High'][i] <= data['KC_lower'][i] )  & (data['High'][i - 1] <= data['KC_lower'][i - 1] )  & (data['High'][i - 2] <= data['KC_lower'][i - 2] ) & ( data['ADX_14'][i] >= 20) ):
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif position == 1 and (  ( (  data["RSI_10"][i] < 50 ) & ( data["RSI_10"][i - 1] > 50 ) )  &  ( ( data["EMA_5"][i]  < data["EMA_10"][i] ) & ( data["EMA_5"][i - 1]  > data["EMA_10"][i - 1] ) ) &  (   data['ADX_14'][i] > 25) &  (   data['Volume'][i] > 0) ):
+        elif ( position == 1 ) and ( ( data['Low'][i] >= data['KC_upper'][i] ) & (data['Low'][i - 1] >= data['KC_upper'][i - 1] )  & (data['Low'][i - 2] >= data['KC_upper'][i - 2] ) & ( data['ADX_14'][i] >= 20) ):
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
