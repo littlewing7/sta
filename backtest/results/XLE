@@ -8,7 +8,7 @@ tsi_cross.py                XLE   116 %
 bolinger_macd.py            XLE   113 %
 emav_20_50.py               XLE   111 %
 sma_13_34_cross.py          XLE   108 %
-dwma_9_21_cross.py          XLE   105 %
+dwma_9_21_cross.py          XLE   104 %
 sma_13_20_cross.py          XLE   103 %
 bladerunner.py              XLE    99 %
 sma_9_21_cross.py           XLE    97 %
@@ -19,12 +19,12 @@ sma_8_21_cross.py           XLE    88 %
 ao_saucer.py                XLE    88 %
 williams_rsi.py             XLE    87 %
 bolinger_up.py              XLE    86 %
+sma_15_30_cross.py          XLE    85 %
 macd.py                     XLE    85 %
 srsi_2.py                   XLE    84 %
-sma_20_Close_cross.py       XLE    84 %
 sma_13_close_cross.py       XLE    82 %
-ema_6_9_12_21_macd_rsi_cross.py   XLE    82 %
-sma_19_Close_cross.py       XLE    81 %
+sma_19_close_cross.py       XLE    81 %
+sma_20_close_cross.py       XLE    80 %
 cci_sma.py                  XLE    80 %
 sma_5_8_cross.py            XLE    75 %
 elder_ray_ema_21.py         XLE    74 %
@@ -32,6 +32,7 @@ ema_6_12_rsi_14.py          XLE    71 %
 ema_20_close_cross.py       XLE    71 %
 ao_cross2.py                XLE    69 %
 wsma_20_50_cross.py         XLE    68 %
+sma_5_10_cross.py           XLE    67 %
 dwma.py                     XLE    64 %
 ema_9_21_cross.py           XLE    63 %
 ema_8_21_cross.py           XLE    61 %
@@ -59,8 +60,8 @@ sma_20_50_cross.py          XLE    31 %
 bolinger.py                 XLE    30 %
 bolinger_4_days_down.py     XLE    21 %
 rsi_14.py                   XLE    19 %
+bolinger_mid.py             XLE    19 %
 tema9_close_cross.py        XLE    18 %
-bolinger_mid.py             XLE    16 %
 bolinger_rsi_sma.py         XLE    15 %
 cci_20.py                   XLE    11 %
 macd_cross_cci_20.py        XLE     7 %
