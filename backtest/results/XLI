@@ -33,6 +33,7 @@ bolinger_up.py              XLI    21 %
 close_4_days_down.py        XLI    20 %
 bolinger_ema_5_12_vol.py    XLI    20 %
 emav_20_50.py               XLI    19 %
+sma_5_10_cross.py           XLI    18 %
 cci_14.py                   XLI    18 %
 williams_rsi.py             XLI    17 %
 macd.py                     XLI    17 %
@@ -45,14 +46,14 @@ bolinger_rsi_sma.py         XLI    16 %
 ao_cross2.py                XLI    16 %
 tema9_close_cross.py        XLI    15 %
 sma_5_8_cross.py            XLI    15 %
-sma_20_Close_cross.py       XLI    15 %
+sma_20_close_cross.py       XLI    15 %
 adx_kc.py                   XLI    14 %
 rsi_5_20_cross.py           XLI    13 %
 sma_9_21_cross.py           XLI    12 %
-sma_19_Close_cross.py       XLI    12 %
+sma_19_close_cross.py       XLI    12 %
 sma_8_21_cross.py           XLI    11 %
+sma_15_30_cross.py          XLI    11 %
 mfi.py                      XLI    11 %
-ema_6_9_12_21_macd_rsi_cross.py   XLI    10 %
 tema_close.py               XLI     9 %
 rsi_14.py                   XLI     8 %
 cci_mfi_rsi_sto_wr.py       XLI     6 %
