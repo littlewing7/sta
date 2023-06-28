@@ -1,4 +1,5 @@
 # ignore all logs
 *.log
 data/*.csv
+plotting/plots/*.png
 
