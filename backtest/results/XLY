@@ -12,9 +12,9 @@ macd.py                     XLY    42 %
 ema_20_close_cross.py       XLY    42 %
 sma_8_21_cross.py           XLY    40 %
 sma_20_tema_30_cross.py     XLY    40 %
-sma_19_Close_cross.py       XLY    39 %
+sma_19_close_cross.py       XLY    39 %
 adx_ema_rsi.py              XLY    38 %
-sma_20_Close_cross.py       XLY    37 %
+sma_20_close_cross.py       XLY    37 %
 ao.py                       XLY    37 %
 dwma.py                     XLY    36 %
 ao_cross2.py                XLY    36 %
@@ -28,6 +28,7 @@ ema_13_48_cross.py          XLY    33 %
 bolinger_up.py              XLY    33 %
 adx_kc.py                   XLY    33 %
 tema_close.py               XLY    32 %
+sma_15_30_cross.py          XLY    32 %
 sma_13_48_cross.py          XLY    32 %
 tema9_close_cross.py        XLY    28 %
 sma_9_21_cross.py           XLY    28 %
@@ -39,12 +40,12 @@ williams_rsi.py             XLY    25 %
 ema_20_50_cross.py          XLY    25 %
 bolinger_rsi_sma.py         XLY    25 %
 tsi2.py                     XLY    24 %
-ema_6_9_12_21_macd_rsi_cross.py   XLY    24 %
 bolinger_kc_rsi.py          XLY    24 %
 close_4_days_down.py        XLY    23 %
 ao_saucer.py                XLY    23 %
 sma_13_34_cross.py          XLY    22 %
 sma_13_20_cross.py          XLY    20 %
+sma_5_10_cross.py           XLY    18 %
 macd_cross_wr_20.py         XLY    18 %
 kc_close.py                 XLY    18 %
 wr_sto.py                   XLY    17 %
