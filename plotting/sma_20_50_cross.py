@@ -48,7 +48,7 @@ for symbol in args.ticker:
     data = data.dropna()
 
     # Buy/sell signals for  SMA crosses
-    data["Signal"] = 0.0
+    data["SMA_20_50_Signal"] = 0.0
     data['SMA_20_50_Signal'] = np.select(
         [ ( data['SMA_20'].shift(1) <  data['SMA_50'].shift(1) ) & ( data['SMA_20'] >  data['SMA_50'] ) ,
           ( data['SMA_20'].shift(1) >  data['SMA_50'].shift(1) ) & ( data['SMA_20'] <  data['SMA_50'] ) ],

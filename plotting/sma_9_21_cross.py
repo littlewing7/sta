@@ -63,7 +63,7 @@ for symbol in args.ticker:
     # Plot the trading signals
     plt.figure(figsize=(14,7))
 
-    plt.plot ( data['Close'],  alpha = 0.3, linewidth = 2,                  label = symbol,  )
+    plt.plot ( data['Adj Close'],  alpha = 0.3, linewidth = 2,                  label = symbol,  )
     plt.plot ( data["SMA_9"], alpha = 0.6, linewidth = 2, color='orange',  label = 'SMA_9',  )
     plt.plot ( data["SMA_21"], alpha = 0.6, linewidth = 3, color='#FF006E', label = 'SMA_21' )
 

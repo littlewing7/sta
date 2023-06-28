@@ -52,7 +52,7 @@ for symbol in args.ticker:
     latest_price = data['Adj Close'][-1]
 
     # Buy/sell signals for  SMA crosses
-    data["Signal"] = 0.0
+    data["SMA_13_Close_Signal"] = 0.0
     data['SMA_13_Close_Signal'] = np.select(
         [ ( data['SMA_13'].shift(1) <  data['Adj Close'].shift(1) ) & ( data['SMA_13'] >  data['Adj Close'] ) ,
           ( data['SMA_13'].shift(1) >  data['Adj Close'].shift(1) ) & ( data['SMA_13'] <  data['Adj Close'] ) ],

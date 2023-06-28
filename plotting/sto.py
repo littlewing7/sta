@@ -18,7 +18,7 @@ def __STO (df, k, d):
      high_max = temp_df["High"].rolling(window=k).max()
 
      # Fast Stochastic
-     temp_df['k_fast'] = 100 * (temp_df["Close"] - low_min)/(high_max - low_min)
+     temp_df['k_fast'] = 100 * (temp_df["Adj Close"] - low_min)/(high_max - low_min)
      temp_df['d_fast'] = temp_df['k_fast'].rolling(window=d).mean()
 
      # Slow Stochastic
@@ -74,12 +74,12 @@ def implement_osc_strategy(prices, k, d):
     return buy_price, sell_price, osc_signal
 
 
-buy_price, sell_price, rsi_signal = implement_osc_strategy ( data['Close'], data['%k'], data['%d'])
+buy_price, sell_price, rsi_signal = implement_osc_strategy ( data['Adj Close'], data['%k'], data['%d'])
 
 ax1 = plt.subplot2grid((11, 1), (0, 0), rowspan=5, colspan=1)
 ax2 = plt.subplot2grid((11, 1), (6, 0), rowspan=5, colspan=1)
 
-ax1.plot ( data['Close'], linewidth=3, color='#ff9800', alpha=0.6, label=symbol)
+ax1.plot ( data['Adj Close'], linewidth=3, color='#ff9800', alpha=0.6, label=symbol)
 ax1.set_title ( f'{symbol} CLOSING PRICE', fontsize=14)
 ax1.plot ( data.index, buy_price, marker='^', color='#26a69a', markersize=12, linewidth=0, label='BUY SIGNAL')
 ax1.plot ( data.index, sell_price, marker='v', color='#f44336', markersize=12, linewidth=0, label='SELL SIGNAL')
