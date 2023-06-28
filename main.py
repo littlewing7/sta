@@ -345,6 +345,8 @@ while True:
 
         # Get stock data from Yahoo Finance
         data = yf.download(ticker, period=period, interval = interval, progress=False, threads=True )
+        data = data.drop("Adj Close", axis=1, inplace=True)
+        data["Adj Close"] = data["Close"].copy()
 
         # We need to fetch daily data in order to get strategy return numbers
         if ( period != '1d' ):
@@ -683,6 +685,7 @@ while True:
                     bear = (f"{column}:BEAR")
                     sig_bear.append(bear)
 
+
         if ( len ( sig_bull ) > 0 ):
             print ( "Bull signals: \n" + '\n'.join ( sig_bull ) )
 
@@ -697,3 +700,4 @@ while True:
         time.sleep ( int ( args.refresh ) )
     else:
         time.sleep ( int ( refresh ) )
+
