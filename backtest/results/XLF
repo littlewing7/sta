@@ -6,11 +6,11 @@ macd_cross_wr_20.py         XLF    59 %
 cci_20.py                   XLF    51 %
 tema_close.py               XLF    49 %
 sma_5_8_cross.py            XLF    42 %
-sma_20_Close_cross.py       XLF    41 %
+sma_20_close_cross.py       XLF    41 %
 sma_20_50_cross.py          XLF    41 %
 ao_saucer.py                XLF    41 %
 tsi_cross.py                XLF    39 %
-sma_19_Close_cross.py       XLF    37 %
+sma_19_close_cross.py       XLF    37 %
 dwma_20_close_cross.py      XLF    35 %
 ao_macd.py                  XLF    35 %
 macd.py                     XLF    34 %
@@ -18,9 +18,9 @@ adx.py                      XLF    34 %
 sma_13_tema_30_cross.py     XLF    32 %
 ema_20_50_cross.py          XLF    31 %
 srsi_2.py                   XLF    27 %
+sma_5_10_cross.py           XLF    27 %
 williams_rsi.py             XLF    26 %
 ema_20_close_cross.py       XLF    26 %
-ema_6_9_12_21_macd_rsi_cross.py   XLF    25 %
 bolinger_4_days_down.py     XLF    25 %
 bladerunner.py              XLF    25 %
 wsma_20_50_cross.py         XLF    24 %
@@ -60,6 +60,7 @@ rsi_20.py                   XLF     3 %
 ao_cross2.py                XLF     3 %
 adx_rsi.py                  XLF     3 %
 tsi2.py                     XLF     1 %
+sma_15_30_cross.py          XLF     1 %
 uo.py                       XLF     0 %
 sma_50_200_cross.py         XLF    -0 %
 psar.py                     XLF     0 %
