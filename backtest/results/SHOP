@@ -6,8 +6,8 @@ tema9_close_cross.py       SHOP   125 %
 ema_50_200_cross.py        SHOP   114 %
 ema_8_21_cross.py          SHOP   111 %
 adx_kc_sto.py              SHOP   110 %
+sma_15_30_cross.py         SHOP   109 %
 sma_9_21_cross.py          SHOP   108 %
-ema_6_9_12_21_macd_rsi_cross.py  SHOP   107 %
 bolinger_up.py             SHOP   106 %
 bolinger_rsi_sma.py        SHOP   100 %
 sma_8_21_cross.py          SHOP    97 %
@@ -24,7 +24,7 @@ rsi_5_20_cross.py          SHOP    80 %
 macd_cross_wr_14.py        SHOP    79 %
 elder_ray_ema_21.py        SHOP    77 %
 macd_cross2.py             SHOP    76 %
-sma_20_Close_cross.py      SHOP    75 %
+sma_20_close_cross.py      SHOP    75 %
 kc_close.py                SHOP    73 %
 ema_9_21_cross.py          SHOP    72 %
 sma_20_tema_30_cross.py    SHOP    70 %
@@ -33,7 +33,7 @@ dwma_9_21_cross.py         SHOP    67 %
 bolinger_4_days_down.py    SHOP    66 %
 bladerunner.py             SHOP    58 %
 sma_13_34_cross.py         SHOP    57 %
-sma_19_Close_cross.py      SHOP    50 %
+sma_19_close_cross.py      SHOP    50 %
 close_4_days_down.py       SHOP    50 %
 wsma_20_50_cross.py        SHOP    49 %
 tsi_cross.py               SHOP    49 %
@@ -74,7 +74,7 @@ cci_sma.py                 SHOP    -1 %
 wsma_20_Close.py           SHOP    -4 %
 wr_sto.py                  SHOP    -7 %
 uo.py                      SHOP   -13 %
-srsi_2.py                  SHOP   -21 %
+srsi_2.py                  SHOP   -20 %
 bolinger_mid.py            SHOP   -29 %
 mfi.py                     SHOP   -32 %
 emav_20_50.py              SHOP   -37 %
@@ -83,3 +83,4 @@ rsi_20.py                  SHOP   -41 %
 cci_wr.py                  SHOP   -50 %
 adx.py                     SHOP   -57 %
 sma_13_close_cross.py      SHOP   -59 %
+sma_5_10_cross.py          SHOP   -64 %
