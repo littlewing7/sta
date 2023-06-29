@@ -9,11 +9,11 @@ import numpy as np
 import yfinance as yf
 
 def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['Close'].rolling(window=n).mean()
+    data['SMA_{}'.format(n)] = data['Adj Close'].rolling(window=n).mean()
     return data
 
 def __BB (data, window=20):
-    std = data['Close'].rolling(window).std()
+    std = data['Adj Close'].rolling(window).std()
     data = __SMA ( data, window )
     data['BB_upper']   = data["SMA_20"] + std * 2
     data['BB_lower']   = data["SMA_20"] - std * 2
@@ -24,7 +24,7 @@ def __BB (data, window=20):
 # https://github.com/lukaszbinden/rsi_tradingview/blob/main/rsi.py
 def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
 
-    delta = data["Close"].diff()
+    delta = data["Adj Close"].diff()
 
     up = delta.copy()
     up[up < 0] = 0
@@ -99,7 +99,7 @@ buy_price, sell_price, strategy_signal = implement_strategy( data['Close'], data
 ax1 = plt.subplot2grid((11,1), (0,0), rowspan = 5, colspan = 1)
 ax2 = plt.subplot2grid((11,1), (6,0), rowspan = 5, colspan = 1)
 
-ax1.plot ( data['Close'], linewidth = 2)
+ax1.plot ( data['Adj Close'], linewidth = 2)
 ax1.plot ( data.index, buy_price, marker = '^', markersize = 12, color = 'green', linewidth = 0, label = 'BUY SIGNAL')
 ax1.plot ( data.index, sell_price, marker = 'v', markersize = 12, color = 'r', linewidth = 0, label = 'SELL SIGNAL')
 ax1.legend()

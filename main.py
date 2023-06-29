@@ -345,13 +345,13 @@ while True:
 
         # Get stock data from Yahoo Finance
         data = yf.download(ticker, period=period, interval = interval, progress=False, threads=True )
-        data = data.drop("Adj Close", axis=1, inplace=True)
-        data["Adj Close"] = data["Close"].copy()
+        data['NEW'] = data['Adj Close'].copy()
 
         # We need to fetch daily data in order to get strategy return numbers
         if ( period != '1d' ):
             data_1d = yf.download ( ticker, start='2020-01-01', progress=False, threads=True )
-            data_1d.to_csv('data/{}_1d.csv'.format ( ticker ) )
+            data['NEW'] = data['Adj Close'].copy()
+            #data_1d.to_csv('data/{}_1d.csv'.format ( ticker ), float_format='%.2f' )
 
 
 
@@ -664,7 +664,7 @@ while True:
                 #print ("Loading file: strategies/" + strategy_file)
                 with open ( 'strategies/' + strategy_file ) as f: exec(f.read())
 
-        data.to_csv('data/{}_{}.csv'.format (ticker, interval) )
+        data.to_csv('data/{}_{}.csv'.format (ticker, interval), float_format='%.2f' )
 
         print ("\n")
         time.sleep(1)

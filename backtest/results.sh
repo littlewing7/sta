@@ -8,7 +8,7 @@ NORMAL=$(tput sgr0)
 
 for i in AAPL CROX MSFT NVDA SHOP SPY TSLA XHB XLC XLE XLF XLI XLK XLU XLV XLY XME XRT XTN
 do
-    rm -f results/$i
+    rm -f results/$i ../data/$i*csv
     for x in `ls -1 *py | egrep -vE "(X|stats)"`
     do
         echo

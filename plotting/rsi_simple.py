@@ -44,7 +44,7 @@ data = data.dropna()
 fig = plt.figure(figsize=(14,7))
 
 ax1 = plt.subplot(2, 1, 1)
-ax1.plot( data['Close'])
+ax1.plot( data['Adj Close'])
 ax1.set_title(symbol +' Closing Price')
 ax1.set_ylabel('Price')
 

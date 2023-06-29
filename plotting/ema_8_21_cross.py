@@ -17,13 +17,8 @@ rcParams.update({'figure.autolayout': True})
 
 import matplotlib.dates as mdates
 
-def __WSMA( data, n):
-    # sma = data.rolling(window=n).mean()
-    # ema = data.ewm(span=n, adjust=False).mean()
-    weights = np.arange(1, n+1)
-    wma = data['Adj Close'].rolling(n).apply(lambda prices: np.dot(prices, weights) / weights.sum(), raw=True)
-    data['WSMA_{}'.format(n)] = pd.Series(wma)
-
+def __EMA ( data, n=9 ):
+    data['EMA_{}'.format(n)] = data['Adj Close'].ewm(span = n ,adjust = False).mean()
     return data
 
 filename, ext =  os.path.splitext(os.path.basename(__file__))
@@ -52,29 +47,35 @@ for symbol in args.ticker:
         data = yf.download ( symbol, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # WSMA 20, 50
-    data = __WSMA ( data, 20 )
+    # EMA 9, 21
+    data= __EMA ( data, 8 )
+    data= __EMA ( data, 21 )
 
     latest_price = data['Adj Close'][-1]
 
+    data = data.tail(365)
     # Required otherwise year is 1970
     data.index = pd.to_datetime(data.index)
 
     # Buy/sell signals for  SMA crosses
-    data["WSMA_20_close_Signal"] = 0.0
-    data['WSMA_20_close_Signal'] = np.select(
-        [ ( data['WSMA_20'].shift(1) <  data['Adj Close'].shift(1) ) & ( data['WSMA_20'] >  data['Adj Close'] ) ,
-          ( data['WSMA_20'].shift(1) >  data['Adj Close'].shift(1) ) & ( data['WSMA_20'] <  data['Adj Close'] ) ],
+    data["EMA_8_21_Signal"] = 0.0
+    data['EMA_8_21_Signal'] = np.select(
+        [ ( data['EMA_8'].shift(1) <  data['EMA_21'].shift(1) ) & ( data['EMA_8'] >=  data['EMA_21'] ) ,
+          ( data['EMA_8'].shift(1) >  data['EMA_21'].shift(1) ) & ( data['EMA_8'] <=  data['EMA_21'] ) ],
     [2, -2])
+
+
+    #print ( data.tail ( 60 ))
 
     # Plot the trading signals
     plt.figure(figsize=(14,7))
 
     plt.plot ( data['Adj Close'],  alpha = 0.3, linewidth = 2,                  label = symbol,  )
-    plt.plot ( data["WSMA_20"], alpha = 0.6, linewidth = 2, color='orange',  label = 'WSMA_20',  )
+    plt.plot ( data["EMA_8"], alpha = 0.6, linewidth = 2, color='orange',  label = 'EMA_8',  )
+    plt.plot ( data["EMA_21"], alpha = 0.6, linewidth = 3, color='#FF006E', label = 'EMA_21' )
 
-    plt.plot ( data.loc[data["WSMA_20_close_Signal"] ==  -2.0].index, data["WSMA_20"][data["WSMA_20_close_Signal"] ==  -2.0], "^", markersize=10, color="g", label = 'BUY SIGNAL')
-    plt.plot ( data.loc[data["WSMA_20_close_Signal"] == 2.0].index, data["WSMA_20"][data["WSMA_20_close_Signal"] == 2.0], "v", markersize=10, color="r", label = 'SELL SIGNAL')
+    plt.plot ( data.loc[data["EMA_8_21_Signal"] ==  2.0].index, data["EMA_8"][data["EMA_8_21_Signal"] ==  2.0], "^", markersize=10, color="g", label = 'BUY SIGNAL')
+    plt.plot ( data.loc[data["EMA_8_21_Signal"] == -2.0].index, data["EMA_8"][data["EMA_8_21_Signal"] == -2.0], "v", markersize=10, color="r", label = 'SELL SIGNAL')
 
     plt.legend(loc = 'upper left')
     plt.title(f'{symbol}_{filename}')
@@ -86,7 +87,6 @@ for symbol in args.ticker:
     label = f"Current Price: ${latest_price:.2f}\n{timestamp}"
     plt.text(0.05, 0.05, label, transform=plt.gca().transAxes, verticalalignment='bottom', bbox={'facecolor': 'white', 'alpha': 0.8, 'pad': 10})
 
-    #plt.show()
     #plt.show()
     filename = "{}/plotting/_plots/{}_{}.png".format ( parent_dir, symbol, filename )
     plt.savefig ( filename )
