@@ -10,7 +10,7 @@ macd.py                     XTN    50 %
 cci_20.py                   XTN    50 %
 ao_cross2.py                XTN    50 %
 adx_kc.py                   XTN    49 %
-wsma_20_50_cross.py         XTN    48 %
+wma_20_50_cross.py          XTN    48 %
 sma_20_50_cross.py          XTN    46 %
 rsi_sma.py                  XTN    46 %
 ao.py                       XTN    42 %
@@ -21,6 +21,7 @@ sma_9_21_cross.py           XTN    35 %
 rsi_20.py                   XTN    35 %
 tsi_cross.py                XTN    34 %
 close_4_days_down.py        XTN    33 %
+wma_16_close_cross.py       XTN    32 %
 bladerunner.py              XTN    31 %
 sma_20_close_cross.py       XTN    30 %
 bolinger_rsi2.py            XTN    30 %
@@ -52,7 +53,7 @@ ema_9_21_cross.py           XTN     8 %
 dwma_9_21_cross.py          XTN     8 %
 bolinger_kc_rsi.py          XTN     8 %
 srsi_2.py                   XTN     7 %
-wsma_20_Close.py            XTN     6 %
+wma_20_close_cross.py       XTN     6 %
 macd_cross2.py              XTN     6 %
 ema_144_169_sma_5.py        XTN     6 %
 ema_20_close_cross.py       XTN     4 %
@@ -81,6 +82,6 @@ sma_5_8_cross.py            XTN   -14 %
 bolinger_ema.py             XTN   -15 %
 bolinger_ema_5_12_vol.py    XTN   -17 %
 sma_13_20_cross.py          XTN   -20 %
-bolinger.py                 XTN   -20 %
+bolinger.py                 XTN   -21 %
 sma_5_10_cross.py           XTN   -22 %
 dwma_20_50_cross.py         XTN   -22 %
