@@ -8,11 +8,12 @@ import os,sys,datetime
 
 def WMA(df, window):
     weights = pd.Series(range(1,window+1))
-    wma = df['Close'].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
+    wma = df['Adj Close'].rolling(window).apply(lambda prices: (prices * weights).sum() / weights.sum(), raw=True)
     #df_wma = pd.concat([df['Close'], wma], axis=1)
     #df_wma.columns = ['Close', 'WMA']
     #return df_wma
-    df["WMA"] = wma
+    #df["WMA"] = wma
+    df['WMA_{}'.format( window )] = wma
     return df
 
 parser = argparse.ArgumentParser()
@@ -36,7 +37,7 @@ for symbol in args.ticker:
         data = yf.download(symbol, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    window = 14
+    window = 16
 
     # Calculate Double WMA with window size of 10
     data = WMA(data, window)

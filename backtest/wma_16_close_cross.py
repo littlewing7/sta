@@ -3,6 +3,7 @@
 import argparse
 import yfinance as yf
 import pandas as pd
+import numpy as np
 
 import os, datetime
 
@@ -10,11 +11,14 @@ def append_to_log(logfile, line):
     with open(logfile, 'a') as file:
         file.write(line + '\n')
 
-def __SMA ( data, n ):
-    data['SMA_{}'.format(n)] = data['CLOSE'].rolling(window=n).mean()
+def __WSMA( data, n):
+    weights = np.arange(1, n+1)
+    wma = data['Adj Close'].rolling(n).apply(lambda prices: np.dot(prices, weights) / weights.sum(), raw=True)
+    data['WSMA_{}'.format(n)] = pd.Series(wma)
+
     return data
 
-def backtest_strategy(stock, start_date, logfile):
+def backtest_strategy ( stock, start_date, logfile ):
     """
     Function to backtest a strategy
     """
@@ -31,12 +35,10 @@ def backtest_strategy(stock, start_date, logfile):
     else:
         # Download data
         data = yf.download(stock, start=start_date, progress=False)
-        #data['CLOSE'] = data['Close'].copy()
-        data['CLOSE'] = data['Adj Close'].copy()
         data.to_csv ( csv_file )
 
-    # Calculate Stochastic RSI
-    data = __SMA (data, 19)
+    # Calculate indicator
+    data = __WSMA (data, 16)
 
     # Set initial conditions
     position = 0
@@ -47,14 +49,14 @@ def backtest_strategy(stock, start_date, logfile):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if data["CLOSE"][i] > data["SMA_19"][i] and data["CLOSE"][i - 1] < data["SMA_19"][i - 1] and position == 0:
+        if data["Adj Close"][i] > data["WSMA_16"][i] and data["Adj Close"][i - 1] < data["WSMA_16"][i - 1] and position == 0:
             position = 1
-            buy_price = data["CLOSE"][i]
+            buy_price = data["Adj Close"][i]
             today = data.index[i]
             #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
-        elif data["CLOSE"][i] < data["SMA_19"][i] and data["CLOSE"][i - 1]  > data["SMA_19"][i - 1] and position == 1:
+        elif data["Adj Close"][i] < data["WSMA_16"][i] and data["Adj Close"][i - 1]  > data["WSMA_16"][i - 1] and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
             today = data.index[i]
@@ -74,7 +76,6 @@ def backtest_strategy(stock, start_date, logfile):
     print(f"---------------------------------------------")
     print(f"{name} ::: {stock} - Total Returns: ${total_returns:,.0f}")
     print(f"{name} ::: {stock} - Profit/Loss: {((total_returns - 100000) / 100000) * 100:.0f}%")
-
 
     tot = ((total_returns - 100000) / 100000) * 100
     tot = (f"{tot:.0f}")

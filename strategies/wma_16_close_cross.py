@@ -1,3 +1,11 @@
+# pragma pylint: disable=missing-docstring, invalid-name, pointless-string-statement
+# isort: skip_file
+# --- Do not remove these libs ---
+import os
+import numpy as np
+import pandas as pd
+#from pandas import DataFrame
+
 
 def backtest_strategy(stock, start_date):
     """
@@ -7,7 +15,7 @@ def backtest_strategy(stock, start_date):
     csv_file = "./data/{}_1d.csv".format( stock )
 
     # Get today's date
-    #today = datetime.datetime.now().date()
+    today = datetime.datetime.now().date()
 
     # if the file was downloaded today, read from it
     #if  ( ( os.path.exists ( csv_file ) ) and ( datetime.datetime.fromtimestamp ( os.path.getmtime ( csv_file ) ).date() == today ) ):
@@ -19,7 +27,7 @@ def backtest_strategy(stock, start_date):
         data.to_csv ( csv_file )
 
     # Calculate Stochastic RSI
-    data = __BB ( data, 20 )
+    data = __WSMA (data, 20)
 
     # Set initial conditions
     position = 0
@@ -29,18 +37,19 @@ def backtest_strategy(stock, start_date):
 
     # Loop through data
     for i in range(len(data)):
-
         # Buy signal
-        if (position == 0) and ( ( data["Adj Close"][i-1] > data['BB_middle'][i-1] ) and ( data["Adj Close"][i] > data['BB_middle'][i] ) ):
+        if data["WSMA_16"][i] > data["Adj Close"][i] and data["WSMA_16"][i - 1] < data["Adj Close"][i - 1] and position == 0:
             position = 1
             buy_price = data["Adj Close"][i]
-            #print(f"Buying {stock} at {buy_price}")
+            today = data.index[i]
+            #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
-        elif ( position == 1 ) and ( data["Adj Close"][i-1] < data['BB_upper'][i-1] and data["Adj Close"][i] > data['BB_upper'][i] ):
+        elif data["WSMA_16"][i] < data["Adj Close"][i] and data["WSMA_16"][i - 1]  > data["Adj Close"][i - 1] and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
-            #print(f"Selling {stock} at {sell_price}")
+            today = data.index[i]
+            #print(f"Selling {stock} at {sell_price} @ {today}")
 
             # Calculate returns
             returns.append((sell_price - buy_price) / buy_price)
@@ -53,11 +62,14 @@ def backtest_strategy(stock, start_date):
     return percentage + '%'
 
 
-data = __BB ( data, 20 )
+# Optimal ticker interval for the strategy.
+timeframe = '5m'
 
-if ( data["Adj Close"][-2] > data['BB_lower'][-2] and data["Adj Close"][-1] < data['BB_lower'][-1] ):
-    print_log ( 'bolinger_up.py', 'LONG', [ 'BB', 'close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+data = __WSMA ( data, 16 )
 
-if ( data["Adj Close"][-2] < data['BB_middle'][-2] and data["Adj Close"][-1] > data['BB_middle'][-1] ):
-    print_log ( 'bolinger_up.py', 'SHORT', [ 'BB', 'close' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
+if data["WSMA_16"][-1] > data["Adj Close"][-1] and data["WSMA_16"][-2] < data["Adj Close"][-2] and position == 0:
+    print_log ( 'wsma_16_close_cross.py', 'LONG', [ 'WSMA_16', 'close', 'WSMA_16_close_cross' ], backtest_strategy ( ticker , '2020-01-01' ) )
+
+if data["WSMA_16"][-1] < data["Adj Close"][-1] and data["WSMA_16"][-2]  > data["Adj Close"][-2] and position == 1:
+    print_log ( 'wsma_16_close_cross.py', 'SHORT', [ 'WSMA_16', 'close', 'WSMA_16_close_cross' ] , backtest_strategy ( ticker , '2020-01-01' ) )
