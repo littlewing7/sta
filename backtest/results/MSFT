@@ -9,6 +9,7 @@ ao_saucer.py               MSFT    62 %
 macd_cross2.py             MSFT    60 %
 ema_144_169_sma_5.py       MSFT    59 %
 bolinger_macd.py           MSFT    59 %
+wma_16_close_cross.py      MSFT    57 %
 srsi_1.py                  MSFT    56 %
 macd_cross_wr_20.py        MSFT    56 %
 kc_close.py                MSFT    56 %
@@ -18,8 +19,8 @@ macd_cross_wr_14.py        MSFT    48 %
 tsi2.py                    MSFT    46 %
 sma_15_30_cross.py         MSFT    45 %
 adx_ema_rsi.py             MSFT    45 %
+sma_13_close_cross.py      MSFT    43 %
 emav_20_50.py              MSFT    42 %
-sma_13_close_cross.py      MSFT    41 %
 cci_20.py                  MSFT    40 %
 bolinger_ema_5_12_vol.py   MSFT    40 %
 bolinger.py                MSFT    40 %
@@ -35,7 +36,7 @@ sma_13_20_cross.py         MSFT    33 %
 dwma.py                    MSFT    30 %
 ema_20_50_cross.py         MSFT    29 %
 ao_cross2.py               MSFT    29 %
-wsma_20_Close.py           MSFT    28 %
+wma_20_close_cross.py      MSFT    28 %
 elder_ray_ema_21.py        MSFT    27 %
 dwma_20_close_cross.py     MSFT    27 %
 rsi_sma.py                 MSFT    26 %
@@ -66,7 +67,7 @@ sma_19_close_cross.py      MSFT    10 %
 ao.py                      MSFT     9 %
 dwma_20_50_cross.py        MSFT     6 %
 ema_8_21_cross.py          MSFT     5 %
-wsma_20_50_cross.py        MSFT     4 %
+wma_20_50_cross.py         MSFT     4 %
 rsi_20.py                  MSFT     4 %
 ema_9_21_cross.py          MSFT     4 %
 sma_20_50_cross.py         MSFT     2 %
