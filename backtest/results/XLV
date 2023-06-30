@@ -22,6 +22,7 @@ macd_cross2.py              XLV    32 %
 rsi_sma.py                  XLV    31 %
 sma_8_21_cross.py           XLV    30 %
 ao.py                       XLV    30 %
+wma_16_close_cross.py       XLV    29 %
 mfi.py                      XLV    27 %
 dwma_9_21_cross.py          XLV    27 %
 tsi2.py                     XLV    26 %
@@ -33,7 +34,7 @@ wr_sto.py                   XLV    23 %
 ema_8_21_cross.py           XLV    23 %
 dwma_20_close_cross.py      XLV    23 %
 bladerunner.py              XLV    23 %
-wsma_20_Close.py            XLV    22 %
+wma_20_close_cross.py       XLV    22 %
 rsi_20.py                   XLV    21 %
 sma_13_close_cross.py       XLV    20 %
 dwma.py                     XLV    19 %
@@ -46,8 +47,8 @@ ema_6_12_rsi_14.py          XLV    17 %
 ao_saucer.py                XLV    17 %
 ao_macd.py                  XLV    17 %
 rsi_5_20_cross.py           XLV    16 %
+close_4_days_down.py        XLV    16 %
 sma_13_tema_30_cross.py     XLV    15 %
-close_4_days_down.py        XLV    15 %
 srsi_2.py                   XLV    14 %
 sma_5_8_cross.py            XLV    14 %
 sma_19_close_cross.py       XLV    14 %
@@ -61,8 +62,8 @@ sma_15_30_cross.py          XLV     8 %
 ema_20_close_cross.py       XLV     8 %
 dwma_20_50_cross.py         XLV     8 %
 elder_ray_ema_21.py         XLV     7 %
-wsma_20_50_cross.py         XLV     6 %
-sma_5_10_cross.py           XLV     5 %
+wma_20_50_cross.py          XLV     6 %
+sma_5_10_cross.py           XLV     6 %
 sma_20_50_cross.py          XLV     5 %
 sma_13_48_cross.py          XLV     5 %
 sma_13_34_cross.py          XLV     5 %
