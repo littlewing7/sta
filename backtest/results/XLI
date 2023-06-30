@@ -9,7 +9,7 @@ rsi_20.py                   XLI    41 %
 wr_sto.py                   XLI    37 %
 cci_sma.py                  XLI    37 %
 ao_macd.py                  XLI    37 %
-wsma_20_50_cross.py         XLI    36 %
+wma_20_50_cross.py          XLI    36 %
 tsi2.py                     XLI    36 %
 rsi_sma.py                  XLI    34 %
 cci_20.py                   XLI    34 %
@@ -21,8 +21,8 @@ dwma_20_50_cross.py         XLI    29 %
 bolinger_kc_rsi.py          XLI    29 %
 tsi_cross.py                XLI    28 %
 bolinger_macd.py            XLI    28 %
+srsi_2.py                   XLI    26 %
 dwma_20_close_cross.py      XLI    26 %
-srsi_2.py                   XLI    25 %
 sma_13_34_cross.py          XLI    25 %
 ema_20_50_cross.py          XLI    25 %
 ema_13_48_cross.py          XLI    25 %
@@ -78,7 +78,8 @@ sma_13_close_cross.py       XLI    -6 %
 ema_9_21_cross.py           XLI    -7 %
 elder_ray_ema_13_sma_5.py   XLI    -8 %
 adx_rsi.py                  XLI    -8 %
-wsma_20_Close.py            XLI    -9 %
+wma_20_close_cross.py       XLI    -9 %
+wma_16_close_cross.py       XLI    -9 %
 bolinger_rsi2.py            XLI   -12 %
 bolinger_ema.py             XLI   -12 %
 elder_ray_ema_21.py         XLI   -13 %
