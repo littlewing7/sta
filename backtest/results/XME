@@ -8,8 +8,8 @@ bolinger_macd.py            XME   102 %
 bolinger_ema.py             XME   100 %
 bolinger_up.py              XME    96 %
 ema_144_169_sma_5.py        XME    89 %
+sma_5_8_cross.py            XME    84 %
 sma_19_close_cross.py       XME    84 %
-sma_5_8_cross.py            XME    82 %
 sma_20_close_cross.py       XME    80 %
 dwma_20_close_cross.py      XME    80 %
 tema9_close_cross.py        XME    79 %
@@ -32,7 +32,7 @@ adx.py                      XME    66 %
 wr_sto.py                   XME    62 %
 emav_20_50.py               XME    62 %
 ema_tema.py                 XME    60 %
-wsma_20_50_cross.py         XME    59 %
+wma_20_50_cross.py          XME    59 %
 sma_13_close_cross.py       XME    59 %
 ema_50_200_cross.py         XME    59 %
 elder_ray_ema_13.py         XME    59 %
@@ -42,13 +42,14 @@ srsi_1.py                   XME    57 %
 macd.py                     XME    57 %
 ema_8_21_cross.py           XME    57 %
 dwma_20_50_cross.py         XME    57 %
-wsma_20_Close.py            XME    54 %
+wma_20_close_cross.py       XME    54 %
 sma_13_34_cross.py          XME    54 %
 bolinger_4_days_down.py     XME    54 %
 tema_close.py               XME    53 %
 rsi_sma.py                  XME    53 %
 williams_rsi.py             XME    51 %
 ema_9_21_cross.py           XME    48 %
+wma_16_close_cross.py       XME    44 %
 sma_13_20_cross.py          XME    44 %
 kc_close.py                 XME    43 %
 sma_8_21_cross.py           XME    42 %
@@ -56,8 +57,8 @@ sma_13_tema_30_cross.py     XME    41 %
 bolinger_rsi1.py            XME    40 %
 sma_15_30_cross.py          XME    37 %
 dwma_9_21_cross.py          XME    37 %
+srsi_2.py                   XME    33 %
 adx_kc.py                   XME    32 %
-srsi_2.py                   XME    31 %
 ao.py                       XME    31 %
 bolinger_kc_rsi.py          XME    30 %
 elder_ray_ema_13_sma_5.py   XME    29 %
@@ -80,7 +81,7 @@ adx_ema_rsi.py              XME     0 %
 bolinger_rsi2.py            XME    -4 %
 macd_cross2.py              XME    -6 %
 sma_50_200_cross.py         XME   -11 %
-close_4_days_down.py        XME   -15 %
+close_4_days_down.py        XME   -14 %
 macd_cross_cci_20.py        XME   -20 %
 adx_rsi.py                  XME   -29 %
 mfi.py                      XME   -34 %
