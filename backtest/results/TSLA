@@ -7,6 +7,7 @@ elder_ray_ema_13.py        TSLA   358 %
 elder_ray_ema_21.py        TSLA   356 %
 sma_20_tema_30_cross.py    TSLA   335 %
 rsi_5_20_cross.py          TSLA   335 %
+wma_16_close_cross.py      TSLA   327 %
 macd.py                    TSLA   325 %
 ema_9_21_cross.py          TSLA   323 %
 sma_13_20_cross.py         TSLA   318 %
@@ -20,7 +21,7 @@ dwma_20_close_cross.py     TSLA   291 %
 ema_20_50_cross.py         TSLA   283 %
 ema_6_12_rsi_14.py         TSLA   277 %
 ema_20_close_cross.py      TSLA   274 %
-wsma_20_Close.py           TSLA   270 %
+wma_20_close_cross.py      TSLA   270 %
 ao_cross2.py               TSLA   270 %
 ema_tema.py                TSLA   268 %
 dwma.py                    TSLA   266 %
@@ -32,7 +33,7 @@ sma_15_30_cross.py         TSLA   230 %
 rsi_14.py                  TSLA   220 %
 sma_13_34_cross.py         TSLA   219 %
 sma_13_48_cross.py         TSLA   217 %
-wsma_20_50_cross.py        TSLA   216 %
+wma_20_50_cross.py         TSLA   216 %
 ao_saucer.py               TSLA   207 %
 bolinger_up.py             TSLA   201 %
 ao_macd.py                 TSLA   201 %
