@@ -5,7 +5,7 @@ adx_kc.py                   XRT   123 %
 kc_close.py                 XRT   119 %
 ema_20_50_cross.py          XRT   117 %
 ao_saucer.py                XRT   110 %
-wsma_20_50_cross.py         XRT   108 %
+wma_20_50_cross.py          XRT   108 %
 macd_cross_wr_14.py         XRT   102 %
 sma_13_34_cross.py          XRT   101 %
 sma_13_48_cross.py          XRT    98 %
@@ -47,11 +47,12 @@ tsi_cross.py                XRT    32 %
 bolinger_rsi_sma.py         XRT    30 %
 adx_rsi.py                  XRT    30 %
 close_4_days_down.py        XRT    24 %
-wsma_20_Close.py            XRT    23 %
+wma_20_close_cross.py       XRT    23 %
 macd_cross_cci_20.py        XRT    21 %
 macd.py                     XRT    21 %
 rsi_5_20_cross.py           XRT    20 %
 bolinger_macd.py            XRT    20 %
+wma_16_close_cross.py       XRT    15 %
 sma_5_8_cross.py            XRT    15 %
 sma_13_close_cross.py       XRT    15 %
 bolinger_4_days_down.py     XRT    15 %
