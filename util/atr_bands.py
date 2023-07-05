@@ -33,16 +33,16 @@ def calculate_ATR_bands(data, window=20, multiplier=2):
 data = calculate_ATR_bands(data)
 """
 
-def __ATR_BANDS ( data, t=14 ):
+def __ATR_BANDS ( data, t=14, cl='Close' ):
     _open  = data['Open']
-    _close = data['Adj Close']
+    _close = data[cl]
     _high  = data['High']
     _low   = data['Low']
 
     atr = __ATR( data, t)
 
     atr_multiplicator = 2.0
-    atr_basis = __EMA ( data, 20)
+    atr_basis = __EMA ( data, 20, cl)
 
     atr_band_upper  = data["EMA_20"] + atr_multiplicator * atr
     atr_band_lower  = data["EMA_20"] - atr_multiplicator * atr

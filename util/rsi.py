@@ -11,8 +11,8 @@ import numpy as np
 #    import talib
 #    return talib.RSI ( close, timeperiod=t)
 
-def __RSI ( data, window):
-    delta = data['Adj Close'].diff()
+def __RSI ( data, window, cl='Close'):
+    delta = data[cl].diff()
     gain = delta.where(delta > 0, 0)
     loss = -delta.where(delta < 0, 0)
     avg_gain = gain.rolling(window=window).mean()
@@ -45,7 +45,7 @@ def __RSI ( data: pd.DataFrame, window: int = 14, round_rsi: bool = True):
     :return: an array with the RSI indicator values
     """
 
-    delta = data["Adj Close"].diff()
+    delta = data["Close"].diff()
 
     up = delta.copy()
     up[up < 0] = 0

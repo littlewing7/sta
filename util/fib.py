@@ -20,8 +20,8 @@ def fib_retracement(p1, p2):
 
 def fib (data):
     #Calculate the max and min close price
-    maximum_price = data['Adj Close'].max()
-    minimum_price = data['Adj Close'].min()
+    maximum_price = data['Close'].max()
+    minimum_price = data['Close'].min()
     return fib_retracement ( maximum_price, minimum_price )
 
 # https://github.com/sanampatel/python-pivot-levels/blob/master/pivot_levels.py #

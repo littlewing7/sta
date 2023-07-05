@@ -35,7 +35,7 @@ for symbol in args.ticker:
 
     # if the file was downloaded today, read from it
     if os.path.exists(csv_file) and (lambda file_path: datetime.datetime.now() - datetime.datetime.fromtimestamp(os.path.getmtime(file_path)) < datetime.timedelta(minutes=60))(csv_file):
-        data = pd.read_csv ( csv_file, index_col='Date' )
+        data = pd.read_csv ( csv_file, index_col='Date', parse_dates=True )
     else:
         # Download data
         data = yf.download(symbol, start=start_date, progress=False)
@@ -45,17 +45,15 @@ for symbol in args.ticker:
     data  = __EMA (data, 9)
     data  = __EMA (data, 21)
 
-    # Get the most recent two rows of data
-    recent_data = data.tail(2)
-
     # Check for crossover events
-    if recent_data['EMA_9'][0] > recent_data['EMA_21'][0] and recent_data['EMA_9'][1] <= recent_data['EMA_21'][1]:
-        print(f"Crossover event: {symbol} {recent_data.index[0].date()} EMA_9 crossed over EMA_21")
-    elif recent_data['EMA_9'][0] < recent_data['EMA_21'][0] and recent_data['EMA_9'][1] >= recent_data['EMA_21'][1]:
-        print(f"Crossover event: {symbol} {recent_data.index[0].date()} EMA_9 crossed under EMA_21")
+    if data['EMA_9'][-1] > data['EMA_21'][-1] and data['EMA_9'][-2] <= data['EMA_21'][-2]:
+        print(f"Crossover event: {symbol} {data.index[-1].date()} EMA_9 crossed over EMA_21")
+
+    if data['EMA_9'][-1] < data['EMA_21'][-1] and data['EMA_9'][-2] >= data['EMA_21'][-2]:
+        print(f"Crossover event: {symbol} {data.index[-1].date()} EMA_9 crossed under EMA_21")
 
     # Check for signal events
-    if recent_data['Adj Close'][1] > recent_data['Adj Close'][0] and recent_data['EMA_9'][0] > recent_data['EMA_21'][0]:
-        print(f"Signal event: {symbol} {recent_data.index[0].date()} Yesterday's close price is below today's close price and 9 EMA is higher than 21 EMA")
+    if data['Adj Close'][-1] > data['Adj Close'][-2] and data['EMA_9'][-1] > data['EMA_21'][-1]:
+        print(f"\nSignal event: {symbol} {data.index[-1].date()} Today's close price is above yesterday's and 9 EMA is higher than 21 EMA")
 
-    print ( recent_data )
+    print ( data.tail (3) )

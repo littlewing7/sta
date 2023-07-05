@@ -51,7 +51,7 @@ import numpy as np
 #    df = df.join(MACDdiff)
 #    return df
 
-def __MACD (data, m=12, n=26, p=9, pc='Adj Close'):
+def __MACD (data, m=12, n=26, p=9, pc='Close'):
 
     data = data.copy()
     data['EMA_s'] = data[pc].ewm(span=m, adjust=False).mean()

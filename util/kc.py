@@ -11,7 +11,7 @@ import numpy as np
 #    df = df.join(KelChD)
 #    return df
 
-def __KC(dataframe, period=20, multiplier=2):
+def __KC ( dataframe, period=20, multiplier=2, cl='Close' ):
     """
     Calculates the Keltner Channels for a given DataFrame.
 
@@ -28,14 +28,14 @@ def __KC(dataframe, period=20, multiplier=2):
 
     tr = pd.DataFrame()
     tr['h_l'] = dataframe['High'] - dataframe['Low']
-    tr['h_pc'] = abs(dataframe['High'] - dataframe['Adj Close'].shift())
-    tr['l_pc'] = abs(dataframe['Low'] - dataframe['Adj Close'].shift())
+    tr['h_pc'] = abs(dataframe['High'] - dataframe['Close'].shift())
+    tr['l_pc'] = abs(dataframe['Low'] - dataframe['Close'].shift())
     tr['tr'] = tr[['h_l', 'h_pc', 'l_pc']].max(axis=1)
 
     atr = tr['tr'].rolling(atr_lookback).mean()
     #atr = tr['tr'].ewm(alpha = 1/atr_lookback).mean()
 
-    kc_middle = dataframe['Adj Close'].rolling(period).mean()
+    kc_middle = dataframe[cl].rolling(period).mean()
     kc_upper = kc_middle + multiplier * atr
     kc_lower = kc_middle - multiplier * atr
 
@@ -44,29 +44,3 @@ def __KC(dataframe, period=20, multiplier=2):
     dataframe['KC_lower'] = kc_lower
 
     return dataframe
-
-"""
-def __KC2 ( data, period=20, multiplier=2 ):
-
-    atr_lookback = 10
-
-    tr1 = data['High'] - data['Low']
-    tr2 = abs(data['High'] - data['Close'].shift())
-    tr3 = abs(data['Low'] - data['Close'].shift())
-
-    frames = [tr1, tr2, tr3]
-
-    tr = pd.concat(frames, axis = 1, join = 'inner').max(axis = 1)
-
-    atr = tr.ewm(alpha = 1/atr_lookback).mean()
-
-    kc_middle = data['Close'].ewm(period).mean()
-    kc_upper = data['Close'].ewm(period).mean() + multiplier * atr
-    kc_lower = data['Close'].ewm(period).mean() - multiplier * atr
-
-    data['KC_upper'] = kc_upper
-    data['KC_middle'] = kc_middle
-    data['KC_lower'] = kc_lower
-    return data
-
-"""

@@ -47,16 +47,16 @@ def backtest_strategy(stock, start_date):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if data["EMA_13"][i] > data["EMA_48"][i] and data["EMA_13"][i - 1] < data["EMA_48"][i - 1] and position == 0:
+        if ( position == 0 ) and ( data["EMA_13"][i] > data["EMA_48"][i] and data["EMA_13"][i - 1] <= data["EMA_48"][i - 1] ):
             position = 1
             buy_price = data["Adj Close"][i]
             today = data.index[i]
             #print(f"Buying {stock} at {buy_price} @ {today}")
 
         # Sell signal
-        elif data["EMA_13"][i] < data["EMA_48"][i] and data["EMA_13"][i - 1]  > data["EMA_48"][i - 1] and position == 1:
+        elif ( position == 1 ) and ( data["EMA_13"][i] < data["EMA_48"][i] and data["EMA_13"][i - 1]  >= data["EMA_48"][i - 1] ):
             position = 0
-            sell_price = data["Adj Close"][i]
+            sell_price = data["Close"][i]
             today = data.index[i]
             #print(f"Selling {stock} at {sell_price} @ {today}")
 
@@ -71,10 +71,9 @@ def backtest_strategy(stock, start_date):
     return percentage + '%'
 
 
-if data["EMA_13"][-1] > data["EMA_48"][-1] and data["EMA_13"][-2] < data["EMA_48"][-2]:
-    print_log ( 'ema_13_48_cross.py', 'LONG', [ 'EMA_13', 'EMA_48', 'EMA_13_48_cross' ] , backtest_strategy ( ticker , '2020-01-01' ) )
+if ( data["EMA_13"][-1] > data["EMA_48"][-1] ) and ( data["EMA_13"][-2] <= data["EMA_48"][-2] ):
+    print_log ( 'ema_13_48_cross.py', 'LONG', [ 'EMA_13', 'EMA_48', 'EMA_13_48_cross over' ] , backtest_strategy ( ticker , '2020-01-01' ) )
 
-if data["EMA_13"][-1] < data["EMA_48"][-1] and data["EMA_13"][-2]  > data["EMA_48"][-2]:
-    print_log ( 'ema_13_48_cross.py', 'SHORT', [ 'EMA_13', 'EMA_48', 'EMA_13_48_cross' ], backtest_strategy ( ticker , '2020-01-01' ) )
-
+if ( data["EMA_13"][-1] < data["EMA_48"][-1] ) and ( data["EMA_13"][-2]  >= data["EMA_48"][-2] ):
+    print_log ( 'ema_13_48_cross.py', 'SHORT', [ 'EMA_13', 'EMA_48', 'EMA_13_48_cross under' ], backtest_strategy ( ticker , '2020-01-01' ) )
 

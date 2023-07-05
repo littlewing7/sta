@@ -28,7 +28,7 @@ def sr ( df ):
 
     df['Date'] = pd.to_datetime(df.index)
     df['Date'] = df['Date'].apply(mpl_dates.date2num)
-    df = df.loc[:,['Date', 'Open', 'High', 'Low', 'Adj Close']]
+    df = df.loc[:,['Date', 'Open', 'High', 'Low', 'Close']]
 
     s =  np.mean(df['High'] - df['Low'])
 

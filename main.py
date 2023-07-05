@@ -256,11 +256,10 @@ discord_env = {
 discord_url = discord_env['DEV']
 
 
-# Create an ArgumentParser object
 parser = argparse.ArgumentParser(description='Script that monitors a number of tickers')
 
 # Add a positional argument for the time interval
-parser.add_argument('-i', '--interval', type=str, required=True, help='time interval i.e. one of 1m 5m 15m 30m 90m 1h 1d 5d 1wk 1mo 3mo')
+parser.add_argument('-i', '--interval', type=str, required=True, help='time interval i.e. one of 1m, 5m, 15m, 30m, 90m, 1h, 1d, 5d, 1wk, 1mo, 3mo')
 
 # log file
 parser.add_argument('-l', '--logfile', type=str, required=False, help='log file i.e. app.log')
@@ -274,9 +273,12 @@ parser.add_argument('-s', '--strategies', type=str, nargs='+', required=False, h
 # Add a positional argument for a strategy
 parser.add_argument('-r', '--refresh', type=str, required=False, help='override default refresh settings, in seconds')
 
+# Add a positional argument for displaying strategy percentage
+parser.add_argument('-p', '--percentage', type=int, required=False, help='use strategies that return more than %%')
 
 # Parse the command-line arguments
 args = parser.parse_args()
+
 
 strategies = {}
 indicators = {}
@@ -292,7 +294,9 @@ else:
     append_to = "app.log"
 logging.basicConfig(filename=append_to, filemode='a', format='%(name)s - %(asctime)s - %(levelname)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 
-
+# 'Close' or 'Adj Close' ?
+#cl='Adj Close'
+cl='Close'
 
 for ticker in args.tickers:
     strategies[ticker] = []
@@ -321,11 +325,22 @@ while True:
 
         #print ( my_list )
         if strategy_name not in my_list:
-            message = f"{ticker} {interval} ---> {long_short} ::: {strategy_name} ::: return {ind} ::: {perc}"
-            logging.warning(message)
-            strategies[ticker].append(strategy_name)
-            #indicators[ticker].extend ( ind )
-            print ( f"{message}")
+            number = int(''.join(filter(str.isdigit, ind[0])))
+
+            if ( args.percentage ):
+                if ( number >= args.percentage ):
+                    message = f"{ticker} {interval} ---> {long_short} ::: {strategy_name} ::: return {number} ::: {perc}"
+                    logging.warning(message)
+                    strategies[ticker].append(strategy_name)
+                    #indicators[ticker].extend ( ind )
+                    print ( f"{message}")
+            else:
+                message = f"{ticker} {interval} ---> {long_short} ::: {strategy_name} ::: return {number} ::: {perc}"
+                logging.warning(message)
+                strategies[ticker].append(strategy_name)
+                #indicators[ticker].extend ( ind )
+                print ( f"{message}")
+
             if ( settings['enable_discord'] ):
                 discord_message = '  {:8s}  {:10s}   {:8s}%  {:30s} '.format ( ticker, "NA" , "NA", message )
                 send_discord_message (discord_url, ticker, long_short, discord_message)
@@ -345,25 +360,21 @@ while True:
 
         # Get stock data from Yahoo Finance
         data = yf.download(ticker, period=period, interval = interval, progress=False, threads=True )
-        data['CL'] = data['Adj Close'].copy()
+        #data['CL'] = data['Close'].copy()
         data.to_csv('data/{}_1d.csv'.format ( ticker ), float_format='%.2f')
 
         # We need to fetch daily data in order to get strategy return numbers
         if ( period != '1d' ):
             data_1d = yf.download ( ticker, start='2020-01-01', progress=False, threads=True )
-            #data['CLOSE'] = data['Close'].copy()
-            data['CLOSE'] = data['Adj Close'].copy()
-            #data_1d.to_csv('data/{}_1d.csv'.format ( ticker ), float_format='%.2f' )
-
 
 
         # Current price, percentage from the previous day
 
-        current_price = data["Adj Close"][-1]
+        current_price = data["Close"][-1]
         current_price = round ( current_price, 2 )
 
         # Get the price change percentage from the previous day
-        previous_close_price = data["Adj Close"][-2]
+        previous_close_price = data["Close"][-2]
 
         price_change_percentage = ((current_price - previous_close_price) / previous_close_price) * 100
         price_change_percentage = round(price_change_percentage, 2)  # Round to 2 decimal places
@@ -409,21 +420,21 @@ while True:
         print ()
 
 
-        data['Fibonacci_0.236'] = data['Adj Close'].shift(0) * 0.236
-        data['Fibonacci_0.382'] = data['Adj Close'].shift(0) * 0.382
-        data['Fibonacci_0.50']  = data['Adj Close'].shift(0) * 0.50
-        data['Fibonacci_0.618'] = data['Adj Close'].shift(0) * 0.618
-        data['Fibonacci_1.00']  = data['Adj Close'].shift(0) * 1.00
-        data['Fibonacci_1.27']  = data['Adj Close'].shift(0) * 1.27
-        data['Fibonacci_1.618'] = data['Adj Close'].shift(0) * 1.618
+        data['Fibonacci_0.236'] = data[cl].shift(0) * 0.236
+        data['Fibonacci_0.382'] = data[cl].shift(0) * 0.382
+        data['Fibonacci_0.50']  = data[cl].shift(0) * 0.50
+        data['Fibonacci_0.618'] = data[cl].shift(0) * 0.618
+        data['Fibonacci_1.00']  = data[cl].shift(0) * 1.00
+        data['Fibonacci_1.27']  = data[cl].shift(0) * 1.27
+        data['Fibonacci_1.618'] = data[cl].shift(0) * 1.618
 
-        data['candle_size'] = ( data['Adj Close'] - data['Open'] ) * ( data['Adj Close'] - data['Open'] ) / 2
+        data['candle_size'] = ( data[cl] - data['Open'] ) * ( data[cl] - data['Open'] ) / 2
 
         data = hammer ( data )
 
         #########  SMA 5, 8  #####
         for i in [ 3, 5, 8, 9, 19, 20, 21, 50, 100, 200]:
-            data = __SMA ( data, i )
+            data = __SMA ( data, i, cl=cl )
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['SMA_5_8_Signal'] = np.select(
@@ -435,17 +446,17 @@ while True:
             [ ( data['SMA_20'] > data['SMA_50'] ) & ( data['SMA_20'].shift(1) < data['SMA_20'].shift(1) ),
             (   data['SMA_20'] < data['SMA_50'] ) & ( data['SMA_20'].shift(1) > data['SMA_50'].shift(1) )],
             [2, -2])
-        
+
         # Trend indicator
-        #data['Trend_20'] = data['Adj Close'] / data['Close'].rolling(20).mean()
-        data['Trend_20']  = data['Adj Close'] / data['SMA_20']
-        data['Trend_50']  = data['Adj Close'] / data['SMA_50']
-        data['Trend_100'] = data['Adj Close'] / data['SMA_100']
-        data['Trend_200'] = data['Adj Close'] / data['SMA_200']
+        #data['Trend_20'] = data['Close'] / data['Close'].rolling(20).mean()
+        data['Trend_20']  = data[cl] / data['SMA_20']
+        data['Trend_50']  = data[cl] / data['SMA_50']
+        data['Trend_100'] = data[cl] / data['SMA_100']
+        data['Trend_200'] = data[cl] / data['SMA_200']
 
         #########  EMA 9, 21  #####
         for i in [ 5, 8, 9, 20, 21, 50, 100, 200]:
-           data = __EMA ( data, i )
+           data = __EMA ( data, i, cl )
 
         # CROSS_over / CROSS_under ::: 2 = LONG, -2 = SHORT
         data['EMA_20_50_Signal'] = np.select(
@@ -458,10 +469,10 @@ while True:
               ( data['EMA_9'] < data['EMA_21'] ) & ( data['EMA_9'].shift(1) > data['EMA_21'].shift(1) ) ],
             [2, -2])
 
-            
+
         #########  Weighted SMA 20, 50  #####
         for i in [ 20, 50 ]:
-            data = __WSMA ( data, i )
+            data = __WSMA ( data, i, cl=cl )
 
         data['WSMA_20_50_Signal'] = np.select(
             [ ( data['WSMA_20'] > data['WSMA_50'] ) & ( data['WSMA_20'].shift(1) < data['WSMA_50'].shift(1) ) ,
@@ -470,7 +481,7 @@ while True:
 
         #########  WMA & Double WMA  ##### 
         for i in [ 9, 14, 20 ]:
-            data = WMA ( data, i )
+            data = WMA ( data, i, cl=cl )
 
 
         #########  RSI 14 #####
@@ -479,8 +490,6 @@ while True:
         rsi_oversold    = 30
 
         data            = __RSI ( data, window=rsi_window )
-
-        #data['Trend_20']   = data['Adj Close'] / data['Adj Close'].rolling(20).mean()
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['RSI_Signal'] = np.select(
@@ -493,18 +502,18 @@ while True:
         wr_upper_level = -20
         wr_lower_level = -80
 
-        data           = __WR ( data, wr_window )
+        data           = __WR ( data, wr_window, cl=cl )
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['WR_Signal'] = np.select(
             [ ( data['WR_{}'.format(wr_window)].shift(1) > wr_upper_level ) & ( data['WR_{}'.format(wr_window)] < wr_upper_level ),
               ( data['WR_{}'.format(wr_window)].shift(1) < wr_lower_level ) & ( data['WR_{}'.format(wr_window)] > wr_lower_level )],
             [-2, 2])
-        
+
         #########  TEMA 30 & 9  #####
         tema_window     = 30
-        data            = __TEMA ( data, tema_window )
-        data            = __TEMA ( data, 9 )
+        data            = __TEMA ( data, tema_window, cl=cl )
+        data            = __TEMA ( data, 9, cl=cl )
 
         #########  STOCH  #####
         sto_k                = 14
@@ -513,13 +522,10 @@ while True:
         sto_upper_level      = 80
         sto_lower_level      = 20
 
-        data                 = __STOCHASTIC (data, sto_k, 3)
-
-        #data['Trend_20'] = data['Adj Close'] / data['Close'].rolling(20).mean()
+        data                 = __STOCHASTIC (data, sto_k, 3, cl=cl)
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['STO_Signal'] = np.select(
-
             [ ( data['STO_K'].shift(1) < sto_lower_level ) & ( data['STO_K'] > sto_lower_level ),
               ( data['STO_K'].shift(1) > sto_upper_level ) & ( data['STO_K'] < sto_upper_level ) ],
             [2, -2])
@@ -563,36 +569,33 @@ while True:
         #####  Bolinger Bands  #####
         bb_window = 20
         # Calculate the Bollinger Bands for the stock data
-        data = __BB ( data, bb_window )
+        data = __BB ( data, bb_window, cl=cl )
 
-        data['BB_percent'] = ( data['Adj Close']    - data['BB_lower'] ) / ( data['BB_upper'] - data['BB_lower'] ) * 100
-        data['BB_sharp']   = ( data['BB_upper'] - data['BB_lower'] ) / ( data['BB_middle'] )
+        #data['BB_percent'] = ( data[cl]    - data['BB_lower'] ) / ( data['BB_upper'] - data['BB_lower'] ) * 100
+        #data['BB_sharp']   = ( data['BB_upper'] - data['BB_lower'] ) / ( data['BB_middle'] )
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
         data['BB_Signal'] = np.select(
-            [ ( data['Adj Close'] < data['BB_lower'] ) & ( data['Adj Close'].shift(1) > data['BB_lower'].shift(1)),
-            (   data['Adj Close'] > data['BB_upper'] ) & ( data['Adj Close'].shift(1) < data['BB_upper'].shift(1))],
+            [ ( data[cl] < data['BB_lower'] ) & ( data[cl].shift(1) > data['BB_lower'].shift(1)),
+            (   data[cl] > data['BB_upper'] ) & ( data[cl].shift(1) < data['BB_upper'].shift(1))],
             [2, -2])
 
         #########  MACD  #####
-        data = __MACD (data)
+        data = __MACD (data, m=12, n=26, p=9, pc=cl)
 
         # 2 = Long ( Buy Now ), 1 = Oversold ( Buy Soon ), 0 = Neutral, -1 = Overbought ( Sell Soon ), -2 = Short ( Sell Now )
-        #data['MACD_Signal'] = np.select(
-        #    [ ( data['Trend_20'] > 1) & ((data['MACD_HIST'] > 0 ) & ( data['MACD_HIST'].shift(1)<0)) ,
-        #    (   data['Trend_20'] < 1) & ((data['MACD_HIST'] < 0 ) & ( data['MACD_HIST'].shift(1)>0))],
-        #    [2, -2])
         data['MACD_Signal'] = np.select(
             [ ((data['MACD_HIST'] > 0 ) & ( data['MACD_HIST'].shift(1)<0)) ,
               ((data['MACD_HIST'] < 0 ) & ( data['MACD_HIST'].shift(1)>0))],
             [2, -2])
+
 
         #########  KDJ  #####
         data = __KDJ (data)
 
         #########  ATR BANDS  #####
         data = __ATR_BANDS ( data, 14 )
-        
+
         atr_bands_upper = data['ATR_BANDS_UPPER'][-1]
         atr_bands_lower = data['ATR_BANDS_LOWER'][-1]
 
@@ -670,8 +673,8 @@ while True:
 
         print ("\n")
         time.sleep(1)
-        
-        
+
+
         # check pandas dataframe columns for signals #
         sig_bull = []
         sig_bear = []
@@ -693,10 +696,10 @@ while True:
 
         if ( len ( sig_bear ) > 0 ):
             print ( "Bear signals: \n" + '\n'.join ( sig_bear ) )
-                
+
 
     #print ( strategies )
-    #print ( indicators )        
+    #print ( indicators )
 
     if ( args.refresh ):
         time.sleep ( int ( args.refresh ) )

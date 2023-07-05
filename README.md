@@ -1,6 +1,28 @@
 # sta
 
 ```
+$ python3 main.py --help
+usage: main.py [-h] -i INTERVAL [-l LOGFILE] -t TICKERS [TICKERS ...] [-s STRATEGIES [STRATEGIES ...]] [-r REFRESH] [-p PERCENTAGE]
+
+Script that monitors a number of tickers
+
+options:
+  -h, --help            show this help message and exit
+  -i INTERVAL, --interval INTERVAL
+                        time interval i.e. one of 1m, 5m, 15m, 30m, 90m, 1h, 1d, 5d, 1wk, 1mo, 3mo
+  -l LOGFILE, --logfile LOGFILE
+                        log file i.e. app.log
+  -t TICKERS [TICKERS ...], --tickers TICKERS [TICKERS ...]
+                        list of stock tickers
+  -s STRATEGIES [STRATEGIES ...], --strategies STRATEGIES [STRATEGIES ...]
+                        load named strategies from strategie/ folder
+  -r REFRESH, --refresh REFRESH
+                        override default refresh settings, in seconds
+  -p PERCENTAGE, --percentage PERCENTAGE
+                        use strategies that return more than %
+
+
+
 $ python3 main.py -i 1h -t AAPL SPY
 
 -------------------------  1  -------------------------

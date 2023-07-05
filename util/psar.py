@@ -1,12 +1,12 @@
 import pandas as pd
 
-def __PSAR (df, iaf = 0.02, maxaf = 0.2):
+def __PSAR (df, iaf = 0.02, maxaf = 0.2, cl='Close'):
     length = len(df)
     #dates = (df['Date'])
     high = (df['High'])
     low = (df['Low'])
-    close = (df['Adj Close'])
-    psar = df['Adj Close'][0:len(df['Adj Close'])]
+    close = (df[cl])
+    psar = df[cl][0:len(df[cl])]
     psarbull = [None] * length
     psarbear = [None] * length
     bull = True

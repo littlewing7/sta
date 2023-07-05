@@ -36,14 +36,14 @@ from util.atr        import __ATR
 # Define the ticker and download the historical data
 ticker = 'AAPL'
 data = yf.download(ticker, period='5y')
-data = data.drop(['Adj Close'], axis=1).dropna()
+#data = data.drop(['Adj Close'], axis=1).dropna()
 
 atr = __ATR ( data, 14 )
 
 #data = calculate_ATR( data )
 
 stop_loss_percent = 2 # Replace with desired stop-loss percentage
-current_price = data["Close"][-1]
+current_price = data["Adj Close"][-1]
 
 stop_loss_level = current_price - (atr[-1] * (stop_loss_percent / 100))
 

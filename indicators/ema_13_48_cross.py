@@ -2,7 +2,7 @@
 
 import argparse
 
-import os,sys
+import os,sys,datetime
 import yfinance as yf
 import pandas as pd
 pd.set_option('display.precision', 2)
@@ -16,11 +16,9 @@ sys.path.append("..")
 #####  External functions  #####
 ################################
 
-#def __MACD (data, m=12, n=26, p=9, pc='Close'):
-from util.macd   import __MACD
+#def __EMA (df, window=9):
+from util.ema   import __EMA
 
-import yfinance as yf
-import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-t', '--ticker', nargs='+',  type=str, required=True, help='ticker')
@@ -43,23 +41,18 @@ for symbol in args.ticker:
         data = yf.download(symbol, start=start_date, progress=False)
         data.to_csv ( csv_file )
 
-    # Calculate the MACD and signal lines using the calculate_macd function
-    data = __MACD (data)
+    # Calculate EMA 9 and EMA 21
+    data  = __EMA (data, 13)
+    data  = __EMA (data, 48)
 
-    ## Find the MACD crossover and crossunder
-    #macd_crossover = (macd > signal) & (macd.shift(1) < signal.shift(1))
-    #macd_crossunder = (macd < signal) & (macd.shift(1) > signal.shift(1))
+    # Check for crossover events
+    if data['EMA_13'][-1] > data['EMA_48'][-1] and data['EMA_13'][-2] <= data['EMA_48'][-2]:
+        print(f"Crossover event: {symbol} {data.index[-1].date()} EMA_13 crossed over EMA_48")
+    elif data['EMA_13'][-1] < data['EMA_48'][-1] and data['EMA_13'][-2] >= data['EMA_48'][-2]:
+        print(f"Crossover event: {symbol} {data.index[-1].date()} EMA_13 crossed under EMA_48")
 
-    # Get the most recent day and the previous day in the dataframe
-    today_data = data.iloc[-1]
-    yesterday_data = data.iloc[-2]
+    # Check for signal events
+    if data['Adj Close'][-1] > data['Adj Close'][-2] and data['EMA_13'][-1] > data['EMA_48'][-1]:
+        print(f"\nSignal event: {symbol} {data.index[-1].date()} Today's close price is above yesterday's and 13 EMA is higher than 48 EMA")
 
-    # Check if the MACD line crossed above or below the signal line on the most recent day
-    if today_data["MACD"] > today_data["MACD_SIGNAL"] and yesterday_data["MACD"] <= yesterday_data["MACD_SIGNAL"]:
-        print("BUY :: MACD crossed above signal on", today_data.name)
-    elif today_data["MACD"] < today_data["MACD_SIGNAL"] and yesterday_data["MACD"] >= yesterday_data["MACD_SIGNAL"]:
-        print("SELL :: MACD crossed below signal on", today_data.name)
-
-    # Print the full dataframe with MACD and signal lines
-    print(data.tail(5))
-
+    print ( data.tail (5) )

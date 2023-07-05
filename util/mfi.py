@@ -1,8 +1,8 @@
 import numpy as np
 
-def __MFI ( data, window=14):
+def __MFI ( data, window=14, cl='Close'):
     # Calculate the Money Flow Index (MFI)
-    typical_price = ( data['High'] + data['Low'] + data['Adj Close']) / 3
+    typical_price = ( data['High'] + data['Low'] + data[cl]) / 3
     money_flow = typical_price * data['Volume']
     positive_money_flow = money_flow.where(typical_price > typical_price.shift(1), 0)
     negative_money_flow = money_flow.where(typical_price < typical_price.shift(1), 0)

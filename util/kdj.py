@@ -18,10 +18,10 @@
 
 import numpy as np
 
-def __KDJ (data):
+def __KDJ (data, cl='Close'):
     low_min = data['Low'].rolling(window=9).min()
     high_max = data['High'].rolling(window=9).max()
-    rsv = (data['Adj Close'] - low_min) / (high_max - low_min) * 100
+    rsv = (data[cl] - low_min) / (high_max - low_min) * 100
 
     # this is not compabible with tradingview TV
     #data['KDJ_K'] = rsv.rolling(window=3).mean()

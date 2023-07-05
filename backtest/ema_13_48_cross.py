@@ -55,13 +55,13 @@ def backtest_strategy(stock, start_date, logfile):
     # Loop through data
     for i in range(len(data)):
         # Buy signal
-        if data["EMA_13"][i] > data["EMA_48"][i] and data["EMA_13"][i - 1] < data["EMA_48"][i - 1] and position == 0:
+        if data["EMA_13"][i] > data["EMA_48"][i] and data["EMA_13"][i - 1] <= data["EMA_48"][i - 1] and position == 0:
             position = 1
             buy_price = data["Adj Close"][i]
             #print(f"Buying {stock} at {buy_price}")
 
         # Sell signal
-        elif data["EMA_13"][i] < data["EMA_48"][i] and data["EMA_13"][i - 1]  > data["EMA_48"][i - 1] and position == 1:
+        elif data["EMA_13"][i] < data["EMA_48"][i] and data["EMA_13"][i - 1]  >= data["EMA_48"][i - 1] and position == 1:
             position = 0
             sell_price = data["Adj Close"][i]
             #print(f"Selling {stock} at {sell_price}")
